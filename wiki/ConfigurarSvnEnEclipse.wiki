@@ -40,9 +40,11 @@ Error validating server certificate for https://cripto-tp.googlecode.com:443:
    Distinguished name: Certification Services Division, Thawte Consulting cc, Cape Town, Western Cape, ZA
 }}}
     Darle *Accept Permanently*
+
   * Ahora aparece un cuadrito que pide usuario y password
     * Usuario: el de Google (ejemplo: *matias.dc.uba.ar*)
     * Password: la que Google informa en la sección Source, en el link "When prompted, enter your generated googlecode.com password."
+
   * Listo. Ya podemos ver la lista de carpetas del repositorio.
     Seleccionar una para trabajar y darle Next >
   * dejar las opciones por default y presionar Finish
