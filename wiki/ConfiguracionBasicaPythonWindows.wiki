@@ -3,10 +3,10 @@
 = Índice =
 
   # Descargarlo de www.python.org (paquete .msi)
-  # [ConfigurarPythonPath Configurar el PYTHONPATH]
+  # Configurar el PYTHONPATH
 
 
-== ConfigurarPythonPath ==
+== Configurar el PYTHONPATH ==
 
 Mi PC, botón derecho, Propiedades, Opciones avanzadas, Variables de entorno.
 Nueva variable de usuario, nombre: PYTHONPATH, contenido: los directorios donde se quiere que Python busque automáticamente los módulos, separados por punto y coma (en Windows).
