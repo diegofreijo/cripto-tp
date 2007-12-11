@@ -32,4 +32,17 @@ http-proxy-password = laPassword
   * SVN / Checkout Projects from SVN, Next >
   * Create a new repository location (hay que hacerlo la primera vez)
     * Url: https://cripto-tp.googlecode.com/svn/trunk/
-  * 
+  * Aparece el mensaje:
+{{{
+Error validating server certificate for https://cripto-tp.googlecode.com:443:
+ - Unknown certificate issuer
+   Fingerprint: 89:87:5e:ca:0b:03:d2:83:db:7b:3f:20:5d:d0:76:c7:76:6b:cb:b2
+   Distinguished name: Certification Services Division, Thawte Consulting cc, Cape Town, Western Cape, ZA
+}}}
+    Darle *Accept Permanently*
+  * Ahora aparece un cuadrito que pide usuario y password
+    * Usuario: el de Google (ejemplo: *matias.dc.uba.ar*)
+    * Password: la que Google informa en la sección Source, en el link "When prompted, enter your generated googlecode.com password."
+  * Listo. Ya podemos ver la lista de carpetas del repositorio.
+    Seleccionar una para trabajar y darle Next >
+  * dejar las opciones por default y presionar Finish
