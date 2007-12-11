@@ -1,0 +1,12 @@
+#summary Configuración básica de Python para Windows
+
+= Índice =
+
+  # Descargarlo de www.python.org (paquete .msi)
+  # [ConfigurarPythonPath Configurar el PYTHONPATH]
+
+
+== ConfigurarPythonPath ==
+
+Mi PC, botón derecho, Propiedades, Opciones avanzadas, Variables de entorno.
+Nueva variable de usuario, nombre: PYTHONPATH, contenido: los directorios donde se quiere que Python busque automáticamente los módulos, separados por punto y coma (en Windows).
