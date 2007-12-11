@@ -25,6 +25,7 @@ http-proxy-port = 8080
 http-proxy-username = malbanesi
 http-proxy-password = laPassword
 }}}
+¡Por supuesto, esto es un ejemplo! Cambien según el proxy de su empresa.
 
 == Conectar a nuestro repositorio cripto-tp ==
 
