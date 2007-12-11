@@ -29,9 +29,12 @@ http-proxy-password = laPassword
 == Conectar a nuestro repositorio cripto-tp ==
 
   * File, New, Project...
+
   * SVN / Checkout Projects from SVN, Next >
+
   * Create a new repository location (hay que hacerlo la primera vez)
     * Url: https://cripto-tp.googlecode.com/svn/trunk/
+
   * Aparece el mensaje:
 {{{
 Error validating server certificate for https://cripto-tp.googlecode.com:443:
