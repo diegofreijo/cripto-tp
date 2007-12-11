@@ -1,0 +1,16 @@
+#summary Cómo configurar Eclipse para SVN
+
+= Resumen =
+
+Una lista de pasos a seguir para tener SVN funcionando con Eclipse 3.2.2 (estos pasos deberían funcionar para cualquier versión desde 3.2 en adelante)
+
+
+== Instalación ==
+
+  * En Eclipse: Help, Software Updates, Find and Install...
+  * Search for new features to install, Next >
+  * New Remote Site...
+    * Name: Subclipse
+    * URL: http://subclipse.tigris.org/update_1.2.x
+  * Dejar seleccionado sólo Subclipse, Finish
+  * Cuando pregunte, darle aceptar licencia, Install all y reiniciar Eclipse
