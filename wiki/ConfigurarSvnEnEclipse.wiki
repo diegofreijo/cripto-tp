@@ -54,4 +54,5 @@ Error validating server certificate for https://cripto-tp.googlecode.com:443:
 
   * dejar las opciones por default y presionar Finish
 
-  * *IMPORTANTE:* vuelve a aparecer un cuadro de "New project", porque Eclipse no sabe qué tipo de proyecto es (si es un proyecto Java, C++, o no asociado a un lenguaje). Darle *General/Project*, Next >, nombre: *cripto-tp*, Finish
+  * *IMPORTANTE:* vuelve a aparecer un cuadro de "New project", porque Eclipse no sabe qué tipo de proyecto es (si es un proyecto Java, C++, o no asociado a un lenguaje).
+Darle *General/Project*, Next >, nombre: *cripto-tp*, Finish
