@@ -51,4 +51,9 @@ Error validating server certificate for https://cripto-tp.googlecode.com:443:
 
   * Listo. Ya podemos ver la lista de carpetas del repositorio.
     Seleccionar una para trabajar y darle Next >
+
   * dejar las opciones por default y presionar Finish
+
+  * *IMPORTANTE:* vuelve a aparecer un cuadro de "New project", porque Eclipse no
+    sabe qué tipo de proyecto es (si es un proyecto Java, C++, o no asociado a un
+    lenguaje). Darle *General/Project*, Next >, nombre: *cripto-tp*, Finish
