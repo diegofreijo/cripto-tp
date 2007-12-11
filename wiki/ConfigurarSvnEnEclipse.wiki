@@ -10,7 +10,26 @@ Una lista de pasos a seguir para tener SVN funcionando con Eclipse 3.2.2 (estos 
   * En Eclipse: Help, Software Updates, Find and Install...
   * Search for new features to install, Next >
   * New Remote Site...
-    * Name: Subclipse
-    * URL: http://subclipse.tigris.org/update_1.2.x
+    * Name: *Subclipse*
+    * URL: *http://subclipse.tigris.org/update_1.2.x*
   * Dejar seleccionado sólo Subclipse, Finish
   * Cuando pregunte, darle aceptar licencia, Install all y reiniciar Eclipse
+
+== Configuraciones de proxy para SVN ==
+
+Están en %APPDATA%\Subversion (copiar eso y pegar en la barra de direcciones del Explorador)
+Hay que editar *servers* y agregar al final:
+{{{
+http-proxy-host = proxyad.agea.com.ar
+http-proxy-port = 8080
+http-proxy-username = malbanesi
+http-proxy-password = laPassword
+}}}
+
+== Conectar a nuestro repositorio cripto-tp ==
+
+  * File, New, Project...
+  * SVN / Checkout Projects from SVN, Next >
+  * Create a new repository location (hay que hacerlo la primera vez)
+    * Url: https://cripto-tp.googlecode.com/svn/trunk/
+  * 
