@@ -1,0 +1,14 @@
+Carta y Palo es lo que debería utilizar el módulo que juega al truco (ManoTruco)
+
+¡NO tiene que preocuparse por códigos hasheados!
+
+El módulo CartasDesdeArchivo se encarga de:
+- leer el archivo de cartas.
+  Este archivo relaciona una carta (como "01E") con un código numérico que identifica la carta
+  ("432992466400977761073508373580215351044704759207").
+  Ese código lo usa el módulo de comunicaciones para enviar la carta encriptada a la contraparte.
+  Se almacenan dos diccionarios que relacionan códigos con objetos Carta y viceversa
+
+- desde una carta, obtener el código hasheado
+
+- desde un código hasheado, obtener una carta
