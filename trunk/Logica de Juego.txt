@@ -5,20 +5,20 @@
 =======================
 
 Escala:
-	01E
-	01B
-	07E
-	07O
-	03O,03C,03B,03E
-	02O,02C,02B,02E
-	01O,01C
-	12O,12C,12B,12E
-	11O,11C,11B,11E
-	10O,10c,10B,10E
-	07B,07C
-	06O,06C,06B,06E
-	05O,05C,05B,05E
-	04O,04C,04B,04E
+0	01E
+1	01B
+2	07E
+3	07O
+4	03O,03C,03B,03E
+5	02O,02C,02B,02E
+6	01O,01C
+7	12O,12C,12B,12E
+8	11O,11C,11B,11E
+9	10O,10c,10B,10E
+10	07B,07C
+11	06O,06C,06B,06E
+12	05O,05C,05B,05E
+13	04O,04C,04B,04E
 
 	Se podria implementar con una lista de listas. Cada elemento de la lista es una lista de cartas que estan en ese 
 nivel. (DESICION ANULADA)
