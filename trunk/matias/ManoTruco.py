@@ -1,19 +1,35 @@
 # -*- coding: cp1252 -*-
-from Cartas import *
-
-ESTADOENVIDO_NOCANTADO_ABIERTO = 0
-ESTADOENVIDO_CANTADO_ABIERTO = 1
-ESTADOENVIDO_CANTADO_NOQUERIDO = 2
-ESTADOENVIDO_CANTADO_QUERIDO = 3
-ESTADOENVIDO_NOCANTADO_CERRADO = 4
-
-ESTADOTRUCO_NOCANTADO = 0
-ESTADOTRUCO_CANTADO_ABIERTO = 1
-ESTADOTRUCO_CANTADO_NOQUERIDO = 2
-ESTADOTRUCO_CANTADO_QUERIDO = 3
+from Carta import *
 
 class ManoTruco:
+  # Pseudo-constantes
+  ESTADOENVIDO_NOCANTADO_ABIERTO = 0
+  ESTADOENVIDO_CANTADO_ABIERTO = 1
+  ESTADOENVIDO_CANTADO_NOQUERIDO = 2
+  ESTADOENVIDO_CANTADO_QUERIDO = 3
+  ESTADOENVIDO_NOCANTADO_CERRADO = 4
+
+  ESTADOTRUCO_NOCANTADO = 0
+  ESTADOTRUCO_CANTADO_ABIERTO = 1
+  ESTADOTRUCO_CANTADO_NOQUERIDO = 2
+  ESTADOTRUCO_CANTADO_QUERIDO = 3
+
   # variables de instancia
+  _soyMano = None
+  _cartasPorJugar = None
+  _manoActual = None
+  _estadoEnvido = None
+  _estadoEnvidoQuerido = None
+  _mayorEnvido = None
+
+  def __init__(self, cartasIniciales, soyMano):
+    self._soyMano = soyMano
+    self._cartasPorJugar = cartasIniciales
+    # inicializacion del estado
+    self._manoActual = 1
+    self._estadoEnvido = ESTADOENVIDO_NOCANTADO_ABIERTO
+    self._estadoEnvidoQuerido = 0
+    self._mayorEnvido = None
 
   def soyMano(self):
     """True si soy mano (si tengo que bajar carta), False si debe bajar mi
