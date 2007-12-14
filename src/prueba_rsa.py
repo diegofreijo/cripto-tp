@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
-import Rsa
 import sys
+sys.path.append("")
+import Rsa
 from math import log
 
 ## Leo las opciones de consola
