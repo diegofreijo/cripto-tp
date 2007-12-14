@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..\\lib")
 import Red
 import Aes
 
@@ -16,4 +18,3 @@ def Jugar(jugada):
 def RecibirJugada():
 	raise "No implementado"
 	
-
