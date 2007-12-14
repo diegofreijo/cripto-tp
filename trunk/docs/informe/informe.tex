@@ -1,0 +1,124 @@
+\documentclass[spanish, a4paper, 11pt]{article}
+
+\usepackage[a4paper,margin=3.5cm,top=3.0cm,bottom=3.0cm]{geometry}	% Define los margenes
+\usepackage[spanish,activeacute]{babel}								% Idioma castellano
+\usepackage{sty/caratula}														% Caratula de Algo2
+%\usepackage[a4paper=true,pagebackref=true]{hyperref}				% Agrega la TOC al PDF e hipervinculos
+%\usepackage[pdftex]{graphicx} 											% Permite insertar graficos
+\usepackage{fancyhdr}														% Permite manejo de cabeceras de pagina
+\usepackage{eufrak}															% Usado en el enunciado del trabajo
+\usepackage{latexsym}
+%\usepackage{algorithmic}													% Para escribir los algos
+%\usepackage{dsfont}															% Para el simbolo de naturales
+%\usepackage[font=small,labelfont=bf]{caption}						% Para editar las captions
+
+
+% Estilo de pagina para tener las cabeceras
+\pagestyle{fancy}
+\lhead{Truco Mental}
+\rhead{Albanesi - Carbajo - Freijo - Venturini}
+
+% Numeracion de paginas
+\pagenumbering{arabic}
+\parskip=1.5ex
+
+\newcommand{\imagen}[3]
+{
+	\begin{figure}[htbp]
+	  \centering
+	    \includegraphics[scale=0.5]{#1}
+	  \caption{#3}
+	\end{figure}
+}
+
+\newcommand{\nat}{\mathds{N}}
+\newcommand{\algoritmo}[3]{\noindent {\bf\underline{#1}:} #2 $\longrightarrow$ #3}
+\newcommand{\superindice}[1]{$^\textrm{{\tiny #1}}$}
+\newcommand{\subsubsubsection}[1]{
+
+{\bf\small #1}
+
+}
+\newcommand{\negrita}[1]{{\bf #1}}
+
+\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}   
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%   Inicio del documento
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Caratula
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\materia{Criptograf'ia}
+\submateria{Segundo Cuatrimestre de 2007}
+\titulo{Trabajo Pr'actico}
+\subtitulo{Truco Mental}
+\integrante{Albanesi, Mat'ias}{??/??}{@}
+\integrante{Carbajo, Pablo}{??/??}{@}
+\integrante{Freijo, Diego}{4/05}{giga.freijo@gmail.com}
+\integrante{Venturini, Maura}{??/??}{@}
+\maketitle
+
+\subsection*{Abstracto}
+En el presente trabajo se dise'no e implement'o un protocolo para jugar al truco mediante el cual se asegure el cumplimiento de las reglas de juego.
+
+
+\subsection*{Palabras Clave}
+Encriptacion, algoritmos de clave publica/privada y simetricos, RSA, AES
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Indice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Introduccion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\input{introduccion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% El juego del truco
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{El juego del truco}
+\input{reglas.tex}
+\input{logica.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% El protocolo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{El protocolo}
+\input{reparto.tex}
+\input{transcurso.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Consideraciones
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\input{consideraciones.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EOF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

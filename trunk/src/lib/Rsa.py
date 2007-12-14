@@ -11,17 +11,14 @@ def GenerarClaves(bits_primos):
 	fi = (p-1)*(q-1)
 
 	# Calculo e
-	e = Azar.EnterosEntre(2, fi-1)
-	while Matematica.EuclidesExtendido(e, fi)[0] != 1:
-		e = Azar.EnterosEntre(2, fi-1)
+	e = Azar.EnteroEntre(2, fi-1)
+	while Matematica.Mcd(e, fi) != 1:
+		e = Azar.EnteroEntre(2, fi-1)
 
 	# Calculo d
-	d = Matematica.EuclidesExtendido(e, fi)[1]
+	d = Matematica.Inverso(e, fi)
 	while d < 0:
 		d = d + fi
-
-	#e = 949
-	#d = 541
 	
 	# Devuelvo todo lo generado
 	return [n, e, d]
@@ -29,12 +26,12 @@ def GenerarClaves(bits_primos):
 
 ## Encriptacion y desencriptacion de numeros chicos (menores a n)
 def Encriptar(plain, e, n):
-	return ((plain**e) % n)
+	return PotenciaModular(plain, e, n)
 
 def Desencriptar(cypher, d, n):
-	return ((cypher**d) % n)
+	return PotenciaModular(cypher, d, n)
 
-	
+
 
 ## Encriptacion y desencriptacion de numeros grandes (mayores a n)
 def EncriptarNumero(plain, e, n):
