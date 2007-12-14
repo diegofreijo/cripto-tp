@@ -1,5 +1,5 @@
 import Azar
-import Herramientas
+import Matematica
 from math import log
 
 
@@ -12,11 +12,11 @@ def GenerarClaves(bits_primos):
 
 	# Calculo e
 	e = Azar.EnterosEntre(2, fi-1)
-	while Herramientas.EuclidesExtendido(e, fi)[0] != 1:
+	while Matematica.EuclidesExtendido(e, fi)[0] != 1:
 		e = Azar.EnterosEntre(2, fi-1)
 
 	# Calculo d
-	d = Herramientas.EuclidesExtendido(e, fi)[1]
+	d = Matematica.EuclidesExtendido(e, fi)[1]
 	while d < 0:
 		d = d + fi
 

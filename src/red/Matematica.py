@@ -1,5 +1,4 @@
 
-
 def EuclidesExtendido(a,b):
 	if b == 0:
 		return [a,1,0]
@@ -16,3 +15,4 @@ def int2bin(n):
 		ret = str(n % 2) + ret
 		n = n >> 1
 	return ret
+	
