@@ -1,5 +1,5 @@
 import sys
-sys.path.append("")
+sys.path.append("red")
 import Rsa
 from math import log
 
