@@ -5,8 +5,8 @@ from math import log
 
 ## Genera un n con primos de longitud @bits_primos y e, d para RSA
 def GenerarClaves(bits_primos):
-	p = 113#Azar.Primo(bits_primos)
-	q = 13#Azar.Primo(bits_primos)
+	p = Azar.Primo(bits_primos)
+	q = Azar.Primo(bits_primos)
 	n = p*q
 	fi = (p-1)*(q-1)
 
@@ -26,10 +26,10 @@ def GenerarClaves(bits_primos):
 
 ## Encriptacion y desencriptacion de numeros chicos (menores a n)
 def Encriptar(plain, e, n):
-	return PotenciaModular(plain, e, n)
+	return Matematica.PotenciaModular(plain, e, n)
 
 def Desencriptar(cypher, d, n):
-	return PotenciaModular(cypher, d, n)
+	return Matematica.PotenciaModular(cypher, d, n)
 
 
 
