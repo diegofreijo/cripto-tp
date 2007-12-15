@@ -2,18 +2,18 @@ def _EuclidesExtendido(a,b):
 	if b == 0:
 		return [a,1,0]
 	else:
-		ee = EuclidesExtendido(b, a % b)
+		ee = _EuclidesExtendido(b, a % b)
 		return [ee[0], ee[2], ee[1] - (int)(a / b) * ee[2]]
 
 
 ## Devuelve el maximo comun divisor entre a y b
 def Mcd(a,b):
-	return _EuclidesExtendido(a, b)[0]
+	return _EuclidesExtendido(a,b)[0]
 
 
 ## Devuelve el inverso multiplicativo de e en Zn (se supone que MCD(e,n) == 1)
 def Inverso(e,n):
-	return _EuclidesExtendido(e, fi)[1]
+	return _EuclidesExtendido(e,n)[1]
 	
 
 ## Devuelve un string con la representacion binaria de n
