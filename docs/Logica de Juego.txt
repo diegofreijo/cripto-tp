@@ -133,5 +133,5 @@ Nota:
 
 ** Resta ver como se intercambian las cartas y como se implementa eso.
 
-** Hay que ver como es que armamos el Score.
+	** Hay que ver como es que armamos el Score.
 
