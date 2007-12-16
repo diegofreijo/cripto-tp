@@ -53,9 +53,9 @@ class ManoTruco:
     # extraigo carta de la jugada y la guardo como _cartaMiaEnSubManoActual
     # sacar carta jugada de la lista _cartasQueTengo
     # si no _fuiManoEnSubManoActual, termina una submano
-    if not self._fuiManoEnSubManoActual then
+    if not self._fuiManoEnSubManoActual:
       _terminaSubMano(self)
-    else 
+    else:
       # si _fuiManoEnSubManoActual, le cambia el turno (le toca al otro) y nada mas
       self._esMiTurno = not self._esMiTurno
 
@@ -65,9 +65,9 @@ class ManoTruco:
     # si se fue al mazo, perdio y es el fin del juego
     # extraigo carta de la jugada que recibo y la guardo como _cartaContricanteEnSubManoActual
     # si _fuiManoEnSubManoActual, termina una submano
-    if self._fuiManoEnSubManoActual then
+    if self._fuiManoEnSubManoActual:
       _terminaSubMano(self)
-    else 
+    else:
       # si no _fuiManoEnSubManoActual, le cambia el turno (me toca a mi) y nada mas
       self._esMiTurno = not self._esMiTurno
 
