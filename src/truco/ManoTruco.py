@@ -3,37 +3,27 @@ from Carta import *
 
 class ManoTruco:
   # Pseudo-constantes
-  ESTADOENVIDO_NOCANTADO_ABIERTO = 0
-  ESTADOENVIDO_CANTADO_ABIERTO = 1
-  ESTADOENVIDO_CANTADO_NOQUERIDO = 2
-  ESTADOENVIDO_CANTADO_QUERIDO = 3
-  ESTADOENVIDO_NOCANTADO_CERRADO = 4
-
-  ESTADOTRUCO_NOCANTADO = 0
-  ESTADOTRUCO_CANTADO_ABIERTO = 1
-  ESTADOTRUCO_CANTADO_NOQUERIDO = 2
-  ESTADOTRUCO_CANTADO_QUERIDO = 3
 
   # variables de instancia
   _soyMano = None
-  _cartasPorJugar = None
-  _manoActual = None
-  _estadoEnvido = None
-  _estadoEnvidoQuerido = None
-  _mayorEnvido = None
+  _cartasQueTengo = None
+  _subManoActual = None
+  _fuiManoEnSubManoActual = None
+  _esMiTurno = None
+  _cartaMiaEnSubManoActual = None
+  _cartaContricanteEnSubManoActual = None
 
   def __init__(self, cartasIniciales, soyMano):
     self._soyMano = soyMano
-    self._cartasPorJugar = cartasIniciales
+    self._cartasQueTengo = cartasIniciales
+
     # inicializacion del estado
     self._manoActual = 1
-    self._estadoEnvido = ESTADOENVIDO_NOCANTADO_ABIERTO
-    self._estadoEnvidoQuerido = 0
-    self._mayorEnvido = None
+    self._esMiTurno = soyMano
+    self._fuiManoEnSubManOActual = soyMano
 
   def soyMano(self):
-    """True si soy mano (si tengo que bajar carta), False si debe bajar mi
-    contrincante, None si el juego esta terminado"""
+    """True si soy mano (no soy pie, reparti yo, y fui mano en la primera submano), False si no."""
     return self._soyMano
 
   def manoActual(self):
@@ -48,114 +38,48 @@ class ManoTruco:
     """
     return self._manoActual == None
 
-  def estadoEnvido(self):
-    """Devolver el estado del envido:
-    0 == no cantado; abierto [abierto quiere decir que puede cantarse Envido]
-    1 == cantado; abierto [puede cantarse Falta Envido, etc]
-    2 == cantado; no querido
-    3 == cantado; querido
-    4 == no cantado; cerrado [paso la primer mano sin que se cante Envido]
-    """
-    return self._estadoEnvido
-
-  def estadoEnvidoQuerido(self):
-    """Devolver el estado del envido querido:
-    0 == no aplica (porque estadoEnvido() != 3)
-    1 == la mano debe cantar los tantos, ya sea yo o el otro
-    2 == el contrario de la mano debe cantar los tantos, ya sea yo o el otro
-      "Son buenas" puede representarse con un canto de CERO TANTOS
-    3 == los tantos fueron intercambiados
-    """
-    return self._estadoEnvidoQuerido
-
-  def mayorEnvido(self):
-    """Devolver el mayor envido que se haya cantado:
-    None si no hubo canto de envido en el juego
-    o el CantoEnvido mayor"""
-    return self._mayorEnvido
-
-  def quienCantoNoQuieroEnvido(self):
-    """True quiere decir YO"""
-    #    return self._quienNoQuieroEnvido
-    if self.estadoEnvido() != ESTADOENVIDO_CANTADO_NOQUERIDO: # no querido
-      return None
-    return (CantoEnvido.NO_QUERIDO in self.cantosEnvidoCantados())
-
-  def cantosEnvidoCantados(self):
-    """Los cantos que hice yo"""
-    return self._cantosEnvidoCantados
-
-  def cantosEnvidoRecibidos(self):
-    """Los cantos que recibí de mi contrincante"""
-    return self._cantosEnvidoRecibidos
-
-  def turnoCantoEnvido(self):
-    """A quien le toca cantar por envido. True==yo, False==mi contrincante, None==no aplica"""
-    if self.estadoEnvido() != ESTADOENVIDO_CANTADO_ABIERTO:
-      return None
-    return (mayorEnvido() in self.cantosEnvidoRecibidos()) # si el mayor canto lo hizo mi contrincante, me toca a mí
-
-  def estadoTruco(self):
-    """
-    0 = no cantado
-    1 = cantado; abierto
-    2 = cantado; no querido
-    3 = cantado y querido
-    """
-    return self._estadoTruco
-
-  def quienCantoNoQuieroTruco(self):
-    """True quiere decir YO"""
-    #return self._quienNoQuieroTruco
-    if self.estadoTruco() != ESTADOTRUCO_CANTADO_NOQUERIDO:
-      return None
-    return (CantoTruco.NO_QUERIDO in self.cantosTrucoCantados())
-
-  def cantosTrucoCantados(self):
-    """Devolver una lista de los cantos propios por Truco, incluyendo el
-    Quiero o No Quiero"""
-    return self._cantosTrucoCantados
-
-  def cantosTrucoRecibidos(self):
-    """Devolver una lista de los cantos de Truco del contricante, incluyendo
-    el Quiero o No Quiero"""
-    return self._cantosTrucoRecibidos
 
   def turnoDeJuego(self):
-    """A quién le toca jugar. Notar que NO ES LO MISMO que soyMano(),
-    porque soyMano() es a quién le toca bajar una carta y turnoDeJuego()
-    es quién debe bajar carta o cantar o responder un canto.
-    Valores: True (me toca a mí), False (a mi contrincante), None
-    (ya no se pueden hacer jugadas)"""
-    # si hay envido pendiente, el turno le toca al que debe responder
-    rv = self.turnoCantoEnvido()
-    if rv != None: return rv
-    # etcetera, siganlo...
-
+    """A quién le toca jugar. Notar que NO ES LO MISMO que soyMano()"""
+    return self._esMiTurno
+    
   def jugadasPosibles(self):
-    """EN DUDA"""
+    # esto seria: for each _cartasQueTengo armar una jugada que sea poner esa carta y agregarla a una lista, y retornar esa lista
+    return self._cartasQueTengo
 
-  def jugadasPosiblesContrario(self):
-    """EN DUDA"""
-
-  def cantarTruco(self, canto):
-    self.jugar([canto])
-
-  def recibirCantoTruco(self, canto):
-    self.recibirJugada([canto])
-
-  def bajarCarta(self, carta):
-    self.jugar([carta])
-
-  def recibirBajadaCarta(self, carta):
-    self.recibirJugada([carta])
-
-  def jugar(self, jugadas):
+  def jugar(self, jugada):
     """realizar una lista de jugadas (o sea, Cantos y/o Cartas) que hace esta parte"""
+    # si me voy al mazo, perdi, y es el fin del juego
+    # extraigo carta de la jugada y la guardo como _cartaMiaEnSubManoActual
+    # sacar carta jugada de la lista _cartasQueTengo
+    # si no _fuiManoEnSubManoActual, termina una submano
+    if not self._fuiManoEnSubManoActual then
+      _terminaSubMano(self)
+    else 
+      # si _fuiManoEnSubManoActual, le cambia el turno (le toca al otro) y nada mas
+      self._esMiTurno = not self._esMiTurno
 
-  def recibirJugada(self, jugadas):
+  def recibirJugada(self, jugada):
     """recibir las jugadas que realiza la contraparte (Cantos y/o Cartas)
     que hace mi contrincante"""
+    # si se fue al mazo, perdio y es el fin del juego
+    # extraigo carta de la jugada que recibo y la guardo como _cartaContricanteEnSubManoActual
+    # si _fuiManoEnSubManoActual, termina una submano
+    if self._fuiManoEnSubManoActual then
+      _terminaSubMano(self)
+    else 
+      # si no _fuiManoEnSubManoActual, le cambia el turno (me toca a mi) y nada mas
+      self._esMiTurno = not self._esMiTurno
+
+  def _terminaSubMano(self):
+    #   el que mata, sigue jugando
+    #   si parda la primera, sigue la mano
+    #   si parda la segunda, sigue el que hizo primera, si parda la primera, sigue la mano
+    #   si juego la tercera, y no _fuiManoEnSubManoActual, entonces es el fin del juego
+
+    # reseteo variables de subMano
+    _cartaMiaEnSubManoActual = None
+    _cartaContricanteEnSubManoActual = None
 
   def puntaje(self):
     """mi puntaje"""
@@ -163,18 +87,5 @@ class ManoTruco:
   def puntajeContrincante(self):
     """puntaje de mi contrincante"""
 
-  def faltaEnviarFinJuego(self):
-    """faltan mostrar mis cartas, si decido mostrarlas"""
-
-  def faltaRecibirFinJuego(self):
-    """falta que mi contrincante muestre las cartas, si así lo decide"""
-
-  def finJuego(self, cartasAMostrar):
-    """Irse al mazo mostrando las cartas en cartasAMostrar"""
-
   def recibirFinJuego(self, cartasMostradas):
     """Mi contrincante cierra el juego mostrando las cartas en cartasMostradas"""
-
-
-
-
