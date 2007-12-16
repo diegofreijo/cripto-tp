@@ -190,7 +190,7 @@ Y con aplicar k, obtiene B2.
 
 + Cada vez que se canta o se juega una carta, se debe adjuntar un timestamp del momento del canto/juego. Luego, el paquete debe ser firmado (con d3a/d3b segun corresponda) para evitar el repudio del emisor mas adelante ("...no no, yo no te cante, entendiste mal...") y la reutilizacion del canto como prueba falsa mas adelanto ("...si si, vos cantaste truco; hace 5 horas, pero cantaste, mira...").
 
-+ El que finalize el juego (el que se valla al mazo, el que mate la ultima carta del contrincante, el que cante 33 en el falta envido) debe ademas enviar un el timestamp firmado, marcandolo como el final oficial del juego. El oponente, aunque este caliente, debe confirmarle si la hora es valida.
++ El que finalize el juego (el que se vaya al mazo, el que mate la ultima carta del contrincante, el que cante 33 en el falta envido) debe ademas enviar un el timestamp firmado, marcandolo como el final oficial del juego. El oponente, aunque este caliente, debe confirmarle si la hora es valida.
 
 ----------------------------------------------
 
