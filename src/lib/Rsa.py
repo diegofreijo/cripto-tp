@@ -10,16 +10,27 @@ def GenerarClaves(bits_primos):
 	n = p*q
 	fi = (p-1)*(q-1)
 
-	# Calculo e
-	e = Azar.EnteroEntre(2, fi-1)
-	while Matematica.Mcd(e, fi) != 1:
-		e = Azar.EnteroEntre(2, fi-1)
+	## Calculo e
+	#e = Azar.EnteroEntre(2, fi-1)
+	#while Matematica.Mcd(e, fi) != 1:
+	#	e = Azar.EnteroEntre(2, fi-1)
 
-	# Calculo d
-	d = Matematica.Inverso(e, fi)
-	while d < 0:
-		d = d + fi
-	
+	## Calculo d
+	#d = Matematica.Inverso(e, fi)
+	#while d < 0:
+	#	d = d + fi
+
+	# Calculo e
+	while True:
+                e = Azar.EnteroEntre(2, fi-1)
+                mcd, alfa, beta = Matematica.McdExtendido(e, fi)
+                if mcd == 1: break
+
+        # Calculo d
+        d = alfa
+        while d < 0:
+                d = d + fi
+
 	# Devuelvo todo lo generado
 	return [n, e, d]
 

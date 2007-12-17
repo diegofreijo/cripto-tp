@@ -51,7 +51,16 @@ def Mcd(a,b):
 def Inverso(e,n):
   #return _EuclidesExtendido(e,n)[1]
   return _mcd_ext(e, n)[1]
-	
+
+
+## Devuelve una 3-upla (d, alfa, beta) con d==Mcd(a, b) y
+## d==alfa*a + beta*b
+def McdExtendido(a, b):
+  """
+  Devuelve una 3-upla (d, alfa, beta) con d==Mcd(a, b) y d==alfa*a + beta*b
+  """
+  return _mcd_ext(a, b)
+
 
 ## Devuelve un string con la representacion binaria de n
 def int2bin(n):
