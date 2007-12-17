@@ -5,15 +5,52 @@ def _EuclidesExtendido(a,b):
 		ee = _EuclidesExtendido(b, a % b)
 		return [ee[0], ee[2], ee[1] - (int)(a / b) * ee[2]]
 
+def _mcd_ext(a, b):
+  """
+  Devolver una 3-upla (d, alfa, beta) con d=MCD(a,b) y alfa, beta
+  de manera que d = alfa*a + beta*b (MAC 20071001)
+  """
+  if a > b:
+    t = _mcd_ext(b, a)
+    return (t[0], t[2], t[1])
+  # Ahora tengo a <= b
+  if a == 0:
+    return (b, 0, 1)
+
+  # valores de inicializacion
+  alfam2 = 0
+  alfam1 = 1
+  betam2 = 1
+  betam1 = 0
+  r = 1
+  while r > 0:
+    # a==alfam1*a0 + betam1*b0
+    # b==alfam2*a0 + betam2*b0
+    c = b/a
+    r = b%a
+    # si r==0, el MCD es a
+    alfa = alfam2 - c*alfam1
+    beta = betam2 - c*betam1
+    alfam2 = alfam1
+    alfam1 = alfa
+    betam2 = betam1
+    betam1 = beta
+    b = a
+    a = r
+  # al terminar, el MCD queda en b==alfam2*a0+betam2*b0
+  return (b, alfam2, betam2)
+
 
 ## Devuelve el maximo comun divisor entre a y b
 def Mcd(a,b):
-	return _EuclidesExtendido(a,b)[0]
+  #return _EuclidesExtendido(a,b)[0]
+  return _mcd_ext(a, b)[0]
 
 
 ## Devuelve el inverso multiplicativo de e en Zn (se supone que MCD(e,n) == 1)
 def Inverso(e,n):
-	return _EuclidesExtendido(e,n)[1]
+  #return _EuclidesExtendido(e,n)[1]
+  return _mcd_ext(e, n)[1]
 	
 
 ## Devuelve un string con la representacion binaria de n
