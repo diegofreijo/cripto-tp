@@ -36,6 +36,8 @@ class _cantoenvido:
   def __repr__(self):
     return 'CantoEnvido('+repr(self.codigo)+', '+repr(self.valor)+')'
 
+## Esta clase para mi no tiene que ir 
+
 class _cantoenvidotantos(_cantoenvido):
   tantos = 0
 
@@ -51,15 +53,21 @@ class _cantoenvidotantos(_cantoenvido):
 
   def __repr__(self):
     return 'CantoEnvido.Tantos('+repr(self.tantos)+')'
-
+#################
 
 # pseudo constantes
+
+NOCANTADO=_cantoenvido('',0) # a lo mejor puede reemplazarse mas adelante como estadoEnvido.valor=0 cuando creo el objeto
+
 ENVIDO = _cantoenvido('Envido', 1)
 ENVIDOENVIDO = _cantoenvido('Envido Envido', 2)
 REALENVIDO = _cantoenvido('Real Envido', 3)
 FALTAENVIDO = _cantoenvido('Falta Envido', 4)
-QUIERO = _cantoenvido('Quiero', 0)
-NOQUIERO = _cantoenvido('No quiero', 0)
+QUIERO = _cantoenvido('Quiero', 5)
+NOQUIERO = _cantoenvido('No quiero', 5)
+
+#QUIERO = _cantoenvido('Quiero', 0)
+#NOQUIERO = _cantoenvido('No quiero', 0)
 
 # pseudo constructor
 def Tantos(tantos):
