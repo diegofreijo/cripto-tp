@@ -64,6 +64,12 @@ def carta(codigo):
   except:
     return None
 
+def cartas():
+  return cartaPorCodigo.keys()
+
+def codigos():
+  return codigoPorCarta.keys()
+
 def cartasValidas():
   return len(codigoPorCarta) == 40
 
