@@ -1,27 +1,28 @@
 import sys
-import struct
+sys.path.append("..\\..\\src\\lib")
 sys.path.append("..\\..\\src\\red")
+import struct
 import Red
+import Registro
 
 puerto = 65302
 
 def server():
-  f = open("c:\\EjemploChatServer.py.log", "w")
-  Red.ActivarRegistro(f)
+  logger = Registro.newRegistro("D:\\FCEN\\EjemploChatServer.py.log")
+  Red.ActivarRegistro(logger)
   Red.EsperarConexion('localhost', puerto)
   print "[serv] Conectado"
   chatear("server", False) # esperar a que el otro hable
   print "[serv] Terminado"
   Red.ActivarRegistro(None)
   Red.CerrarConexion()
-  f.close
+  logger.setArchivo(None)
 
 
 def obt_texto(mensaje, val = None):
   while True:
     try:
       texto=raw_input(mensaje)
-      print 'despues de raw'
     except EOFError:
       print 'EOFError'
       texto=''
