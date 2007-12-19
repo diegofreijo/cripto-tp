@@ -2,7 +2,7 @@
 # Matias
 # Uso:
 # import Canto
-# Luego usar como un tipo enumerado: Canto.ME_VOY_AL_MAZO, etc.
+# Luego usar como un tipo enumerado: Canto.AL_MAZO, etc.
 
 TRUCO = "Truco"
 AL_MAZO = "Me voy al mazo"
