@@ -1,12 +1,12 @@
-import sys
-sys.path.append("..\\..\\src\\red")
+execfile(r'D:\mac@sion.com\Cripto-TP\setpath.py')
 import Red
+import Registro
 
 puerto = 65301
 
 def server():
-  f = open("c:\\EjemploPingServer.py.log", "w")
-  Red.ActivarRegistro(f)
+  logger = Registro.newRegistro("D:\\mac@sion.com\\EjemploPingServer.py.log")
+  Red.ActivarRegistro(logger)
   Red.EsperarConexion('localhost', puerto)
   print "[serv] Conectado"
   while 1:
@@ -19,6 +19,7 @@ def server():
     Red.Enviar(a)
   #
   Red.ActivarRegistro(None)
-  f.close()
+  Red.CerrarConexion()
+  logger.setArchivo(None)
 
 server()
