@@ -16,8 +16,6 @@ import CartasDesdeArchivo
 from LogicaRedStruct import *
 from LogicaRedParam import *
 
-PRIMO_MINIMO = 1L<<33 # minimo valor permitido para el primo P recibido
-
 ## PARA EL LOG DEL MODULO
 prefijo = '[' + __name__ + '] ' # nombre del modulo
 logger = Registro.newRegistro()
@@ -125,6 +123,56 @@ def handshakeServer():
   #    elegir 3 cartas de las enviadas por B y firmarlas con e2a
   #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
   #    Enviar el resto de las cartas encriptadas con e1a
+  e1a, d1a = generarEyD(p, q)
+  while True:
+    e1a, d1a = generarEyD(p, q)
+    if e2a != e1a and d2a ! d1a:
+      break
+  # elegir cartas para B
+  # mezclar el mazo enviado por B y tomar las primeras 3 cartas
+  p4_cartasParaB = Azar.extraerDe(p3_e1b_k_cartas, 3)
+  # firmarlas con e2a y tuplificar
+  p4_cartasParaB_e2a = map(lambda b: (b, rsa.Encriptar(b, e2a, primo)), p4_cartasParaB)
+  # tomar el resto de las cartas
+  p4_restoCartas = filter(lambda n: (n not in p4_cartasParaB), p3_e1b_k_cartas)
+  # mezclarlas (innecesario)
+  p4_restoCartas = Azar.mezclar(p4_restoCartas)
+  # encriptarlas con e1a
+  p4_restoCartas_e1a = map(lambda n: rsa.Encriptar(n, e1a, primo), p4_restoCartas)
+  # enviar como una lista de 43 elementos
+  lista = [].append(p4_cartasParaB_e2a[0][0])
+  lista.append(p4_cartasParaB_e2a[0][1])
+  lista.append(p4_cartasParaB_e2a[1][0])
+  lista.append(p4_cartasParaB_e2a[1][1])
+  lista.append(p4_cartasParaB_e2a[2][0])
+  lista.append(p4_cartasParaB_e2a[2][1])
+  p4_listaAEnviar = lista + p4_restoCartas_e1a
+  # enviar
+  # formato: tamaño en bytes + lista de valores long ocupando una cantidad ilimitada de bits cada uno
+  msg = _empaquetarListaGenerica(p4_listaAEnviar, _longtoinfint)
+  msg = _longtou32(len(msg)) + msg
+  logger.debug(pf + 'Red.Enviar(cartas de B encriptadas con e2a y el resto con e1a)')
+  Red.Enviar(msg)
+
+  # 5) B desencripta las cartas que le envío A, obteniendo k(Bi) para su mano y e1a(k(CARTAi)) para el resto
+  # B elige 3 cartas del resto para A y envía ...
+  #
+  # formato: tamaño en bytes + lista(p, lista(cartas encrip))
+  pass
+  nroPaso = 5
+  logger.info(pf + '--- PASO 5')
+  logger.debug(pf + 'Red.Recibir(4)')
+  tamStr = Red.Recibir(4) # tamaño en bytes del resto del mensaje
+  tam = _u32tolong(tam)
+  if tam <= 0:
+    logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
+    raise 'Longitud del mensaje recibido incorrecta'
+  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
+  msg = Red.Recibir(tam)
+  if len(msg) < tam:
+    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+
   raise 'No implementado'
 
 

@@ -10,6 +10,30 @@ def EnteroEntre(a, b):
 	random.seed()
 	return random.randint(a,b)
 
+def extraerDe(lista, cantidad):
+  """
+  Obtener elementos al azar de una lista de elementos.
+  """
+  if cantidad >= len(lista):
+    return lista[:]
+  rv = []
+  while len(rv) < cantidad:
+    # elegir al azar un elemento
+    n = EnteroEntre(0, len(lista)-1)
+    if not n in rv:
+      rv.append(n)
+  rv = map(lambda n: lista[n], rv)
+  return rv
+
+
+def mezclar(lista):
+  """
+  Mezclar aleatorianente una lista
+  """
+  rv = lista[:] # copiar
+  random.shuffle(rv)
+  return rv
+
 
 def Bits(cantidad):
 	"""
