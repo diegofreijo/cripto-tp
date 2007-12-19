@@ -1,6 +1,6 @@
-import sys
-sys.path.append("..\\..\\src\\red")
+execfile(r'D:\mac@sion.com\Cripto-TP\setpath.py')
 import Red
+import Registro
 
 puerto = 65301
 
@@ -9,8 +9,8 @@ if True:
   mi_sleep=time.sleep
 
 def client():
-  f = open("c:\\EjemploPingClient.py.log", "w")
-  Red.ActivarRegistro(f)
+  logger = Registro.newRegistro("D:\\mac@sion.com\\EjemploPingClient.py.log")
+  Red.ActivarRegistro(logger)
   #s.setblocking(False)
   #s.connect(addr)
   Red.AbrirConexion('localhost', puerto)
@@ -41,5 +41,7 @@ def client():
   print '[cli] ok. cliente desconectado'
   Red.ActivarRegistro(None)
   mi_sleep(0.5)
+  logger.setArchivo(None)
 
-client()
+if __name__ == "__main__":
+  client()

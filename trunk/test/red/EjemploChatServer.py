@@ -1,19 +1,18 @@
-import sys
-sys.path.append("..\\..\\src\\lib")
-sys.path.append("..\\..\\src\\red")
+execfile(r'D:\mac@sion.com\Cripto-TP\setpath.py')
 import struct
 import Red
 import Registro
 
+direcc = '127.0.0.1'
 puerto = 65302
 
 def server():
-  logger = Registro.newRegistro("D:\\FCEN\\EjemploChatServer.py.log")
+  logger = Registro.newRegistro("D:\\mac@sion.com\\EjemploChatServer.py.log")
   Red.ActivarRegistro(logger)
-  Red.EsperarConexion('localhost', puerto)
-  print "[serv] Conectado"
+  Red.EsperarConexion(direcc, puerto)
+  logger.info("[serv] Conectado")
   chatear("server", False) # esperar a que el otro hable
-  print "[serv] Terminado"
+  logger.info("[serv] Terminado")
   Red.ActivarRegistro(None)
   Red.CerrarConexion()
   logger.setArchivo(None)
@@ -23,6 +22,7 @@ def obt_texto(mensaje, val = None):
   while True:
     try:
       texto=raw_input(mensaje)
+      print 'despues de raw'
     except EOFError:
       print 'EOFError'
       texto=''
