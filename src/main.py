@@ -4,6 +4,7 @@ sys.path.append("red")
 sys.path.append("truco")
 import Palo
 import Carta
+import Canto
 import ManoTruco
 
 cartasMano = []
@@ -22,19 +23,19 @@ while (not TrucoMano.terminado()) or (not TrucoPie.terminado()):
   if TrucoMano.turnoDeJuego():
     jugadas = TrucoMano.jugadasPosibles()
     print str( jugadas )
-    print "Elija el numero de la carta a jugar: (entre 0 y 2)"
+    print "Elija el numero de la opcion a jugar: (empezando en 0)"
     opcionInt = int(raw_input(">"))
     opcionJugada = jugadas[opcionInt]
     TrucoMano.jugar( opcionJugada );
     TrucoPie.recibirJugada( opcionJugada );
-    print "Usted eligio jugar la carta"
+    print "Usted eligio jugar "
     print str( opcionJugada )
   if TrucoPie.turnoDeJuego():
     jugadas = TrucoPie.jugadasPosibles()
     jugadaElegida = jugadas[0]
     TrucoPie.jugar( jugadaElegida )
     TrucoMano.recibirJugada( jugadaElegida )
-    print "La compu juega el "
+    print "La compu juega "
     print str( jugadaElegida )
 
 if TrucoMano.ganeYo():
