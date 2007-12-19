@@ -1,5 +1,6 @@
 import Palo
 import Carta
+import Canto
 
 class ManoTruco:
 
@@ -27,7 +28,9 @@ class ManoTruco:
       return self._esMiTurno
 
   def jugadasPosibles(self):
-    return self._cartasQueTengo
+    jugadas = list(self._cartasQueTengo)
+    jugadas.append( Canto.Canto( Canto.AL_MAZO ) )
+    return jugadas
 
   def jugar( self, laJugada ):
     """realizar una lista de jugadas (o sea, Cantos y/o Cartas) que hace esta parte"""
@@ -37,6 +40,14 @@ class ManoTruco:
     # si no _fuiManoEnSubManoActual, termina una submano
     if not self._esMiTurno:
       return False
+
+    if isinstance( laJugada, Canto.Canto ):
+      if laJugada.tipoCanto == Canto.AL_MAZO:
+        # perdi
+        self._subManoActual = 0
+        self._ganeYo = False
+        return
+      return
 
     # asumo que  laJugada es una carta
     self._juegoMio = laJugada
@@ -52,6 +63,15 @@ class ManoTruco:
     if self._esMiTurno:
       return False
 
+    if isinstance( laJugada, Canto.Canto ):
+      if laJugada.tipoCanto == Canto.AL_MAZO:
+        # gane
+        self._subManoActual = 0
+        self._ganeYo = True
+        return
+      return
+
+    # asumo que la jugada es una carta
     self._juegoOtro = laJugada
     if self._fuiManoEnSubManoActual:
       self._terminaSubMano()
