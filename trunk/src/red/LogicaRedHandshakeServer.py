@@ -123,9 +123,9 @@ def handshakeServer():
   #    elegir 3 cartas de las enviadas por B y firmarlas con e2a
   #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
   #    Enviar el resto de las cartas encriptadas con e1a
-  e1a, d1a = generarEyD(p, q)
+  e1a, d1a = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1)
   while True:
-    e1a, d1a = generarEyD(p, q)
+    e1a, d1a = generarEyD(p, 2)
     if e2a != e1a and d2a ! d1a:
       break
   # elegir cartas para B
@@ -154,10 +154,12 @@ def handshakeServer():
   logger.debug(pf + 'Red.Enviar(cartas de B encriptadas con e2a y el resto con e1a)')
   Red.Enviar(msg)
 
-  # 5) B desencripta las cartas que le envío A, obteniendo k(Bi) para su mano y e1a(k(CARTAi)) para el resto
-  # B elige 3 cartas del resto para A y envía ...
-  #
-  # formato: tamaño en bytes + lista(p, lista(cartas encrip))
+  # 5) B desencripta las cartas que le envío A, obteniendo k(Bi) para su mano y
+  #    e1a(k(Ri)) para el resto
+  #    Entonces elige 3 cartas Ai del resto y las desencripta con d1b, de manera
+  #    que obtiene e1a(k(Ai)). Envía estas cartas así y también encriptadas con
+  #    e2b
+  # formato: lista(e1a(k(Ai)), e2b(e1a(k(Ai)), ...)
   pass
   nroPaso = 5
   logger.info(pf + '--- PASO 5')
@@ -172,6 +174,34 @@ def handshakeServer():
   if len(msg) < tam:
     logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
     raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+
+  # 6) A recibe las cartas y aplica la desencripcion de e1a con d1a.
+  #    Luego utiliza K y desencripta las cartas que le tocaron, de manera que se
+  #    tienen las cartas Ai elegidas por B
+  # obtener las cartas propias
+  nroPaso = 6
+  logger.info(pf + '--- PASO 6')
+  p6_misCartas_encrip = _desempaquetarListaGenerica(msg, _infinttolong)
+  if len(p6_misCartas_encrip) != 6:
+    logger.error(pf + 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)')
+    raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)'
+  # desencriptar las cartas con d1a
+  p6_misCartas_d1a = map(lambda n: Rsa.Desencriptar(n, d1a, primo), p6_misCartas_encrip)
+  # ahora tengo k(A1), e2b(k(A1)), k(A2), e2b(k(A2)), idem 3er carta
+  # Desencriptar k(Ai) con k para obtener Ai
+  p6_misCartas_k = [].append(p6_misCartas_d1a[0])
+  p6_misCartas_k.append(p6_misCartas_d1a[2])
+  p6_misCartas_k.append(p6_misCartas_d1a[4])
+  p6_misCartas = map(lambda n: Aes.AesDesencriptar(keyAes, n), p6_misCartas_k)
+  # chequear que las cartas estén en el mazo original
+  for e in p6_misCartas:
+    if e not in cartas:
+      logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
+      raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
+
+  # Por último, enviar k a B
+  logger.info(pf + '--- PASO 6 (envio)')
+
 
   raise 'No implementado'
 
