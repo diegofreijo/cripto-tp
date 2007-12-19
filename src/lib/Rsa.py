@@ -5,34 +5,48 @@ from math import log
 
 ## Genera un n con primos de longitud @bits_primos y e, d para RSA
 def GenerarClaves(bits_primos):
-	p = Azar.Primo(bits_primos)
-	q = Azar.Primo(bits_primos)
-	n = p*q
-	fi = (p-1)*(q-1)
+  p = Azar.Primo(bits_primos)
+  while True:
+    q = Azar.Primo(bits_primos)
+    # Acá habría que agregar algún criterio
+    # para que q no sea muy parecido a p
+    if q != p: break
+  #
+  n = p*q
 
-	## Calculo e
-	#e = Azar.EnteroEntre(2, fi-1)
-	#while Matematica.Mcd(e, fi) != 1:
-	#	e = Azar.EnteroEntre(2, fi-1)
+  ## Calculo e
+  #e = Azar.EnteroEntre(2, fi-1)
+  #while Matematica.Mcd(e, fi) != 1:
+  #	e = Azar.EnteroEntre(2, fi-1)
 
-	## Calculo d
-	#d = Matematica.Inverso(e, fi)
-	#while d < 0:
-	#	d = d + fi
+  ## Calculo d
+  #d = Matematica.Inverso(e, fi)
+  #while d < 0:
+  #	d = d + fi
 
-	# Calculo e
-	while True:
-                e = Azar.EnteroEntre(2, fi-1)
-                mcd, alfa, beta = Matematica.McdExtendido(e, fi)
-                if mcd == 1: break
+  # Obtengo e y d
+  e, d = generarEyD(p, q)
 
-        # Calculo d
-        d = alfa
-        while d < 0:
-                d = d + fi
+  # Devuelvo todo lo generado
+  return [n, e, d]
 
-	# Devuelvo todo lo generado
-	return [n, e, d]
+
+## Genera e y d tales que e * d = 1 mod (fi(n = p*q)) para RSA
+def generarEyD(p, q):
+  fi = (p-1)*(q-1)
+
+  # Calculo e
+  while True:
+    e = Azar.EnteroEntre(2, fi-1)
+    mcd, alfa, beta = Matematica.McdExtendido(e, fi)
+    if mcd == 1: break
+
+  # Calculo d
+  d = alfa
+  while d < 0:
+    d = d + fi
+
+  return (e, d)
 
 
 ## Encriptacion y desencriptacion de numeros chicos (menores a n)
