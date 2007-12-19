@@ -21,13 +21,13 @@ class ManoTruco:
 
   def turnoDeJuego(self):
     """true si me toca a mi. False si ya terminamos o si le toca (cantar o jugar o responder canto) al otro"""
-    if terminado():
+    if self.terminado():
       return False
     else:
       return self._esMiTurno
 
   def jugadasPosibles(self):
-    return _cartasQueTengo
+    return self._cartasQueTengo
 
   def jugar( self, laJugada ):
     """realizar una lista de jugadas (o sea, Cantos y/o Cartas) que hace esta parte"""
@@ -39,10 +39,10 @@ class ManoTruco:
       return False
 
     # asumo que  laJugada es una carta
-    _juegoMio = laJugada
-    _cartasQueTengo.remove( _juegoMio ) # ojo que acá no estoy validando que la carta sea una de las mias!
+    self._juegoMio = laJugada
+    self._cartasQueTengo.remove( self._juegoMio ) # ojo que aca no estoy validando que la carta sea una de las mias!
     if not self._fuiManoEnSubManoActual:
-      _terminaSubMano()
+      self._terminaSubMano()
     else:
       # si _fuiManoEnSubManoActual, le cambia el turno (le toca al otro) y nada mas
       self._esMiTurno = not self._esMiTurno
@@ -52,18 +52,18 @@ class ManoTruco:
     if self._esMiTurno:
       return False
 
-    _juegoOtro = laJugada
+    self._juegoOtro = laJugada
     if self._fuiManoEnSubManoActual:
-      _terminaSubMano()
+      self._terminaSubMano()
     else:
       # si !_fuiManoEnSubManoActual, le cambia el turno (le toca al otro) y nada mas
       self._esMiTurno = not self._esMiTurno
     return True
 
   def ganeYo( self ):
-    if not terminado():
+    if not self.terminado():
       return False
-    return _ganeYo
+    return self._ganeYo
 
   _soyMano = None # esta en 1 si es el servidor, si no, 0
   _ganeYo = None
@@ -83,7 +83,7 @@ class ManoTruco:
       return 1
     if carta.numero == 6:
       return 2
-    if carta.numero == 7 and ( carta.esCopa or carta.esBasto ):
+    if carta.numero == 7 and ( carta.esCopa() or carta.esBasto() ):
       return 3
     if carta.numero == 10:
       return 4
@@ -91,65 +91,65 @@ class ManoTruco:
       return 5
     if carta.numero == 12:
       return 6
-    if carta.numero == 1 and ( carta.esCopa or carta.esOro ):
+    if carta.numero == 1 and ( carta.esCopa() or carta.esOro() ):
       return 7
     if carta.numero == 2:
       return 8
     if carta.numero == 3:
       return 9
-    if carta.numero == 7 and carta.esOro:
+    if carta.numero == 7 and carta.esOro():
       return 10
-    if carta.numero == 7 and carta.esEspada:
+    if carta.numero == 7 and carta.esEspada():
       return 11
-    if carta.numero == 1 and carta.esBasto:
+    if carta.numero == 1 and carta.esBasto():
       return 12
-    if carta.numero == 1 and carta.esEspada:
+    if carta.numero == 1 and carta.esEspada():
       return 13
     return -1
 
   def mata( self, carta1, carta2 ):
-    return valorRelativo( carta1 ) > valorRelativo( carta2 )
+    return self.valorRelativo( carta1 ) > self.valorRelativo( carta2 )
 
   def _terminaSubMano( self ):
     #   el que mata, sigue jugando
     #   si parda la primera, sigue la mano
     #   si parda la segunda, gana la primera. Si parda la primera sigue la mano
     #   si juego la tercera, y no _fuiManoEnSubManoActual, entonces es el fin del juego
-    if mata( _juegoMio, _juegoOtro ):
-      if _subManoActual == 1:
-        _ganePrimera = True
-      if _vieneParda or _subManoActual == 3 or ( _subManoActual == 2 and _ganePrimera ):
+    if self.mata( self._juegoMio, self._juegoOtro ):
+      if self._subManoActual == 1:
+        self._ganePrimera = True
+      if self._vieneParda or self._subManoActual == 3 or ( self._subManoActual == 2 and self._ganePrimera ):
         # gane
-        _subManoActual = 0
-        _ganeYo = True
+        self._subManoActual = 0
+        self._ganeYo = True
         return
-      _esMiTurno = True
+      self._esMiTurno = True
     else:
-      if mata( _juegoMio, _juegoOtro ):
-        if _subManoActual == 1:
-          _ganePrimera = False
-        if _vieneParda or _subManoActual == 3 or ( _subManoActual == 2 and not _ganePrimera ):
+      if self.mata( self._juegoOtro, self._juegoMio ):
+        if self._subManoActual == 1:
+          self._ganePrimera = False
+        if self._vieneParda or self._subManoActual == 3 or ( self._subManoActual == 2 and not self._ganePrimera ):
           # perdi
-          _subManoActual = 0
-          _ganeYo = False
+          self._subManoActual = 0
+          self._ganeYo = False
           return;
-        _esMiTurno = False
+        self._esMiTurno = False
       else:
-        _esMiTurno = _soyMano # parda! sigue la mano
-        if _subManoActual == 3:
+        self._esMiTurno = self._soyMano # parda! sigue la mano
+        if self._subManoActual == 3:
           # todo parda! gana la mano!
-          _subManoActual = 0
-          _ganeYo = _soyMano
+          self._subManoActual = 0
+          self._ganeYo = self._soyMano
           return
-        if _subManoActual == 2:
+        if self._subManoActual == 2:
           # si parda la segunda, gana el que hizo primera
           # salvo que la primera haya sido parda tambien...
-          if not _vieneParda:
+          if not self._vieneParda:
             # gana el que hizo primera
-            _subManoActual = 0
-            _ganeYo = _ganePrimera
+            self._subManoActual = 0
+            self._ganeYo = self._ganePrimera
             return
-        _vieneParda = True
-    _subManoActual = _subManoActual + 1
-    _fuiManoEnSubManoActual = _esMiTurno
+        self._vieneParda = True
+    self._subManoActual = self._subManoActual + 1
+    self._fuiManoEnSubManoActual = self._esMiTurno
     return
