@@ -180,7 +180,7 @@ def handshakeServer():
   if tamStr == None or tamStr == None or len(tamStr) < 4:
     logger.error(pf + 'paso 5, mensaje recibido truncado')
     raise 'paso 5, mensaje recibido truncado'
-  tam = u32_to_long(tam)
+  tam = u32_to_long(tamStr)
   if tam <= 0:
     logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
     raise 'Longitud del mensaje recibido incorrecta'
@@ -189,7 +189,7 @@ def handshakeServer():
   if len(msg) < tam:
     logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
     raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
-
+  msg = tamStr + msg
 
   # 6) A recibe las cartas y aplica la desencripcion de e1a con d1a.
   #    Luego utiliza K y desencripta las cartas que le tocaron, de manera que se
@@ -209,10 +209,11 @@ def handshakeServer():
   # Obtener una lista de 3 tuplas asociando k(Ai) con e2b(k(Ai))
   p6_misCartas_lista = []
   p6_misCartas_lista.append( (p6_misCartas_d1a[0], p6_misCartas_d1a[1]) )
-  p6_misCartas_lista.append( (p6_misCartas_d1a[2], p6_misCartas_d1a[5]) )
-  p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[6]) )
+  p6_misCartas_lista.append( (p6_misCartas_d1a[2], p6_misCartas_d1a[3]) )
+  p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[5]) )
   # Desencriptar k(Ai) con k para obtener Ai
-  p6_misCartas = map(lambda kAi, e2bkAi: (Aes.AesDesencriptar(keyAes, kAi), e2bkAi), p6_misCartas_lista)
+  # Recordar que hay que convertir a una cadena de bytes (de 16 bytes)
+  p6_misCartas = map(lambda t: (Matematica.bytes2long(Aes.AesDesencriptar(keyAes, Matematica.long2bytes(t[0], 16))), t[1]), p6_misCartas_lista)
   # chequear que las cartas estén en el mazo original
   for ai, e2bkAi in p6_misCartas:
     if ai not in cartas:
