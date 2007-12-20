@@ -1,3 +1,7 @@
+# -*- coding: cp1252 -*-
+import struct
+from Crypto.Util import number
+
 def _EuclidesExtendido(a,b):
 	if b == 0:
 		return [a,1,0]
@@ -72,7 +76,7 @@ def int2bin(n):
 		n = n >> 1
 	return ret
 	
-	
+
 ## Devuelve (a**b) % n
 def PotenciaModular(a, b, n):
 	a2p = a % n
@@ -83,3 +87,39 @@ def PotenciaModular(a, b, n):
 		b = b >> 1
 		a2p = (a2p * a2p) % n
 	return a
+
+
+def long2bytes(n, tamBytes):
+	"""
+	Convertir el entero largo positivo n en una cadena de bytes de tamaño fijo tamBytes
+	El valor de retorno tiene siempre tamaño tamBytes incluso si n es demasiado grande
+	para representarse con ese tamaño (en este caso contiene sólo los bytes menos significativos)
+	"""
+	s = ''
+	n = long(n)
+	while n > 0 and len(s) < tamBytes:
+	  s = struct.pack('>I', n & 0xffffffffL) + s
+	  n = n >> 32
+	# Recortar la cadena resultante
+	if len(s) > tamBytes:
+		s = s[:tamBytes]
+	# Extender si es más chica con ceros en la parte superior
+	if len(s) < tamBytes:
+		s = (tamBytes - len(s)) * '\000' + s
+	return s
+
+
+def long2bytesIlim(n):
+	"""
+	Convertir el entero largo positivo n en una cadena de bytes de tamaño ilimitado
+	"""
+	return number.long_to_bytes(n)
+
+
+def bytes2long(s):
+	"""
+	Convertir una cadena de bytes en el entero largo positivo que representan sus bits.
+	"""
+	return number.bytes_to_long(s)
+
+

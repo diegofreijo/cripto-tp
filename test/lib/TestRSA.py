@@ -1,5 +1,5 @@
-import sys
-sys.path.append("..\\lib")
+if __name__ == '__main__':
+  execfile('..\\..\\setpath.py')
 import Rsa
 from math import log
 
@@ -19,4 +19,5 @@ print "d = " + str(d)
 
 print "plain = '" + plain + "'"
 print "cypher = " + str(cypher)
+print 'cypher tiene longitud', len(cypher)
 print "plain_rearmado: '" + plain_rearmado + "'"
