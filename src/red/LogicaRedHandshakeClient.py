@@ -67,7 +67,7 @@ def handshakeClient():
   # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
   logger.debug(pf + 'Red.Recibir(4)')
   tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
-  if len(tamStr) < 4:
+  if tamStr == None or len(tamStr) < 4:
     logger.error(pf + 'paso 2, mensaje recibido truncado')
     raise 'paso 2, mensaje recibido truncado'
   tam = u32_to_long(tamStr)
@@ -81,14 +81,18 @@ def handshakeClient():
     raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
   msg = tamStr + msg
   logger.debug(pf + 'recibido mensaje: ' + repr(msg))
-  p2_k_cartas = desempaquetar_Lista_Generica(msg, u128_to_long)
+  # se recibieron las cartas como strings de 128 bits c/u, convertirlas a long
+  p2_k_cartas, tmp = desempaquetar_Lista_Generica(msg, u128_to_long)
   logger.debug(pf + 'las cartas encriptadas con K son: ' + repr(p2_k_cartas))
+  if tmp != '':
+    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
 
 
   # 3) B genera un p primo grande y genera e1b, d1b, e2b, d2b.
   # Envia a A el p y las cartas (ya encriptadas con k) ahora encriptando
   # con e1b usando RSA
-  # formato: tamanio en bytes + lista(p, lista(cartas encrip))
+  # formato: tamaño en bytes + lista(p, cartas encrip)
+
   # - generar el primo grande p
   while True:
     primo = Azar.Primo(CANT_BITS_RSA)
@@ -97,16 +101,137 @@ def handshakeClient():
   e1b, d1b = Rsa.generarEyD(primo, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
   # - generar e2b, d2b (distintos a los anteriores)
   while True:
-    e1a, d1a = Rsa.generarEyD(primo, 2)
-    if e2a != e1a and d2a != d1a:
+    e2b, d2b = Rsa.generarEyD(primo, 2)
+    if e2b != e1b and d2b != d1b:
       break
   # encriptar con e1b todo el mazo encriptado que se recibió
   # mezclar el mazo enviado por A (opcional)
   p3_k_cartas = Azar.mezclar(p2_k_cartas)
   # encriptar las cartas con e1b
-  p3_e1b_k_cartas = map(lambda n: rsa.EncriptarTexto(n, e1b, primo), p3_k_cartas)
+  p3_e1b_k_cartas = map(lambda n: Rsa.Encriptar(n, e1b, primo), p3_k_cartas)
+  # armar la lista a empaquetar para enviar a A
+  t = [primo] + p3_e1b_k_cartas
+  msg = empaquetar_Lista_Generica(t, long_to_infint) # enviar convirtiendo los longs a cadenas de bytes
+  logger.debug(pf + 'Red.Enviar(primo P, cartas encriptadas con K y luego con e1b)')
+  Red.enviar(msg)
 
 
+  # 4) A usa P para generarse sus propias claves e1a, d1a tq e1a*d1a = 1 (mod p-1)
+  #    idem con e2a, d2a
+  #    elegir 3 cartas de las enviadas por B y firmarlas con e2a
+  #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
+  #    Enviar el resto de las cartas encriptadas con e1a
+  # formato: tamaño en bytes + lista de códigos de cartas (convertidos de long a tiras de bytes)
+  pass
+  nroPaso = 4
+  logger.info(pf + '--- PASO 4')
+  # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
+  logger.debug(pf + 'Red.Recibir(4)')
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
+  if tamStr == None or len(tamStr) < 4:
+    logger.error(pf + 'paso 4, mensaje recibido truncado')
+    raise 'paso 4, mensaje recibido truncado'
+  tam = u32_to_long(tamStr)
+  if tam <= 0:
+    logger.error(pf + 'paso 4, Longitud del mensaje recibido incorrecta')
+    raise 'Longitud del mensaje recibido incorrecta'
+  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
+  msg = Red.recibir(tam)
+  if len(msg) < tam:
+    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+  msg = tamStr + msg
+  logger.debug(pf + 'recibido mensaje: ' + repr(msg))
+  # se recibieron las cartas como tiras de bytes, convertirlas a long
+  p4_listaDe43, tmp = desempaquetar_Lista_Generica(msg, infint_to_long)
+  logger.debug(pf + 'las cartas encriptadas recibidas son: ' + repr(p4_listaDe43))
+  if tmp != '':
+    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
+  # La lista debe tener 43 elementos
+  # - los primeros 6 elementos son las 3 cartas que el servidor selecciona para nosotros, con y
+  #   sin encriptación con e2a
+  # - el resto de los elementos son las 37 cartas restantes del mazo encriptadas con e1a
+  t = p4_listaDe43
+  if len(t) != 3 + len(p2_k_cartas):
+    logger.error(pf + 'ERROR FATAL: se esperaban exactamente ' + str(3 + len(p2_k_cartas)) + ' elementos')
+    raise 'ERROR FATAL: se esperaban exactamente ' + str(3 + len(p2_k_cartas)) + ' elementos'
+  p4_e1b_k_cartasParaMi = [ (t[0], t[1]), (t[2], t[3]), (t[4], t[5]) ]
+  p4_e1a_e1b_k_restoMazo = t[6:]
+  logger.debug(pf + 'mis cartas encriptadas con e1b y con e1a,e1b son:' + repr(p4_e1b_k_cartasParaMi))
+
+
+  # 5) B desencripta las cartas que le envío A, obteniendo k(Bi) para su mano y
+  #    e1a(k(Ri)) para el resto
+  #    Entonces elige 3 cartas Ai del resto y las desencripta con d1b, de manera
+  #    que obtiene e1a(k(Ai)). Envía estas cartas así y también encriptadas con
+  #    e2b
+  # formato: lista(e1a(k(Ai)), e2b(e1a(k(Ai)), ...)
+  nroPaso = 5
+  logger.info(pf + '--- PASO 5')
+  p5_k_cartasParaMi = map( lambda t: (Rsa.Desencriptar(t[0], d1b, primo), Rsa.Desencriptar(t[1], d1b, primo)), p4_e1b_k_cartasParaMi ) # desencripto
+  logger.debug(pf + 'mis cartas encriptadas con k solamente más la que tengo que usar para mandar a A son:' + repr(p5_k_cartasParaMi))
+  # elegir cartas para A
+  # tomar 3 cartas al azar
+  p5_e1a_e1b_k_cartasParaA = Azar.extraerDe(p4_e1a_e1b_k_restoMazo, 3)
+  logger.debug(pf + 'p5_e1a_e1b_k_cartasParaA == ' + repr(p5_e1a_e1b_k_cartasParaA))
+  # tomar el resto de las cartas
+  p5_restoCartas = filter(lambda n: (n not in p5_cartasParaA), p4_e1a_e1b_k_restoMazo)
+  # desencriptar con d1b las cartas para A
+  p5_e1a_k_cartasParaA = map( lambda t: Rsa.Desencriptar(t, d1b, primo), p5_e1a_e1b_k_cartasParaA )
+  logger.debug(pf + 'p5_e1a_k_cartasParaA == ' + repr(p5_e1a_k_cartasParaA))
+  # encriptar estas cartas con e2b y mandar las dos formas (e1a_k y e2b_e1a_k) a A
+  p5_e2b_e1a_k_cartasParaA = map( lambda t: Rsa.Encriptar(t, e2b, primo), p5_e1a_k_cartasParaA)
+  # armar una lista de 6 cartas intercalando una carta no encriptada con e2b y la misma carta,
+  # encriptada con e2b
+  p5_listaAEnviar = []
+  p5_listaAEnviar.append(p5_e1a_k_cartasParaA[0])
+  p5_listaAEnviar.append(p5_e2b_e1a_k_cartasParaA[0])
+  p5_listaAEnviar.append(p5_e1a_k_cartasParaA[1])
+  p5_listaAEnviar.append(p5_e2b_e1a_k_cartasParaA[1])
+  p5_listaAEnviar.append(p5_e1a_k_cartasParaA[2])
+  p5_listaAEnviar.append(p5_e2b_e1a_k_cartasParaA[2])
+  # enviar
+  # formato: lista de cartas, convirtiendo los longs a tiras de bytes
+  logger.debug(pf + 'la lista a enviar es: ' + repr(p5_listaAEnviar))
+  msg = empaquetar_Lista_Generica(p5_listaAEnviar, long_to_infint)
+  logger.debug(pf + 'Red.Enviar(cartas de A encriptadas con e1a_k y con e2b_e1a_k)')
+  Red.enviar(msg)
+
+
+  # 6) A recibe las cartas y aplica la desencripcion de e1a con d1a.
+  #    Luego utiliza K y desencripta las cartas que le tocaron, de manera que se
+  #    tienen las cartas Ai elegidas por B
+  #    Por último, A envia k a B
+  pass
+  nroPaso = 6
+  logger.info(pf + '--- PASO 6')
+  # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
+  logger.debug(pf + 'Red.Recibir(4)')
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
+  if tamStr == None or len(tamStr) < 4:
+    logger.error(pf + 'paso 6, mensaje recibido truncado')
+    raise 'Mensaje recibido truncado'
+  tam = u32_to_long(tamStr)
+  if tam <= 0:
+    logger.error(pf + 'paso 6, Longitud del mensaje recibido incorrecta')
+    raise 'Longitud del mensaje recibido incorrecta'
+  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
+  msg = Red.recibir(tam)
+  if len(msg) < tam:
+    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+  logger.debug(pf + 'recibido mensaje: ' + repr(tamStr + msg))
+  # obtener el valor de K
+  keyAes = infint_to_long(msg)
+  logger.debug(pf + 'recibido k=' + str(keyAes))
+  # TODO: chequear que K sea de 128 bits
+
+  # Con K desencriptar las cartas recibidas en el paso 5
+
+  msg = long_to_u128(keyAes)
+  msg = long_to_u32(len(msg)) + msg
+  logger.debug(pf + 'Red.Enviar(k)')
+  Red.enviar(msg)
 
   return
 
@@ -116,77 +241,6 @@ def handshakeClient():
   pass
   nroPaso = 3
   logger.info(pf + '--- PASO 3')
-  logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
-  if len(tamStr) < 4:
-    logger.error(pf + 'paso 3, mensaje recibido truncado')
-    raise 'paso 3, mensaje recibido truncado'
-  tam = u32_to_long(tamStr)
-  if tam <= 0:
-    logger.error(pf + 'paso 3, Longitud del mensaje recibido incorrecta')
-    raise 'Longitud del mensaje recibido incorrecta'
-  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
-  msg = Red.recibir(tam)
-  if len(msg) < tam:
-    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
-    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
-  t = desempaquetar_Lista_Generica(msg, lambda x: x) # no desempaquetar los elementos
-  # La lista debe tener 2 elementos
-  # - el primer elem. es p, un primo grande
-  # - el segundo elem. es una lista de cartas
-  if len(t) != 2:
-    logger.error(pf + 'ERROR FATAL: se esperaban exactamente 2 elementos')
-    raise 'ERROR FATAL: se esperaban exactamente 2 elementos'
-  primo = infint_to_long(t[0])
-  if primo < PRIMO_MINIMO:
-    logger.error(pf + 'ERROR FATAL: el primo recibido es demasiado chico')
-    raise 'ERROR FATAL: el primo recibido es demasiado chico'
-  if not Azar.MillerRabin(primo): # if not Matematica.esPrimo(primo):
-    logger.error(pf + 'ERROR FATAL: el primo recibido no es un primo!')
-    raise 'ERROR FATAL: el primo recibido no es un primo!'
-  # obtener la lista de cartas
-  p3_e1b_k_cartas = desempaquetar_Lista_Generica(t[1], infint_to_long)
-  if len(p3_e1b_k_cartas) != len(p2_k_cartas):
-    logger.error(pf + 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p3_e1b_k_cartas)) + ' no coincide con la cantidad esperada (' + str(len(p2_k_cartas)) + ')')
-    raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p3_e1b_k_cartas)) + ' no coincide con la cantidad esperada (' + str(len(p2_k_cartas)) + ')'
-  # TODO
-  # chequear que no haya cartas repetidas
-
-  # 4) A usa P para generarse sus propias claves e1a, d1a tq e1a*d1a = 1 (mod p-1)
-  #    idem con e2a, d2a
-  #    elegir 3 cartas de las enviadas por B y firmarlas con e2a
-  #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
-  #    Enviar el resto de las cartas encriptadas con e1a
-  e1a, d1a = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1)
-  while True:
-    e1a, d1a = generarEyD(p, 2)
-    if e2a != e1a and d2a != d1a:
-      break
-  # elegir cartas para B
-  # mezclar el mazo enviado por B y tomar las primeras 3 cartas
-  p4_cartasParaB = Azar.extraerDe(p3_e1b_k_cartas, 3)
-  # firmarlas con e2a y tuplificar
-  p4_cartasParaB_e2a = map(lambda b: (b, rsa.Encriptar(b, e2a, primo)), p4_cartasParaB)
-  # tomar el resto de las cartas
-  p4_restoCartas = filter(lambda n: (n not in p4_cartasParaB), p3_e1b_k_cartas)
-  # mezclarlas (innecesario)
-  p4_restoCartas = Azar.mezclar(p4_restoCartas)
-  # encriptarlas con e1a
-  p4_restoCartas_e1a = map(lambda n: rsa.Encriptar(n, e1a, primo), p4_restoCartas)
-  # enviar como una lista de 43 elementos
-  lista = [].append(p4_cartasParaB_e2a[0][0])
-  lista.append(p4_cartasParaB_e2a[0][1])
-  lista.append(p4_cartasParaB_e2a[1][0])
-  lista.append(p4_cartasParaB_e2a[1][1])
-  lista.append(p4_cartasParaB_e2a[2][0])
-  lista.append(p4_cartasParaB_e2a[2][1])
-  p4_listaAEnviar = lista + p4_restoCartas_e1a
-  # enviar
-  # formato: tamaÃ±o en bytes + lista de valores long ocupando una cantidad ilimitada de bits cada uno
-  msg = empaquetar_Lista_Generica(p4_listaAEnviar, long_to_infint)
-  msg = long_to_u32(len(msg)) + msg
-  logger.debug(pf + 'Red.Enviar(cartas de B encriptadas con e2a y el resto con e1a)')
-  Red.enviar(msg)
 
   # 5) B desencripta las cartas que le envio A, obteniendo k(Bi) para su mano y
   #    e1a(k(Ri)) para el resto
@@ -199,6 +253,9 @@ def handshakeClient():
   logger.info(pf + '--- PASO 5')
   logger.debug(pf + 'Red.Recibir(4)')
   tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
+  if tamStr == None or tamStr == None or len(tamStr) < 4:
+    logger.error(pf + 'paso 5, mensaje recibido truncado')
+    raise 'paso 5, mensaje recibido truncado'
   tam = u32_to_long(tam)
   if tam <= 0:
     logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
@@ -215,7 +272,9 @@ def handshakeClient():
   # obtener las cartas propias
   nroPaso = 6
   logger.info(pf + '--- PASO 6')
-  p6_misCartas_encrip = desempaquetar_Lista_Generica(msg, infint_to_long)
+  p6_misCartas_encrip, tmp = desempaquetar_Lista_Generica(msg, infint_to_long)
+  if tmp != '':
+    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
   if len(p6_misCartas_encrip) != 6:
     logger.error(pf + 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)')
     raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)'
@@ -259,6 +318,9 @@ def handshakeClient():
   #
   logger.debug(pf + 'Red.Recibir(4)')
   tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
+  if tamStr == None or tamStr == None or len(tamStr) < 4:
+    logger.error(pf + 'paso 8, mensaje recibido truncado')
+    raise 'paso 8, mensaje recibido truncado'
   tam = u32_to_long(tam)
   if tam <= 0:
     logger.error(pf + 'paso 8, Longitud del mensaje recibido incorrecta')
@@ -268,7 +330,9 @@ def handshakeClient():
   if len(msg) < tam:
     logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
     raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
-  t = desempaquetar_Lista_Generica(msg, lambda x: x) # no desempaquetar los elementos
+  t, tmp = desempaquetar_Lista_Generica(msg, lambda x: x) # no desempaquetar los elementos
+  if tmp != '':
+    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
   # La lista debe tener 3 elementos
   # - el primer elem. es e3b, un long grande
   # - el segundo elem. es n, un long grande
