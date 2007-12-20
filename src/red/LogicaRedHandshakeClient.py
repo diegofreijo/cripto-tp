@@ -94,10 +94,10 @@ def handshakeClient():
     primo = Azar.Primo(CANT_BITS_RSA)
     if primo >= PRIMO_MINIMO: break
   # - generar e1b, d1b
-  e1b, d1b = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
+  e1b, d1b = Rsa.generarEyD(primo, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
   # - generar e2b, d2b (distintos a los anteriores)
   while True:
-    e1a, d1a = generarEyD(p, 2)
+    e1a, d1a = Rsa.generarEyD(primo, 2)
     if e2a != e1a and d2a != d1a:
       break
   # encriptar con e1b todo el mazo encriptado que se recibió
