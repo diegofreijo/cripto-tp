@@ -155,6 +155,8 @@ def handshakeClient():
   if len(t) != 3 + len(p2_k_cartas):
     logger.error(pf + 'ERROR FATAL: se esperaban exactamente ' + str(3 + len(p2_k_cartas)) + ' elementos')
     raise 'ERROR FATAL: se esperaban exactamente ' + str(3 + len(p2_k_cartas)) + ' elementos'
+  # los segundos elementos de cada tupla están encriptados con e2a, y son lo que hay
+  # que enviar para hacer una jugada
   p4_e1b_k_cartasParaMi = [ (t[0], t[1]), (t[2], t[3]), (t[4], t[5]) ]
   p4_e1a_e1b_k_restoMazo = t[6:]
   logger.debug(pf + 'mis cartas encriptadas con e1b y con e1a,e1b son:' + repr(p4_e1b_k_cartasParaMi))
@@ -175,7 +177,7 @@ def handshakeClient():
   p5_e1a_e1b_k_cartasParaA = Azar.extraerDe(p4_e1a_e1b_k_restoMazo, 3)
   logger.debug(pf + 'p5_e1a_e1b_k_cartasParaA == ' + repr(p5_e1a_e1b_k_cartasParaA))
   # tomar el resto de las cartas
-  p5_restoCartas = filter(lambda n: (n not in p5_cartasParaA), p4_e1a_e1b_k_restoMazo)
+  p5_restoCartas = filter(lambda n: (n not in p5_e1a_e1b_k_cartasParaA), p4_e1a_e1b_k_restoMazo)
   # desencriptar con d1b las cartas para A
   p5_e1a_k_cartasParaA = map( lambda t: Rsa.Desencriptar(t, d1b, primo), p5_e1a_e1b_k_cartasParaA )
   logger.debug(pf + 'p5_e1a_k_cartasParaA == ' + repr(p5_e1a_k_cartasParaA))
@@ -226,12 +228,21 @@ def handshakeClient():
   logger.debug(pf + 'recibido k=' + str(keyAes))
   # TODO: chequear que K sea de 128 bits
 
-  # Con K desencriptar las cartas recibidas en el paso 5
 
-  msg = long_to_u128(keyAes)
-  msg = long_to_u32(len(msg)) + msg
-  logger.debug(pf + 'Red.Enviar(k)')
-  Red.enviar(msg)
+  # 7) B recibe k, la utiliza para ver que el mazo es válido y para ver las cartas
+  # que le tocaron.
+  #  Luego genera una clave RSA clásica (e3b, d3b, n) y envia la parte publica (e3b, n)
+  # a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
+  #  Formato: lista(infint(e3b), infint(n), str(d3b("SOY MANO")))
+
+  # Con K desencriptar las cartas recibidas en el paso 5
+  p7_misCartas = map(lambda kBi, e2akBi: (Aes.AesDesencriptar(keyAes, kBi), e2akBi), p5_k_cartasParaMi)
+  # chequear que las cartas estén en el mazo original
+  for bi, e2akBi in p7_misCartas:
+    if bi not in cartas:
+      logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
+      raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
+
 
   return
 
@@ -256,7 +267,7 @@ def handshakeClient():
   if tamStr == None or tamStr == None or len(tamStr) < 4:
     logger.error(pf + 'paso 5, mensaje recibido truncado')
     raise 'paso 5, mensaje recibido truncado'
-  tam = u32_to_long(tam)
+  tam = u32_to_long(tamStr)
   if tam <= 0:
     logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
     raise 'Longitud del mensaje recibido incorrecta'
