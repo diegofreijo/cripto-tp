@@ -1,11 +1,11 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 #
-# LogicaRedHandshakeServer.py
+# LogicaRedHandshakeClient.py
 #
-# Hand-shake del protocolo, del lado del server
+# Hand-shake del protocolo, del lado del cliente
 # Se asume que hay una conexion abierta (gestionada por el modulo Red)
 #
-# 20071218 Matías Albanesi Cáceres
+# 20071220 Matias Albanesi Caceres
 #
 #
 import Red
@@ -25,16 +25,16 @@ logger.setArchivo(False)
 DEBUGLOG=lambda x: logger.debug(x)
 
 def activarRegistro(nuevoLogger):
-	global logger, DEBUGLOG
-	if logger != None:
-                DEBUGLOG(prefijo + "Fin del registro")
-                logger.setArchivo(None)
+    global logger, DEBUGLOG
+    if logger != None:
+        DEBUGLOG(prefijo + "Fin del registro")
+        logger.setArchivo(None)
         logger = nuevoLogger
-	if logger == None:
-		DEBUGLOG=lambda x: 0
-	else:
-		DEBUGLOG=lambda x: logger.debug(x)
-	DEBUGLOG(prefijo + "Comienzo del registro")
+    if logger == None:
+        DEBUGLOG=lambda x: 0
+    else:
+        DEBUGLOG=lambda x: logger.debug(x)
+    DEBUGLOG(prefijo + "Comienzo del registro")
 ## FIN LOG DEL MODULO
 
 
@@ -43,12 +43,12 @@ keyAes = None
 primo = None
 
 
-def handshakeServer():
+def handshakeClient():
   """
   Tomando una conexion abierta (en el modulo Red) realiza el handshake
-  del lado del servidor.
+  del lado del cliente.
   """
-  pf = prefijo + '[handshakeServer()] '
+  pf = prefijo + '[handshakeClient()] '
   global nroPaso, keyAes, primo
 
   # 1) B le pide conexion a A
@@ -56,40 +56,68 @@ def handshakeServer():
   pass
   nroPaso = 1
   logger.info(pf + '--- PASO 1 (omitido)')
-  #logger.debug(pf + 'Red.EsperarConexion(direccion, puerto)')
-  #Red.EsperarConexion(direccion, puerto)
-  # Conexion iniciada
-  #logger.debug(pf + 'conexion con el cliente iniciada')
 
-  # 2) A genera k para AES y encripta las 40 cartas con k, envía esto a B
+  # 2) A genera k para AES y encripta las 40 cartas con k, envia esto a B
+  pass
   nroPaso = 2
   logger.info(pf + '--- PASO 2')
-  # obtener una clave aleatoria de 128 bits para AES
-  keyAes = Azar.Bits(128)
-  keyAes = long_to_u128(keyAes)
-  logger.debug(pf + 'generado K = ' + repr(keyAes))
-  # encriptar las cartas
-  cartas = CartasDesdeArchivo.cartas()
-  logger.debug(pf + 'las cartas son: ' + repr(cartas))
-  cartas_str = map(lambda x: long_to_u128(x), cartas)
-  logger.debug(pf + 'las cartas convertidas a bytes son: ' + repr(cartas_str))
-  p2_k_cartas = map(lambda x: Aes.AesEncriptar(x, keyAes), cartas_str)
+  #
+  # recibir
+  # formato: lista de valores long ocupando 128 bits cada uno
+  # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
+  logger.debug(pf + 'Red.Recibir(4)')
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
+  if len(tamStr) < 4:
+    logger.error(pf + 'paso 2, mensaje recibido truncado')
+    raise 'paso 2, mensaje recibido truncado'
+  tam = u32_to_long(tamStr)
+  if tam <= 0:
+    logger.error(pf + 'paso 2, Longitud del mensaje recibido incorrecta')
+    raise 'Longitud del mensaje recibido incorrecta'
+  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
+  msg = Red.recibir(tam)
+  if len(msg) < tam:
+    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+  msg = tamStr + msg
+  logger.debug(pf + 'recibido mensaje: ' + repr(msg))
+  p2_k_cartas = desempaquetar_Lista_Generica(msg, u128_to_long)
   logger.debug(pf + 'las cartas encriptadas con K son: ' + repr(p2_k_cartas))
-  # enviar
-  # formato: tamaño en bytes + códigos de las cartas, encriptados con aes, como strings de bytes
-  msg = empaquetar_Lista_Generica(p2_k_cartas, lambda x: x) # sin conversion de elementos de la lista
-  logger.debug(pf + 'Red.Enviar(cartas encriptadas con K)')
-  Red.enviar(msg)
+
 
   # 3) B genera un p primo grande y genera e1b, d1b, e2b, d2b.
-  # Envía a A el p y las cartas (ya encriptadas con k) ahora encriptando
+  # Envia a A el p y las cartas (ya encriptadas con k) ahora encriptando
   # con e1b usando RSA
-  # formato: tamaño en bytes + lista(p, lista(cartas encrip))
+  # formato: tamanio en bytes + lista(p, lista(cartas encrip))
+  # - generar el primo grande p
+  while True:
+    primo = Azar.Primo(CANT_BITS_RSA)
+    if primo >= PRIMO_MINIMO: break
+  # - generar e1b, d1b
+  e1b, d1b = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
+  # - generar e2b, d2b (distintos a los anteriores)
+  while True:
+    e1a, d1a = generarEyD(p, 2)
+    if e2a != e1a and d2a != d1a:
+      break
+  # encriptar con e1b todo el mazo encriptado que se recibiÃ³
+  # mezclar el mazo enviado por A (opcional)
+  p3_k_cartas = Azar.mezclar(p2_k_cartas)
+  # encriptar las cartas con e1b
+  p3_e1b_k_cartas = map(lambda n: rsa.EncriptarTexto(n, e1b, primo), p3_k_cartas)
+
+
+
+  return
+
+
+
+
   pass
   nroPaso = 3
   logger.info(pf + '--- PASO 3')
   logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamaño en bytes del resto del mensaje
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
   if len(tamStr) < 4:
     logger.error(pf + 'paso 3, mensaje recibido truncado')
     raise 'paso 3, mensaje recibido truncado'
@@ -154,23 +182,23 @@ def handshakeServer():
   lista.append(p4_cartasParaB_e2a[2][1])
   p4_listaAEnviar = lista + p4_restoCartas_e1a
   # enviar
-  # formato: tamaño en bytes + lista de valores long ocupando una cantidad ilimitada de bits cada uno
+  # formato: tamaÃƒÂ±o en bytes + lista de valores long ocupando una cantidad ilimitada de bits cada uno
   msg = empaquetar_Lista_Generica(p4_listaAEnviar, long_to_infint)
   msg = long_to_u32(len(msg)) + msg
   logger.debug(pf + 'Red.Enviar(cartas de B encriptadas con e2a y el resto con e1a)')
   Red.enviar(msg)
 
-  # 5) B desencripta las cartas que le envío A, obteniendo k(Bi) para su mano y
+  # 5) B desencripta las cartas que le envio A, obteniendo k(Bi) para su mano y
   #    e1a(k(Ri)) para el resto
   #    Entonces elige 3 cartas Ai del resto y las desencripta con d1b, de manera
-  #    que obtiene e1a(k(Ai)). Envía estas cartas así y también encriptadas con
+  #    que obtiene e1a(k(Ai)). Envia estas cartas asi y tambien encriptadas con
   #    e2b
   # formato: lista(e1a(k(Ai)), e2b(e1a(k(Ai)), ...)
   pass
   nroPaso = 5
   logger.info(pf + '--- PASO 5')
   logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamaño en bytes del resto del mensaje
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
   tam = u32_to_long(tam)
   if tam <= 0:
     logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
@@ -201,22 +229,22 @@ def handshakeServer():
   p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[6]) )
   # Desencriptar k(Ai) con k para obtener Ai
   p6_misCartas = map(lambda kAi, e2bkAi: (Aes.AesDesencriptar(keyAes, kAi), e2bkAi), p6_misCartas_lista)
-  # chequear que las cartas estén en el mazo original
+  # chequear que las cartas estÃƒÂ©n en el mazo original
   for ai, e2bkAi in p6_misCartas:
     if ai not in cartas:
       logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
       raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
 
-  # Por último, enviar k a B
+  # Por ÃƒÂºltimo, enviar k a B
   logger.info(pf + '--- PASO 6 (envio)')
   msg = long_to_u128(keyAes)
   msg = long_to_u32(len(msg)) + msg
   logger.debug(pf + 'Red.Enviar(k)')
   Red.enviar(msg)
 
-  # 7) B recibe k, la utiliza para ver que el mazo es válido y para ver las cartas
+  # 7) B recibe k, la utiliza para ver que el mazo es vÃƒÂ¡lido y para ver las cartas
   # que le tocaron.
-  #  Luego genera una clave RSA clásica (e3b, d3b, n) y envia la parte publica (e3b, n)
+  #  Luego genera una clave RSA clasica (e3b, d3b, n) y envia la parte publica (e3b, n)
   # a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
   #  Formato: lista(infint(e3b), infint(n), str(d3b("SOY MANO")))
   pass
@@ -224,13 +252,13 @@ def handshakeServer():
   logger.info(pf + '--- PASO 7')
 
   # 8) A desencripta con (e3b, n) el mensaje encriptado, chequeandolo.
-  #    Luego A genera una clave RSA clásica (e3a, d3a, n) y envia la parte publica
-  #    (e3a, n), más el mensaje "SOS MANO" encriptado con d3a
+  #    Luego A genera una clave RSA clasica (e3a, d3a, n) y envia la parte publica
+  #    (e3a, n), mas el mensaje "SOS MANO" encriptado con d3a
   nroPaso = 8
   logger.info(pf + '--- PASO 8')
   #
   logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamaño en bytes del resto del mensaje
+  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
   tam = u32_to_long(tam)
   if tam <= 0:
     logger.error(pf + 'paso 8, Longitud del mensaje recibido incorrecta')
@@ -253,8 +281,8 @@ def handshakeServer():
   p8_mensaje_encrip = t[2]
   p8_mensaje = Rsa.DesencriptarTexto(p8_mensaje_encrip, p8_e3b, p8_nb)
   if p8_mensaje != MENSAJE_SOY_MANO:
-		logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')')
-		raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+    logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')')
+    raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
 
   logger.info(pf + '--- PASO 8 (envio)')
   while True:
@@ -283,9 +311,8 @@ def handshakeServer():
   #
   # De la misma manera, B necesita estos datos para jugar con nosotros:
   # - cartas para jugar con A: son los valores e2A(k(Bi)) cuando B quiera jugar Bi
-  #   enviará un código, que debe estar como primer elemento de alguna tupla en p4_cartasParaB_e2a
+  #   enviar un cÃƒÂ³digo, que debe estar como primer elemento de alguna tupla en p4_cartasParaB_e2a
   # - la clave (e3a, p8_na) para poder verificar los mensajes enviados por A
 
   raise 'No implementado'
-
 

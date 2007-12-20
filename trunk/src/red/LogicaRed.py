@@ -6,6 +6,8 @@ import Registro
 import CartasDesdeArchivo
 import struct
 from LogicaRedStruct import *
+import LogicaRedHandshakeServer
+import LogicaRedHandshakeClient
 
 
 #def ComenzarPartida(ip):
@@ -46,7 +48,7 @@ def servirJuego(direccion, puerto):
   """
   pf = prefijo + '[servirJuego()] '
 
-  logger.debug('[LogicaRed.py] servirJuego(' + str(direccion) + ', ' + str(puerto) + ')')
+  logger.debug(pf + 'servirJuego(' + str(direccion) + ', ' + str(puerto) + ')')
   global modo
   modo = 'server'
 
@@ -54,11 +56,12 @@ def servirJuego(direccion, puerto):
   nroPaso = 1
   logger.info(pf + '--- PASO 1')
   logger.debug(pf + 'Red.EsperarConexion(direccion, puerto)')
-  Red.EsperarConexion(direccion, puerto)
+  Red.esperarConexion(direccion, puerto)
   # Conexion iniciada
   logger.debug(pf + 'conexion con el cliente iniciada. Iniciando handshake')
 
-  LogicaRedHSServer.handshakeServer()
+  # pasos 2) al 9)
+  LogicaRedHandshakeServer.handshakeServer()
 
   # Handshake completado - ahora entrar al pre-inicio del juego
   pass
@@ -77,7 +80,24 @@ def conectarAJuego(direccion, puerto):
   """
   pf = prefijo + '[conectarAJuego()] '
   logger.debug(pf + 'conectarAJuego(' + str(direccion) + ', ' + str(puerto) + ')')
+
+  # 1) B le pide conexion a A
+  nroPaso = 1
+  logger.info(pf + '--- PASO 1')
+  logger.debug(pf + 'Red.AbrirConexion(direccion, puerto)')
+  Red.abrirConexion(direccion, puerto)
+  # Conexion iniciada
+  logger.debug(pf + 'conexion con el servidor iniciada. Iniciando handshake')
+
+  # pasos 2) al 9)
+  LogicaRedHandshakeClient.handshakeClient()
+
+  # Handshake completado - ahora entrar al pre-inicio del juego
   pass
+
+  # Pre-inicio completado - preparar para el intermcambio de jugadas
+  pass
+
   raise 'No implementado'
 
 
