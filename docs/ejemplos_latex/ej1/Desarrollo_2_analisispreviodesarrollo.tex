@@ -1,0 +1,90 @@
+\section{An\'alisis previo al desarrollo en computadora}
+
+La primer decisi\'on a tomar consiste en plataforma y compilador a utilizar. Como el desarrollo debe cumplir con el requisito de poder compilarse y ejecutarse con el software disponible en los laboratorios del Departamento de Computaci\'on, optamos por computadoras con procesadores compatibles con la arquitectura Intel x86, y el compilador g++ de la Free Software Foundation.
+
+Luego analizamos las distintas alternativas posibles para implementar la aritm\'etica de punto flotante de precisi\'on variable, que consisten en:
+
+\begin{itemize}
+\item Desarrollar un formato propio, junto con una implementaci\'on de las operaciones sobre dicho formato.
+\item Utilizar la aritm\'etica de punto flotante que provee la computadora y realizar ajustes para reducir la precisi\'on de los resultados.
+\end{itemize}
+
+Nos decidimos r\'apidamente por la segunda opci\'on ya que desarrollar un nuevo formato e implementaci\'on insumir\'ia m\'as tiempo de desarrollo y prueba, y el problema al cual se aplica no amerita el esfuerzo. Se trata de encontrar errores m\'as que de evitarlos con n\'umeros de precisiones mayores.
+
+Al usar la aritm\'etica de punto flotante que provee el hardware, podemos elegir entre cualquiera de los tres formatos: \textbf{float}, \textbf{double} o \textbf{long double}. Optamos por este \'ultimo ya que pose\'ia mayor cantidad de bits en la mantisa y tendr\'iamos un rango de precisiones mayor para elegir; tambi\'en encontramos que puede accederse f\'acilmente a la mantisa por separado del exponente y signo lo que simplifica la implementaci\'on.
+
+Al operar con formatos nativos del equipo, se realizar\'an las operaciones y luego de cada una deber\'a ajustarse el resultado por alguno de los siguiente m\'etodos:
+\begin{itemize}
+\item redondeo
+\item truncamiento
+\end{itemize}
+
+Pese a que el redondeo es preferible ya que el error relativo de representaci\'on es menor (la mitad) que el error cometido al realizar truncamiento, optamos por truncar el resultado ya que la implementaci\'on ser\'ia muy simple. Y debido a que estamos buscando resultados inexactos, al operar con aritm\'etica de punto flotante y truncar tendremos errores m\'as evidentes. Cabe mencionar que al realizar un truncamiento luego de cada operaci\'on de c\'alculo estamos agregando error a cada paso y obtendremos un resultado final con elevado alto grado de error.
+
+%----------------------------------------------------------------------------------------------%
+
+\subsection{El formato en punto flotante IEEE-754}
+
+Un formato de punto flotante es una estructura de datos que especifica los campos que abarcan un n\'umero de punto flotante, la disposici\'on de esos campos, y su interpretaci\'on aritm\'etica. Un formato de almacenamiento de punto flotante especifica c\'omo un n\'umero de punto flotante se almacena en memoria. El est\'andar de IEEE define los formatos, pero deja a los implementadores la opci\'on de las formas de almacenamiento.
+
+Existen varios formatos para la representaci\'on de n\'umeros flotantes en la computadora, aunque
+el est\'andar es el formato ANSI/IEEE standard 754-1985, que llamaremos IEEE-754 para abreviar.
+
+Existen 2 formatos b\'asicos de representaci\'on de punto flotantes: single y double.
+Tambi\'en presenta dos clases extendidas de representaci\'on de n\'umeros flotantes: single extendida y double extendida.
+El est\'andar no prescribe la precisi\'on y el tamaño exactos de estos formatos, sino que especifica la precisi\'on y el tama\~no m\'inimos. 
+
+Una implementaci\'on concreta de este est\'andar es el formato de punto flotante extendido de la arquitectura Intel x86, de 80 bits de longitud, que dedica 64 bits para la mantisa - este formato se denomina \textbf{long double} en el lenguaje C/C++.
+
+%----------------------------------------------------------------------------------------------%
+
+\subsection{El Formato de precisión doble extendido de Intel x86}
+
+El formato \emph{double} extendido de la arquitectura Intel x86, denominado \textbf{long double} en el lenguaje C/C++, cumple con las condiciones del formato doble extendido IEEE-754, y es utilizado internamente por el procesador al realizar c\'alculos. El procesador convirte cualquier valor, ya sea en precisi\'on simple o doble, a este formato al realizar operaciones, y vuelve a convertir a la precisi\'on de salida deseada al almacenar el resultado en una ubicaci\'on de memoria.
+
+Ocupando un total de 80 bits, est\'a compuesto por los siguientes campos:
+\begin{itemize}
+\item Una mantisa de 64 bits, con la particularidad de tener todos sus bits expl\'icitos (a diferencia del formato de precisión simple o doble, donde se asume un primer bit con valor 1).
+\item Un exponente de 15 bits, con desplazamiento 16383.
+\item Un indicador de signo de 1 bit.
+\end{itemize}
+
+Un est\'andar en entornos Unix es hacer el pasaje de valores long double por stack ocupando tres palabras consecutivas de 32 bits (dwords), ocupando un total de 96 bits. Los 16 bits superiores de la dword con la direcci\'on en memoria m\'as alta se dejan en cero. Como resultado, en estas implementaciones el operador \textbf{sizeof(long double)} de C/C++ devuelve 12 en lugar de 10.
+
+\begin{center}
+% Definimos el estilo de la tabla (3 columnas separadas por
+% lineas verticales)
+\begin{tabular}{|l|l|l|}
+\hline
+Signo & Exponente & Mantisa \\
+\hline
+$\pm$ & $e_{14} e_{13}...e_1 e_0$ & $m_{63} m_{62}...m_2 m_1 m_0$ \\
+\hline
+\end{tabular} \\
+% Definimos el titulo y la etiqueta de la tabla
+Representaci\'on de un n\'umero flotante. Un bit para el signo, 15 bits para el exponente y 64 bits para la mantisa.
+\end{center}
+
+Teniendo $E = e_{14} e_{13}...e_1 e_0$, con este formato pueden representarse los valores a continuaci\'on:
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+E & Mantisa & Valor representado \\
+\hline
+$0$ & $0$ & $\pm 0$ \\
+\hline
+$0$ & $\neq 0$ & n\'umero denormalizado \\
+\hline
+$0 < E < 32767$ & cualquiera & n\'umero en punto flotante normalizado \\
+\hline
+$32767$ & $0$ & $\pm$ infinito \\
+\hline
+$32767$ & $\neq 0$ & Not A Number \\
+\hline
+\end{tabular}
+\end{center}
+
+Un n\'umero en punto flotante normalizado tiene el bit m\'as significativo de la mantisa $m_{63}$ con el valor $1$, y representa al valor real $\pm 1 . m_{62} m_{61}... m_2 m_1 m_0 \times 2^{E - 16383}$.
+
+%----------------------------------------------------------------------------------------------%

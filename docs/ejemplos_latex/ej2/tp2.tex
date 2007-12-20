@@ -1,0 +1,104 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{a4wide}
+\usepackage{graphics}
+\parindent = 0 pt
+\parskip = 11 pt
+
+\newcommand{\erf}{\hbox{erf}}
+\newcommand{\real}{\hbox{\bf R}}
+
+\begin{document}
+
+\begin{centering}
+\bf Laboratorio de M\'etodos Num\'ericos - Primer cuatrimestre 2007 \\
+\bf Trabajo Pr\'actico N\'umero 2: Distribuci\'on el\'ectrica \\
+\end{centering}
+
+\vskip 25pt
+\hrule
+\vskip 11pt
+
+Una \emph{red de Morley} de transporte de electricidad es un sistema
+interconectado de \emph{centrales generadoras} y \emph{nodos concentradores},
+unidos por l\'\i neas de alta tensi\'on. Por ejemplo, la Figura 1
+muestra una red de Morley compuesta por 15 centrales generadoras
+(c\'\i rculos blancos) y 4 nodos concentradores (c\'\i rculos negros). Las
+l\'\i neas que conectan los nodos concentradores entre s\'\i\ se llaman
+el \emph{backbone} de la red. Los nodos concentradores no realizan tareas
+de generaci\'on de energ\'\i a, sino que se limitan a canalizar el flujo
+el\'ectrico que proviene de las centrales generadoras. Este modelo debe
+su nombre a la propuesta realizada por O.~Morley en 1907.
+
+\begin{figure}[h]
+\centering
+\includegraphics{tp2.eps} \\
+Figura 1: Ejemplo de una red de Morley.
+\end{figure}
+
+Los usuarios de la red el\'ectrica se encuentran conectados a la red
+generadora m\'as cercana, que los abastece de energ\'\i a. Decimos que una
+central generadora tiene \emph{balance positivo} si la energ\'\i a que
+produce alcanza para abastecer a sus usuarios. La energ\'\i a sobrante es
+entregada por la central a la red el\'ectrica, para abastecer a otras
+centrales. Por el contrario, decimos que una central generadora tiene
+\emph{balance negativo} si la energ\'\i a que genera no es suficiente para
+cubrir la demanda de sus usuarios. En este caso, la central debe recibir
+energ\'\i a desde otras centrales, a trav\'es de la red. Notar que las
+centrales generadoras no s\'olo est\'an conectadas a los nodos
+concentradores, sino que puede suceder que haya centrales generadoras
+con conexiones directas entre s\'\i.
+
+Sea $C=\{1,\dots,n\}$ el conjunto de centrales generadoras, y llamemos
+$b_i\in\real$ al balance de la central $i\in C$ (notar que $b_i>0$ si la
+central $i$ tiene balance positivo, y $b_i<0$ en caso contrario). El problema
+de distribuci\'on el\'ectrica sobre la red consiste en determinar
+qu\'e flujo de energ\'\i a el\'ectrica se debe enviar por cada l\'\i nea
+de alta tensi\'on, de manera tal que:
+\begin{itemize}
+\item[(i)] Si $i\in C$ es una central con balance positivo, entonces el flujo
+neto saliendo de la central $i$ (es decir, la suma de los flujos que salen
+menos la suma de los flujos que entran a la central) debe ser igual a $b_i$.
+\item[(ii)] Si $i\in C$ es una central con balance negativo, entonces el
+flujo neto entrando a la central $i$ (es decir, la suma de los flujos que
+entran menos la suma de los flujos que salen de la central) debe ser igual
+a $-b_i$.
+\item[(iii)] El flujo total que entra a un nodo concentrador debe ser igual
+al flujo total que sale de ese nodo.
+\item[(iv)] Todas las interconexiones del \emph{backbone} de la red deben
+tener el mismo nivel de flujo.
+\end{itemize}
+Esta \'ultima condici\'on se conoce con el nombre de \emph{restricci\'on
+de Morley}. Por \'ultimo, su\-po\-ne\-mos que no hay l\'\i mite al flujo que
+puede transportar cada l\'\i nea de alta tensi\'on.
+
+\textbf{Enunciado}
+
+El objetivo del trabajo pr\'actico es implementar un programa que tome como
+entrada las interconexiones de la red y el balance de cada central
+generadora, y que determine si existe una distribuci\'on de energ\'\i a
+el\'ectrica que cumpla las condiciones (i)-(iv). El programa implementado
+debe tomar los datos de entrada de un archivo de texto, cuyo formato queda
+a criterio del grupo.
+
+Se pide plantear un sistema de ecuaciones lineales para este problema.
+El informe debe justificar la validez del sistema propuesto, explicando por
+qu\'e dicho sistema resuelve efectivamente el problema de distribuci\'on.
+El informe debe contener tambi\'en una descripci\'on detallada del m\'etodo
+que implementa el programa para la resoluci\'on de este sistema de ecuaciones.
+
+Se pide realizar experimentos con redes de prueba para validar el
+funcionamiento de la implementaci\'on. Medir el n\'umero de condici\'on de
+las matrices de los sistemas de ecuaciones resultantes, para tener una idea
+del error num\'erico cometido por la resoluci\'on. >Cu\'al es el tama\~no
+de la mayor red el\'ectrica que el programa puede resolver en 10 minutos
+o menos?
+
+\vskip 15pt
+
+\hrule
+
+\vskip 11pt
+
+Fecha de entrega: Lunes 30 de Abril
+
+\end{document}

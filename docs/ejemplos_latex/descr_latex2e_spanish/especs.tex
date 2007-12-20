@@ -1,0 +1,623 @@
+
+\chapter{Especialidades}
+\begin{intro}
+  Si ya se siente lo sucifientemente seguro de s'i mismo, entonces
+  ahora puede comenzar a escribir sus documentos en \LaTeX. El
+  prop'osito de este cap'itulo es a~nadir algunas `especias'\ a sus
+  conocimientos de \LaTeX. En el {\normalfont\manual{}} y {\normalfont
+  \companion} podr'a encontrar una descripci'on m'as completa de las
+  especialidades y de las posibles mejoras que puede realizar con
+  \LaTeX.
+\end{intro}
+
+\section{Tipos y tama~nos}
+
+\index{tipo}\index{tama~no del tipo} \LaTeX{} elige el tipo y el
+tama~no de los tipos bas'andose en la estructura l'ogica del
+documento (apartados, notas al pie\ldots). En algunos casos podr'iamos
+desear cambiar directamente los tipos y los tama~nos. Para realizar
+esto se pueden usar las instrucciones de las tablas~\ref{fonts}
+y~\ref{sizes}. El tama~no real de cada tipo es cuesti'on de dise~no
+y depende de la clase de documento y de sus opciones.
+
+\begin{example}
+{\small Los peque~nos y
+\textbf{gordos} romanos dominaron}
+{\Large toda la grande
+\textit{Italia}.}
+\end{example}
+
+Una caracter'istica importante de \LaTeXe{} es que los atributos de
+los tipos son independientes. Esto significa que se puede llamar a
+instrucciones de cambio de tama~no o incluso de tipo y a'un as'i se
+mantienen los atributos de negrita o inclinado que se establecieron
+previamente. Si bien esto puede resultar evidente para alguien que
+aprenda \LaTeX{} desde cero, esto no lo es tanto para quien haya
+empleado \LaTeX{} 2.09.
+
+En el \emph{modo matem'atico} se pueden emplear instrucciones de
+cambio de tipos para salir temporalmente del \emph{modo matem'atico} e
+introducir texto normal. Si para componer las ecuaciones Vd.{} desea
+utilizar otro tipo existe un conjunto especial de instrucciones para
+ello. V'ease la tabla~\ref{mathfonts}.
+
+\begin{table}[!bp]
+\caption{Tipos} \label{fonts}
+\begin{lined}{12cm}
+%
+\begin{tabular}{@{}rl@{\qquad}rl@{}}
+\ci{textrm}\verb|{...}|        &  \textrm{\wi{redonda}}&
+\ci{textsf}\verb|{...}|        &  \textsf{\wi{sin l'inea de pie}}\\
+\ci{texttt}\verb|{...}|        &  \texttt{de m'aquina}\\
+                               &  \texttt{de escribir}&
+                               &                         \\[6pt]
+\ci{textmd}\verb|{...}|        &  \textmd{media}&
+\ci{textbf}\verb|{...}|        &  \textbf{\wi{negrita}}\\[6pt]
+\ci{textup}\verb|{...}|        &  \textup{\wi{vertical}}&
+\ci{textit}\verb|{...}|        &  \textit{\wi{it'alica}}\\
+\ci{textsl}\verb|{...}|        &  \textsl{\wi{inclinada}}&
+\ci{textsc}\verb|{...}|        &  \textsc{\wi{versalita}}\\[6pt]
+\ci{emph}\verb|{...}|          &  \emph{resaltada} &
+\ci{textnormal}\verb|{...}|    &  tipo del\\
+ & & & \textnormal{documento}
+\end{tabular}
+
+\bigskip
+\end{lined}
+\end{table}
+
+
+\begin{table}[!bp]
+\index{tama~nos del tipo}
+\caption{Tama~nos de los tipos} \label{sizes}
+\begin{lined}{12cm}
+\begin{tabular}{@{}ll}
+\ci{tiny}      & \tiny            letra diminuta \\
+\ci{scriptsize}   & \scriptsize   letra muy peque~na\\
+\ci{footnotesize} & \footnotesize letra bastante peque~na \\
+\ci{small}        &  \small       letra peque~na \\
+\ci{normalsize}   &  \normalsize  letra normal \\
+\ci{large}        &  \large       letra grande
+\end{tabular}%
+\qquad\begin{tabular}{ll@{}}
+\ci{Large}        &  \Large       letra mayor \\[5pt]
+\ci{LARGE}        &  \LARGE       muy grande \\[5pt]
+\ci{huge}         &  \huge        enorme \\[5pt]
+\ci{Huge}         &  \Huge        la mayor
+\end{tabular}
+
+\bigskip
+\end{lined}
+\end{table}
+
+\begin{table}[!bp]
+\caption{Tipos matem'aticos} \label{mathfonts}
+\begin{lined}{12.2cm}
+\begin{tabular}{@{}lll@{}}
+\textit{Orden}&\textit{Ejemplo}&    \textit{Resultado}\\[6pt]
+\ci{mathcal}\verb|{...}|&    \verb|$\mathcal{B}=c$|&     $\mathcal{B}=c$\\
+\ci{mathrm}\verb|{...}|&     \verb|$\mathrm{K}_2$|&      $\mathrm{K}_2$\\
+\ci{mathbf}\verb|{...}|&     \verb|$\sum x=\mathbf{v}$|& $\sum x=\mathbf{v}$\\
+\ci{mathsf}\verb|{...}|&     \verb|$\mathsf{G\times R}$|&        $\mathsf{G\times R}$\\
+\ci{mathtt}\verb|{...}|&     \verb|$\mathtt{L}(b,c)$|&   $\mathtt{L}(b,c)$\\
+\ci{mathnormal}\verb|{...}|& \verb|$\mathnormal{R_1}=R_1$|&      $\mathnormal{R_1}=R_1$\\
+\ci{mathit}\verb|{...}|&     \verb|$eficaz\neq\mathit{eficaz}$|& $eficaz\neq\mathit{eficaz}$
+\end{tabular}
+
+\bigskip
+\end{lined}
+\end{table}
+
+Conjuntamente con las instrucciones de los tama~nos de los tipos, las
+\wi{llaves} juegan un papel significativo. Se utilizan para construir
+agrupaciones o \emph{grupos}. Los \wi{grupo}s limitan el 'ambito de la
+mayor'ia de las instrucciones de \LaTeX.
+
+\begin{example}
+A 'el le gustan las {\LARGE
+letras grandes y las letras
+{\small peque~nas}}.
+\end{example}
+ 
+Las instrucciones de tama~no del tipo tambi'en alteran el espaciado
+entre renglones, pero s'olo si el p'arrafo termina dentro del 'ambito
+de la orden de tama~no del tipo. Por ello, la llave de cierre \verb|}|
+no deber'ia aparecer antes de lo indicado. Obs'ervese la posici'on de
+la instrucci'on \verb|\par| en los dos ejemplos siguientes.
+
+\begin{example}
+{\Large !`No lea esto! No es
+cierto. !`Cr'eame!\par}
+\end{example}
+\begin{example}
+{\Large Esto no es cierto.
+Pero recuerde que digo
+mentiras.}\par
+\end{example}
+
+Para concluir este viaje al mundo de los tipos y los tama~nos de
+tipos, tenga Vd.\ un peque~no consejo:
+\nopagebreak
+\begin{quote}
+  \underline{\textbf{Recuerde\Huge!}} \textit{Cuanto}
+  \textsf{M\textbf{\LARGE 'A} \textsl{S}} tipos \Huge utilice \tiny
+  Vd. \footnotesize \textbf{en} un \small \texttt{documento}\Huge,
+  \large \textit{m'as} \normalsize \textsc{legible} y
+  \textsl{\textsf{agradable} resul\large t\Large a\LARGE r\huge
+    'a}.\footnote{!`Ojo!, que se trata de una peque~na s'atira.
+    !`Espero que se de cuenta!}
+\end{quote}
+
+\section{Separaciones}
+ 
+\subsection{Separaciones entre renglones}
+
+\index{separaciones entre renglones} Si quiere emplear mayores
+separaciones entre renglones, puede cambiar su valor poniendo la orden
+\begin{command}
+\ci{linespread}\verb|{|\emph{factor}\verb|}|
+\end{command}
+\noindent en el pre'ambulo de su documento. Utilice
+\verb|\linespread{1.3}| para textos a espacio y medio y
+\verb|\linespread{1.6}| para textos a doble espacio. Normalmente los
+renglones no se separan tanto, por lo que, a no ser que se indique
+otra cosa, el factor de separaci'on entre renglones es~1.%
+\index{doble espacio}
+ 
+\subsection{Dise~no de los p'arrafos}\label{parsp}
+
+En \LaTeX{} existen dos par'ametros que influyen sobre el formato de
+los p'arrafos. Si se pone una definici'on como
+\begin{code}
+\ci{setlength}\verb|{|\ci{parindent}\verb|}{0pt}| \\
+\verb|\setlength{|\ci{parskip}\verb|}{1ex plus 0.5ex minus 0.2ex}|
+\end{code}
+en el pre'ambulo del fichero de entrada\footnote{Entre las
+  instrucciones $\backslash$\texttt{documentclass} y
+  $\backslash$\texttt{begin$\mathtt{\{}$document$\mathtt{\}}$}.} se
+puede cambiar el aspecto de los p'arrafos. Estas dos l'ineas pueden
+aumentar el espacio entre dos p'arrafos y dejarlos sin sangr'ias. En
+la Europa continental, a menudo se separan los p'arrafos con alg'un
+espacio y no se le pone sangr'ia. Pero tenga cuidado, ya que esto
+tambi'en tiene efecto en el 'indice general, haciendo que sus l'ineas
+queden m'as separadas.
+
+Si desea sangrar un p'arrafo que no tiene sangr'ia, entonces utilice
+\begin{command}
+\ci{indent}
+\end{command}
+\noindent al comienzo del p'arrafo\footnote{Para sangrar el primer
+  p'arrafo despu'es de cada cabecera de apartado, util'icese el
+ paquete \pai{indentfirst} del conjunto `tools'.}. Esto s'olo
+ funcionar'a cuando \verb|\parindent| no est'e puesto a cero.
+
+Para crear un p'arrafo sin sangr'ia use
+\begin{command}
+\ci{noindent}
+\end{command}
+\noindent como primera orden del p'arrafo. Esto podr'ia resultar 'util
+cuando comience un documento con texto y sin ninguna instrucci'on de
+seccionado.
+
+\subsection{Separaciones horizontales}
+ 
+\LaTeX{} determina autom'aticamente las separaciones entre palabras y
+ oraciones. Para producir otras separaciones horizontales utilice:
+ \index{espacio!horizontal}
+\begin{command}
+\ci{hspace}\verb|{|\emph{longitud}\verb|}|
+\end{command}
+Cuando se debe producir una separaci'on como 'esta, incluso si cae al
+final o al comienzo de un rengl'on, utilice \verb|\hspace*| en vez de
+\verb|\hspace|. La indicaci'on de la distancia consta, en el caso m'as
+simple, de un n'umero m'as una unidad. En la tabla~\ref{units} se
+muestran las unidades m'as importantes.
+\index{unidades}\index{dimensiones}
+
+\begin{example}
+Este\hspace{1.5cm}es un espacio
+de 1.5 cm.
+\end{example}
+\suppressfloats
+\begin{table}[tbp]
+\caption{Unidades de \TeX} \label{units}\index{unidades}
+\begin{lined}{9.5cm} 
+\begin{tabular}{@{}ll@{}}
+\texttt{mm} &  mil'imetro $\approx 1/25$~pulgada \quad \demowidth{1mm} \\
+\texttt{cm} & cent'imetro = 10~mm  \quad \demowidth{1cm}                    \\
+\texttt{in} & pulgada $\approx$ 25~mm \quad \demowidth{1in}                 \\
+\texttt{pt} & punto $\approx 1/72$~pulgada $\approx \frac{1}{3}$~mm  \quad\demowidth{1pt}\\
+\texttt{em} & aprox.{} el ancho de una \texttt{m} en el tipo actual \quad \demowidth{1em}\\
+\texttt{ex} & aprox.{} la altura de una \texttt{x} en el tipo actual \quad \demowidth{1ex}
+\end{tabular}
+
+\bigskip
+\end{lined}
+\end{table}
+ 
+La instrucci'on
+\begin{command}
+\ci{stretch}\verb|{|\emph{n}\verb|}|
+\end{command} 
+\noindent produce una separaci'on especial el'astica. Se alarga hasta
+que el espacio que resta en un rengl'on se llena. Si dos instrucciones
+\verb|\hspace{\stretch{|\emph{n}\verb|}}| aparecen en el mismo
+rengl'on, los espaciados crecen seg'un sus `factores de alargamiento'.
+\begin{example}
+x\hspace{\stretch{1}}
+x\hspace{\stretch{3}}x
+\end{example}
+
+\subsection{Separaciones verticales especiales}
+
+\LaTeX{} determina de modo autom'atico las separaciones entre dos
+p'arrafos, apartados, subapartados\ldots\ En casos especiales se
+pueden forzar separaciones adicionales \emph{entre dos p'arrafos} con
+la orden
+\begin{command}
+\ci{vspace}\verb|{|\emph{longitud}\verb|}|
+\end{command}
+
+Esta orden se deber'ia indicar siempre entre dos renglones vac'ios.
+Cuando esta separaci'on se debe introducir aunque vaya al principio o
+al final de una p'agina, entonces en vez de \verb|\vspace| se debe
+utilizar \verb|\vspace*|. \index{separaci'on vertical}
+
+Se puede utilizar la orden \verb|\stretch| conjuntamente con
+\verb|\pagebreak| para llevar texto al borde inferior de una
+p'agina o para centrarlo verticalmente.
+
+\begin{code}
+\begin{verbatim}
+Algo de texto \ldots
+
+\vspace{\stretch{1}}
+Esto va en el 'ultimo rengl'on de la p'agina.\pagebreak
+\end{verbatim}
+\end{code}
+
+Las separaciones adicionales entre dos renglones \emph{del mismo
+p'arrafo} o dentro de una tabla se consiguen con la orden
+\begin{command}
+\ci{\bs}\verb|[|\emph{longitud}\verb|]|
+\end{command}
+
+\section{Dise~no de la p'agina}
+
+\begin{figure}[!hp]
+\begin{center}
+\makeatletter
+\lay@layout
+\makeatother
+\end{center}
+\vspace*{1.8cm}
+\caption{Par'ametros del dise~no de la p'agina}
+\label{fig:layout}
+\end{figure}
+
+\index{dise~no de la p'agina}
+\LaTeXe{} le permite indicar el \wi{tama~no del papel} en la orden
+\verb|\documentclass|. Entonces elige autom'aticamente los
+\wi{m'argenes} del texto apropiados. Pero a veces puede que no se
+encuentre conforme con los valores predefinidos. Naturalmente, los
+puede cambiar.
+% Ni idea de porqu'e hace falta esto aqu'i...
+\thispagestyle{fancyplain}%
+La figura~\ref{fig:layout} muestra todos los par'ametros que se pueden
+cambiar. La figura se ha producido con el paquete \pai{layout} del
+conjunto `tools'
+\footnote{\texttt{CTAN:/tex-archive/macros/latex/packages/tools}.}.
+
+\LaTeX{} proporciona dos instrucciones para cambiar estos
+ par'ametros. Normalmente se utilizan en el pre'ambulo del documento.
+
+La primera instrucci'on asigna un valor fijo para al par'ametro:
+\begin{command}
+\ci{setlength}\verb|{|\emph{par'ametro}\verb|}{|\emph{longitud}\verb|}|
+\end{command}
+
+La segunda instrucci'on le a~nade una longitud al par'ametro:
+\begin{command}
+\ci{addtolength}\verb|{|\emph{par'ametro}\verb|}{|\emph{longitud}\verb|}|
+\end{command} 
+
+De hecho, esta segunda instrucci'on es m'as 'util que la orden
+\ci{setlength}, porque puede trabajar tomando como referencia las
+dimensiones anteriormente definidas. Para a~nadir un cent'imetro al
+ancho del texto, en el pre'ambulo del documento se pondr'ian las
+siguientes instrucciones:
+\begin{code}
+\verb|\addtolength{\hoffset}{-0.5cm}|\\
+\verb|\addtolength{\textwidth}{1cm}|
+\end{code}
+
+\section{Notas bibliogr'aficas}
+
+Con el entorno \ei{thebibliography} se puede imprimir una
+bibliograf'ia. Cada nota bibliogr'afica se introduce con
+\begin{command}
+\ci{bibitem}\verb|{|\emph{marcador}\verb|}|
+\end{command}
+El \emph{marcador} se utilizar'ia dentro del documento para indicar la
+entrada en la bibliograf'ia (o sea, como una cita):
+\begin{command}
+\ci{cite}\verb|{|\emph{marcador}\verb|}|
+\end{command}
+La numeraci'on de las entradas se realiza autom'aticamente. El
+par'ametro que se coloca tras la instrucci'on
+\verb|\begin{thebibliography}| establece el ancho m'aximo del espacio
+  destinado a estos n'umeros.
+
+\begin{example}
+Partl~\cite{pa} ha 
+propuesto que\ldots
+ 
+\begin{thebibliography}{99}
+\bibitem{pa} H.~Partl: 
+\emph{German \TeX},
+TUGboat Vol.~9, No.~1 ('88)
+\end{thebibliography}
+\end{example}
+\chaptermark{Especialidades}
+\thispagestyle{fancyplain}
+
+En ocasiones se puede emplear otra alternativa para introducir la
+bibliograf'ia. 'Esta se basa en la utilizaci'on de la herramienta
+\BibTeX.\index{bibtex@\BibTeX} El \BibTeX\ es un programa que recoge
+los marcadores de las citas que se han introducido en el documento.
+Esta lista de marcadores la deposita \LaTeX\ al procesar el documento
+en un fichero especial. Este fichero tiene el mismo nombre que el
+fichero original pero con una extensi'on diferente (\texttt{.aux}). En
+realidad, en este fichero se deposita mucha m'as informaci'on que la
+de los marcadores de estas referencias bibliogr'aficas, ya que incluso
+este fichero es le'ido por \LaTeX\ en posteriores procesamientos. En
+cualquier caso, \BibTeX\ identifica estos marcadores de entre toda la
+informaci'on en este fichero especial y entonces intenta buscar la
+informaci'on bibliogr'afica correspondiente a cada marcador en unos
+ficheros con la extensi'on \texttt{.bib}. La informaci'on que resulta
+de esta b'usqueda es almacenada en otro fichero especial, que esta vez
+tiene la extensi'on \texttt{.bbl}. Para terminar de incluir esta
+informaci'on en el texto final nuevamente se debe procesar el
+documento con \LaTeX.
+
+A partir de los marcadores \BibTeX\ decide qu'e referencias son las
+que debe introducir en la bibliograf'ia del documento. Si por alguna
+raz'on tambi'en se desea que \BibTeX\ introduzca una determinada
+referencia en la bibliograf'ia pero sin introducirla en medio del
+texto como con la orden \verb|\cite|, entonces se puede emplear
+
+\begin{command}
+\ci{nocite}\verb|{|\emph{marcador}\verb|}|
+\end{command}
+
+La funci'on de los ficheros con la extensi'on \texttt{.bib} es la de
+servir como bases de datos de referencias bibliogr'aficas. Para
+indicar el nombre concreto del fichero o ficheros donde se deben
+buscar estas referencias bibliogr'aficas se emplea
+
+\begin{command}
+\ci{bibliography}\verb|{|\emph{fichero}\verb|,|\emph{fichero}%
+  \verb|,|\ldots\verb|}|
+\end{command}
+
+La estructura de estos ficheros de bibliograf'ia se puede consultar en
+\manual\ o en \companion. La principal utilidad de emplear este
+sistema en vez del anterior es que de esta forma la misma informaci'on
+sobre las diversas referencias bibliogr'aficas puede ser igualmente
+accesible para otros documentos de \LaTeX.
+
+Por otra parte, a la hora de disponer las referencias en el documento
+las entradas pueden ir siguiendo un determinado estilo. Para elegir
+este estilo se emplea
+
+\begin{command}
+\ci{bibliographystyle}\verb|{|\emph{estilo}\verb|}|
+\end{command}
+
+\noindent La tabla~\ref{bibstyle} muestra los estilos
+predefinidos.
+
+\begin{table}[!hbp]
+\caption{Estilos de entradas bibliogr'aficas predefinidas en \LaTeX}
+\label{bibstyle}
+\begin{lined}{12cm}
+\begin{description}
+  
+\item[\normalfont\texttt{plain}] coloca las entradas de la
+  bibliotraf'ia por orden alfab'etico. A cada una se le asigna un
+  n'umero entre corchetes que es el asignado como marcador. Este es el
+  mismo que aparece en el lugar de la llamada a esta referencia en el
+  texto cuando se introduce la orden \verb|\cite|.
+
+\item[\normalfont\texttt{unsrt}] ordena las entradas por sus primeras
+  referencias con las 'ordenes \verb|\cite| y \verb|\nocite|.
+
+\item[\normalfont\texttt{alpha}] ordena las entradas igual que
+  \texttt{plain} pero los marcadores se construyen con una abreviatura
+  del autor o autores y el a~no de publicaci'on.
+
+\item[\normalfont\texttt{abbrv}] ordena las entradas igual que
+  \texttt{plain} y construye los marcadores de la misma forma, pero en
+  la indicaci'on de la referencia se emplean abreviaturas para los
+  nombres de pila, meses y, en ocasiones, los nombres de las revistas.
+
+\end{description}
+\end{lined}
+\end{table}
+
+
+\section{Indexado} \label{sec:indexing}
+Una facilidad muy 'util para muchos libros es el 'indice de
+materias.\index{indice de materias@'indice de materias} Con \LaTeX{} y
+el programa de ayuda \texttt{makeindex}\footnote{En algunos sistemas
+  que no permiten nombres de ficheros mayores de 8~caracteres, el
+  programa puede que se llame \texttt{makeindx}.}, los 'indices de
+materias se pueden crear de un modo razonablemente sencillo. En esta
+descripci'on, s'olo se explicar'an las instrucciones b'asicas de
+producci'on de 'indices de materias. Para una visi'on en mayor
+profundidad por favor dir'ijase a \companion.%
+\index{programa makeindex@programa \texttt{makeindex}}%
+\index{paquete makeidx@paquete \texttt{makeidx}}
+
+Para habilitar la facilidad de 'indice de materias de \LaTeX{} se
+debe cargar en el pre'ambulo el paquete \pai{makeidx} con:
+\begin{command}
+\verb|\usepackage{makeidx}|
+\end{command}
+\noindent y las instrucciones especiales de indexado se deben
+habilitar con la instrucci'on
+\begin{command}
+  \ci{makeindex}
+\end{command}
+\noindent en el pre'ambulo de los ficheros de entrada.
+
+El contenido del 'indice se indica con instrucciones
+\begin{command}
+  \ci{index}\verb|{|\emph{clave}\verb|}|
+\end{command}
+\noindent donde \emph{clave} es la entrada en el 'indice. Se incluyen
+las instrucciones de indexado en los lugares del texto a donde se
+quiere apuntar. La tabla~\ref{index} muestra la sintaxis del argumento
+\emph{clave} con varios ejemplos.
+
+\begin{table}[!bp]
+\caption{Ejemplos de sintaxis de llaves para 'indices de materias}
+\label{index}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \textbf{Ejemplo} &\textbf{Entrada} &\textbf{Comentario}\\\hline
+  \rule{0pt}{1.05em}\verb|\index{hola}| &hola, 1 &Entrada simple\\ 
+  \verb|\index{hola!Pedro}| &\hspace*{2ex}Pedro, 3 &Subentrada bajo
+  `hola'\\
+  \verb|\index{Juan@\textsl{Juan}}| &\textsl{Juan}, 2& Entrada con
+  dise~no\\
+  \verb|\index{Pepa@\textbf{Pepa}}| &\textbf{Pepa}, 7& Igual que antes\\
+  \verb.\index{Loli|textbf}.  &Loli, \textbf{3}& N"o de p'agina
+  con dise~no\\ 
+  \verb.\index{Soraya|textit}.  &Soraya, \textit{5}& Igual que antes
+\end{tabular}
+\end{center}
+\end{table}
+
+Cuando se procesa el fichero de entrada con \LaTeX, cada instrucci'on
+\verb|\index| escribir'a en un fichero especial la entrada en el
+'indice con el n'umero de la p'agina actual. El fichero tiene el mismo
+nombre que el fichero de entrada de \LaTeX{} pero con una extensi'on
+distinta (\verb|.idx|). Despu'es se puede procesar este fichero
+\texttt{.idx} con el programa \texttt{makeindex}.
+\begin{command}
+  \texttt{makeindex} \emph{fichero}
+\end{command}
+El programa \texttt{makeindex} produce un 'indice ordenado con la misma
+base de nombre de fichero pero esta vez con la extensi'on
+\texttt{.ind}. Si se procesa ahora el fichero de entrada \LaTeX{} de
+nuevo, entonces este 'indice se incluye en el documento donde se
+encuentra la instrucci'on
+\begin{command}
+  \ci{printindex}
+\end{command}
+
+El paquete \pai{showidx} que viene con \LaTeXe{} imprime todas las
+entradas en el 'indice en el margen izquierdo del texto. Esto es
+bastante 'util para las revisiones del documento y para verificar el
+'indice.
+
+% A~nadir alguna informaci'on sobre PROTECT ...  
+
+\section{Inclusi'on de gr'aficos EPS}
+Con los entornos \texttt{figure} y \texttt{table} \LaTeX{} proporciona
+las facilidades b'asicas para trabajar con objetos flotantes, entre
+los que se incluyen las im'agenes y los gr'aficos.
+
+Tambi'en existen varias posibilidades para generar \wi{gr'aficos} con
+el \LaTeX{} b'asico o un paquete de extensiones de \LaTeX. Por
+desgracia, la mayor'ia de los usuarios los encuentran dif'iciles de
+entender. Por esto, no se van a explicar en este manual. Para m'as
+informaci'on sobre este particular cons'ultense \companion{} y el
+\manual.
+
+Un modo m'as sencillo de poner gr'aficos en un documento es
+produci'endolos con un paquete de \emph{software}
+especializado\footnote{Tales como XFig, CorelDraw!, Freehand, Gnuplot,
+  Tgif, Paint Shop Pro, Gimp\ldots} e incluir los gr'aficos dentro del
+documento. En este punto, tambi'en los paquetes de \LaTeX{} ofrecen
+muchas alternativas. En esta descripci'on s'olo se mostrar'a el uso de
+gr'aficos en \wi{PostScript Encapsulado} (EPS), ya que es un m'etodo
+muy sencillo y ampliamente utilizado. Para utilizar dibujos en formato
+EPS, debe disponer una impresora \wi{PostScript}\footnote{Otra
+  posibilidad para imprimir PostScript es con el programa de GNU
+  \textsc{\wi{GhostScript}}, que puede encontrar en
+  \texttt{CTAN:/tex-archive/support/ghostscript}.} para imprimir.
+
+Un buen conjunto de 'ordenes para la inclusi'on de gr'aficos se
+proporciona con el paquete \pai{graphicx} de D.~P.~Carlisle. Forma
+parte de todo un conjunto de paquetes que se llama el conjunto
+``graphics''%
+\footnote{\texttt{CTAN:/tex-archive/macros/latex/packages/graphics}.}.
+
+Suponiendo que Vd.\ se halle trabajando con una impresora PostScript
+para imprimir y con el paquete \textsf{graphicx}, puede seguir la
+siguiente lista de pasos para incluir un dibujo dentro de su documento:
+
+\begin{enumerate}
+\item Exportar el dibujo desde su programa de gr'aficos en formato EPS.
+\item Cargar el paquete \textsf{graphicx} en el pre'ambulo del fichero
+  de entrada con
+\begin{command}
+\verb|\usepackage[|\emph{driver}\verb|]{graphicx}|
+\end{command}
+\emph{driver} es el nombre de su conversor ``de \emph{dvi} a
+PostScript''\footnote{El programa m'as utilizado para esto se llama
+  \texttt{dvips}.}. El paquete necesita esta informaci'on porque la
+inclusi'on de los gr'aficos la realiza el \emph{driver} de la
+impresora. Una vez que se conozca el \emph{driver}, el paquete
+\textsf{graphicx} inserta las 'ordenes correctas en el
+fichero~\texttt{.dvi} para incluir el gr'afico que se desea con el
+\emph{driver} de impresora.
+ 
+\item Utilice la orden
+\begin{command}
+\ci{includegraphics}\verb|[|\emph{clave}=\emph{valor},
+ \ldots\verb|]{|\emph{fichero}\verb|}|
+\end{command}
+para incluir \emph{fichero} en su documento. El par'ametro opcional
+acepta una lista de \emph{claves} separadas por comas y sus \emph{valores}
+asociados. Las \emph{claves} se pueden emplear para modificar el ancho,
+la altura y el giro del gr'afico incluido. La tabla~\ref{keyvals}
+muestra las claves m'as importantes.
+\end{enumerate}
+
+\begin{table}[htb]
+\caption{Nombres de las claves para el paquete \textsf{graphicx}}
+\label{keyvals}
+\begin{lined}{10.1cm}
+\begin{tabular}{@{}ll}
+\texttt{width}& escalado gr'afico al ancho indicado\\
+\texttt{height}& escalado gr'afico a la altura indicada\\
+\texttt{angle}& giro del gr'afico en el sentido de las agujas del reloj
+\end{tabular}
+
+\bigskip
+\end{lined}
+\end{table}
+
+El siguiente ejemplo podr'a ayudar a clarificar algunas de estas ideas:
+\begin{code}
+\begin{verbatim}
+\begin{figure}
+\begin{center}
+\includegraphics[angle=90, width=10cm]{test.eps}
+\end{center}
+\end{figure}
+\end{verbatim}
+\end{code}
+Este c'odigo introduce el gr'afico que se encuentra en el fichero
+\texttt{test.eps}. El gr'afico se gira \emph{primero} 90$^\circ$ y
+\emph{despu'es} se escala hasta lograr los 10\,cm de ancho. La
+relaci'on de aspecto es de 1.0 porque no se ha indicado ninguna altura
+especial.
+
+
+Para m'as informaci'on, por favor consulte~\cite{graphics}.  
+
+\endinput

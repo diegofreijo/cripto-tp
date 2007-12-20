@@ -1,0 +1,97 @@
+\subsection{An\'alisis del problema}
+
+\subsubsection{Modelo matem\'atico}
+
+Como paso previo al dise\~no de una soluci\'on en computadora del problema, analicemos el problema y sus implicaciones.
+
+Una \emph{red de Morley} es un sistema interconectado de centrales generadoras de electricidad y nodos concentradores, dise\~nado para transportar electricidad y abastecer la demanda de todos los usuarios de la red.
+
+Puede modelarse matem\'aticamente con un grafo, donde los nodos son de dos tipos distintos: concentradores y generadores. Hay ejes entre nodos del mismo tipo o de tipo distinto. Los ejes entre nodos concentradores forman el \emph{backbone} de la red.
+
+Las centrales generadoras producen electricidad, pero tambi\'en abastecen a sus usuarios, cuyo consumo puede superar (o ser inferior, o igual) a la producci\'on de la central. La diferencia entre la producci\'on y la demanda es el balance, que puede ser positivo, nulo o negativo. Desde el punto de vista matem\'atico, balance es el \'unico dato relevante de una central generadora y nos abstraemos de su producci\'on real y la demanda de sus usuarios directos.
+
+Una demanda que supera la producci\'on implica un balance negativo para una central generadora, y debe cubrirse con energ\'ia suministrada por otras centrales que tengan balance positivo.
+
+Hay algunas condiciones adicionales importantes:
+
+\begin{itemize}
+
+\item Las centrales generadoras que tienen balance positivo entregan todo su excedente a la red.
+
+\item Las centrales generadoras que tienen balance negativo cubren completamente su d\'eficit con energ\'ia suministrada por centrales con balance positivo a la red el\'ectrica.
+
+\item Los nodos concentradores transmiten toda la energ\'ia que reciben.
+
+\item \emph{(Restricci\'on de Morley):} El flujo de energ\'ia es id\'entico en cada eje del \emph{backbone}.
+
+\end{itemize}
+
+En resumen, el problema consiste en determinar cuanta energ\'ia debe enviarse a trav\'es de las interconexiones (ejes del grafo) entre nodos (concentradores o generadores) para cubrir  totalmente la demanda.
+
+Notar que estas condiciones implican que no hay exceso de producci\'on de energ\'ia globalmente; o sea
+
+\begin{eqnarray}
+\sum_{i=1}^{n}{b_{i}} & = & 0 \nonumber
+\end{eqnarray}
+
+siendo $b_{i}$ el balance del nodo i-\'esimo del grafo, y definiendo para los nodos concentradores un balance cero (porque transmiten toda la energ\'ia que reciben y no la generan).
+
+
+\subsubsection{Planteo como sistema de ecuaciones lineales}
+
+Primero debemos encontrar un planteo apropiado para resolver el problema mediante un sistema de ecuaciones lineales. Nuestras incógnitas son los flujos de energía a asignar a cada eje del grafo.
+
+Las condiciones (i) y (ii) nos proporcionan las ecuaciones:
+
+\begin{eqnarray}
+\sum_{\begin{tabular}{c}$e_{j}$:\\\small{eje saliente}\\\small{del nodo i}\end{tabular}}{flujo(e_{j})}
+-
+\sum_{\begin{tabular}{c}$e_{k}$:\\\small{eje entrante}\\\small{al nodo i}\end{tabular}}{flujo(e_{k})} & = & b_{i} \nonumber
+\end{eqnarray}
+
+Estas ecuaciones equivalen a:
+\begin{eqnarray}
++x_{j_1} -x_{j_2} + x_{j_3} - x_{j_4} + ... & = & b_i \nonumber
+\end{eqnarray}
+
+donde $x_{j_k}$ es el flujo de un eje incidente al nodo i-\'esimo, y $b_i$ es el balance del nodo i-\'esimo. Como puede verse, se coloca un signo positivo si el eje es ``saliente'' del nodo y signo negativo si el eje es ``entrante''.
+
+Resolver un sistema formado por esas ecuaciones cumplir\'ia con las condiciones (i), (ii) y tambi\'en (iii) definiendo para los nodos concentradores un balance cero.
+
+La condici\'on (iv) puede expresarse como:
+\begin{eqnarray}
+| x_{j_p} | & = & | x_{j_q} | \nonumber
+\end{eqnarray}
+
+para cada par de ejes $j_p$ y $j_q$, $p \neq q$, que formen parte del backbone. Notar que al igualar los valores absolutos de los flujos de los ejes del backbone, no podemos incorporar estas condiciones directamente a un sistema de ecuaciones lineales.
+
+\subsubsection{Problemas encontrados}
+
+De la secci\'on anterior surgen estos problemas:
+
+\begin{itemize}
+
+\item Necesitamos asignar a los ejes una direcci\'on. Saber si son ``salientes'' o ``entrantes''.
+\item Las ecuaciones que cumplen con la condici\'on (iv) del enunciado no pueden incorporarse a un sistema de ecuaciones lineales directamente.
+
+\end{itemize}
+
+Para resolver el primer punto pensamos inicialmente establecer dos ejes entre cada nodo, uno entrante y otro saliente, y poner a ambos como inc\'ognitas.
+
+Pero eso no es necesario: puede modelarse con s\'olo un eje orientado entre nodos. Si al resolver el sistema de ecuaciones el valor de flujo para un eje resultara negativo, querr\'ia decir que ese eje deber\'ia tener el sentido opuesto. Si fuera cero o positivo el eje conservar\'ia su sentido inicial. Entonces el sentido inicial puede ser cualquiera, y se corrige al tener la soluci\'on del sistema.
+
+El segundo punto es un obst\'aculo m\'as importante. Finalmente decidimos asumir que nuestra implementaci\'on s\'olo puede resolver el problema con un backbone donde todos los ejes tienen el mismo sentido. Esto puede definirse sin problemas s\'olo en el caso de que el backbone sea lineal, por lo tanto tambi\'en pedimos esta condici\'on en el grafo de entrada.
+
+De no asumirse esas condiciones sobre el backbone, habr\'ia que resolver $2^{n}$ sistemas, cada uno compuesto por las ecuaciones derivadas de las condiciones (i) a (iii), m\'as la ecuaci\'on
+
+\begin{eqnarray}
+x_{j_p} & = & x_{j_q} \nonumber
+\end{eqnarray}
+o
+\begin{eqnarray}
+x_{j_p} & = & - x_{j_q} \nonumber
+\end{eqnarray}
+
+para cada par de ejes del backbone.
+
+%------------------------------------------------------------------------------%

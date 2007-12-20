@@ -1,0 +1,685 @@
+\section{Resultados}
+
+% Pautas: deben incluir los resultados de los experimentos. utilizando el formato más adecuado
+% para su presentación. Deberan especificar claramente a que experiencia corresponde cada
+% resultado. No se incluiran aqui corridas de máquina.
+
+% TAREAS: presentar bien los datos medidos y aclarar a que experimento corresponde cada grafico
+
+\subsection{Grafo de prueba 1}
+
+\begin{center}
+ \centering
+ \begin{minipage}[t]{.16\textwidth}
+  \vspace{0pt}
+	\begin{verbatim}
+Init 10 12
+
+CG 1 +5
+NC 2
+NC 3
+NC 4
+CG 5 -5
+NC 6
+CG 7 -1
+CG 8 -20
+NC 9
+CG 10 +21
+
+EJ 1 2
+EJ 2 3
+EJ 3 4
+EJ 4 5
+EJ 4 6
+EJ 6 9
+EJ 6 7
+EJ 7 8
+EJ 8 9
+EJ 9 10
+EJ 5 10
+EJ 6 10
+
+End
+	\end{verbatim}
+ \end{minipage}%
+ \begin{minipage}[t]{.84\textwidth}
+  \vspace{0pt}
+  \centering
+  \includegraphics[width=\textwidth]{grafo1resultado.eps}
+ \end{minipage}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cantidad de nodos & 10 \\
+	\hline
+	Cantidad de ejes & 12 \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de prueba 2}
+
+\begin{small}
+ \begin{minipage}[t]{.33\textwidth}
+  \vspace{0pt}
+	\begin{verbatim}
+Init 10 22
+
+CG 1 -8
+NC 2
+NC 3
+CG 4 8
+CG 5 5
+NC 6
+NC 7
+CG 8 1
+CG 9 -1
+CG 10 -5
+	\end{verbatim}
+ \end{minipage}%
+ \begin{minipage}[t]{.33\textwidth}
+  \vspace{0pt}
+  \begin{verbatim}
+EJ 1 7
+EJ 1 6
+EJ 1 10
+EJ 2 4
+EJ 2 8
+EJ 2 3
+EJ 2 9
+EJ 3 8
+EJ 3 4
+EJ 3 9
+EJ 3 10
+EJ 3 7
+	\end{verbatim}
+ \end{minipage}%
+ \begin{minipage}[t]{.33\textwidth}
+  \vspace{0pt}
+  \begin{verbatim}
+EJ 4 8
+EJ 5 6
+EJ 5 8
+EJ 5 7
+EJ 6 8
+EJ 6 7
+EJ 6 10
+EJ 7 8
+EJ 7 10
+EJ 9 10
+
+End
+	\end{verbatim}
+ \end{minipage}
+\end{small}
+
+\begin{center}
+  \includegraphics[width=\textwidth]{grafo2resultado.eps}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cantidad de nodos & 10 \\
+	\hline
+	Cantidad de ejes & 22 \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 101 nodos}
+
+\begin{center}
+  \includegraphics[width=\textwidth]{grafo101.eps}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Tama\~no & $101$ nodos por $224$ ejes \\
+	\hline
+	N\'umero de condici\'on del sistema & $161.20$ \\
+	\hline
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz & Tiempo de ejecuci\'on \\
+	& de ecuaciones & \\
+	\hline
+	M\'etodo original & $323$ filas por $224$ columnas & $4.23$ seg \\
+	\hline
+	M\'etodo optimizado & $224$ filas por $224$ columnas & $0.16$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 500 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo500.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $500$ \\
+	\hline
+	Cant. de ejes & $1497$ \\
+	\hline
+	N\'um. de condici\'on & $318.94$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz & Tiempo de ejecuci\'on \\
+	& de ecuaciones & \\
+	\hline
+	M\'etodo original & $1995$ filas por $1497$ columnas & $24.61$ seg \\
+	\hline
+	M\'etodo optimizado & $1497$ filas por $1497$ columnas & $16.4$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 600 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo600.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $600$ \\
+	\hline
+	Cant. de ejes & $1796$ \\
+	\hline
+	N\'um. de condici\'on & $4618.45$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz & Tiempo de ejecuci\'on \\
+	& de ecuaciones & \\
+	\hline
+	M\'etodo original & $2394$ filas por $1796$ columnas & $43.27$ seg \\
+	\hline
+	M\'etodo optimizado & $1796$ filas por $1796$ columnas & $26.99$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 700 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo700.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $700$ \\
+	\hline
+	Cant. de ejes & $2094$ \\
+	\hline
+	N\'um. de condici\'on & $3568.51$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz & Tiempo de ejecuci\'on \\
+	& de ecuaciones & \\
+	\hline
+	M\'etodo original & $2792$ filas por $2094$ columnas & $68.01$ seg \\
+	\hline
+	M\'etodo optimizado & $2094$ filas por $2094$ columnas & $41.17$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 800 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo800.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $800$ \\
+	\hline
+	Cant. de ejes & $2397$ \\
+	\hline
+	N\'um. de condici\'on & $3361.44$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $3195$ filas por $2397$ columnas & $122.09$ seg \\
+	\hline
+	M\'etodo optimizado & $2397$ filas por $2397$ columnas & $65.92$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 900 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo900.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $900$ \\
+	\hline
+	Cant. de ejes & $2696$ \\
+	\hline
+	N\'um. de condici\'on & $1930.76$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $3594$ filas por $2696$ columnas & $260.61$ seg \\
+	\hline
+	M\'etodo optimizado & $2696$ filas por $2696$ columnas & $114.92$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1000 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1000.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1000$ \\
+	\hline
+	Cant. de ejes & $2996$ \\
+	\hline
+	N\'um. de condici\'on & $5744.37$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $3994$ filas por $2996$ columnas & $389.09$ seg \\
+	\hline
+	M\'etodo optimizado & $2996$ filas por $2996$ columnas & $181.44$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1100 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1100.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1100$ \\
+	\hline
+	Cant. de ejes & $3200$ \\
+	\hline
+	N\'um. de condici\'on & $4473.66$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $4298$ filas por $3200$ columnas & $563.15$ seg \\
+	\hline
+	M\'etodo optimizado & $3200$ filas por $3200$ columnas & $387.88$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1120 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1120.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1120$ \\
+	\hline
+	Cant. de ejes & $3328$ \\
+	\hline
+	N\'um. de condici\'on & $5045.62$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $4446$ filas por $3328$ columnas & $573.97$ seg \\
+	\hline
+	M\'etodo optimizado & $3328$ filas por $3328$ columnas & $407.11$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1130 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1130.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1130$ \\
+	\hline
+	Cant. de ejes & $3359$ \\
+	\hline
+	N\'um. de condici\'on & $4828.01$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $4487$ filas por $3359$ columnas & $632.52$ seg \\
+	\hline
+	M\'etodo optimizado & $3359$ filas por $3359$ columnas & $300.14$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1150 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1150.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1150$ \\
+	\hline
+	Cant. de ejes & $3447$ \\
+	\hline
+	N\'um. de condici\'on & $4607.99$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & $4595$ filas por $3447$ columnas & $701.68$ seg \\
+	\hline
+	M\'etodo optimizado & $3447$ filas por $3447$ columnas & $350.78$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1200 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1200.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1200$ \\
+	\hline
+	Cant. de ejes & $3596$ \\
+	\hline
+	N\'um. de condici\'on & $3805.32$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & no disponible & no disponible \\
+	\hline
+	M\'etodo optimizado & $3596$ filas por $3596$ columnas & $413.28$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Grafo de 1300 nodos}
+
+\begin{minipage}[t]{.6\textwidth}
+  \vspace{0pt}
+  \includegraphics[width=\textwidth]{grafo1300.eps}
+\end{minipage}%
+\begin{minipage}[t]{.4\textwidth}
+ \vspace{0pt}
+ \begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Cant. de nodos & $1300$ \\
+	\hline
+	Cant. de ejes & $3897$ \\
+	\hline
+	N\'um. de condici\'on & $9849.72$ \\
+	del sistema &\\
+	\hline
+  \end{tabular}
+ \end{center}
+\end{minipage}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	& Tama\~no de la matriz de ecuaciones & Tiempo de ejecuci\'on \\
+	\hline
+	M\'etodo original & no disponible & no disponible \\
+	\hline
+	M\'etodo optimizado & $3897$ filas por $3897$ columnas & $594.53$ seg \\
+	\hline
+	\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------------------------%
+
+\subsection{Resumen}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline
+	\#Nodos & \#Ejes & $k(A)$ & \multicolumn{2}{c|}{Algoritmo original} & \multicolumn{2}{c|}{Algoritmo optimizado}\\
+	\cline{4-7}
+	& & & Tama\~no & Tiempo(seg) & Tama\~no & Tiempo(seg)\\
+	\hline
+	$101$ & $224$ & $161.20$ & $323 \times 224$ & $4.23$ & $224 \times 224$ & $0.16$\\
+	\hline
+	$500$ & $1497$ & $318.94$ & $1995 \times 1497$ & $24.61$ & $1497 \times 1497$ & $16.4$\\
+	\hline
+  $600$ & $1796$ & $4618.45$ & $2394 \times 1796$ & $43.27$ & $1796 \times 1796$ & $26.99$\\
+  \hline
+  $700$ & $2094$ & $3568.51$ & $2792 \times 2094$ & $68.01$ & $2094 \times 2094$ & $41.17$\\
+  \hline
+	$800$ & $2397$ & $3361.44$ & $3195 \times 2397$ & $122.09$ & $2397 \times 2397$ & $65.92$\\
+  \hline
+	$900$ & $2696$ & $1930.76$ & $3594 \times 2696$ & $260.61$ & $2696 \times 2696$ & $114.92$\\
+  \hline
+	$1000$ & $2996$ & $5744.37$ & $3994 \times 2996$ & $389.09$ & $2996 \times 2996$ & $181.44$\\
+  \hline
+	$1100$ & $3200$ & $4473.66$ & $4298 \times 3200$ & $563.15$ & $3200 \times 3200$ & $387.88$\\
+  \hline
+	$1120$ & $3328$ & $5045.62$ & $4446 \times 3328$ & $573.97$ & $3328 \times 3328$ & $407.11$\\
+  \hline
+	$1130$ & $3359$ & $4828.01$ & $4487 \times 3359$ & $632.52$ & $3359 \times 3359$ & $300.14$\\
+  \hline
+	$1150$ & $3447$ & $3805.32$ & $4595 \times 3447$ & $701.68$ & $3447 \times 3447$ & $350.78$\\
+  \hline
+	$1200$ & $3596$ & $4607.99$ & no disp & no disp & $3596 \times 3596$ & $413.28$\\
+  \hline
+	$1300$ & $3897$ & $4607.99$ & no disp & no disp & $3897 \times 3897$ & $594.53$\\
+  \hline
+	\end{tabular}
+\end{center}
+
+Gr\'afico de los tiempos de ejecuci\'on en base al tama\~no del grafo en nodos\\
+\begin{center}
+  \includegraphics[width=\textwidth]{Relacion_nEjes_nNodos.eps}
+\end{center}
+
+\newpage
+\subsection{Comentarios sobre la pruebas}
+
+Todas las pruebas se realizaron en un equipo del laboratorio de Linux del Departamento de Computaci\'on. Las configuraciones m\'as relevantes del equipo son:
+\begin{itemize}
+\item Pentium 4 2.4Ghz
+\item 512Mb de memoria RAM
+\item Debian 4.0
+\end{itemize}
+
+Se midi\'o el uso de memoria durante la ejecuci\'on del programa; sabemos que el programa no utiliz\'o memoria \emph{swap} para correr ya que para la instancia mayor no super\'o los 350Mb de memoria f\'isica usada. Lo comprobamos corriendo antes y durante la ejecuci\'on el comando free para observar cambios en el uso de memoria virtual y descartamos las corridas que provocaron paginado de otras aplicaciones hacia el swap.\\
+
+El c\'alculo del n\'umero de condici\'on se realiz\'o en el mismo equipo, mediante Matlab versi\'on 7.2.0.294 (R2006a).\\
+
+Los grafos de 500 o m\'as nodos se generaron aleatoriamente con Visone, usando la funci\'on Network Generation de tipo ``Small World'' con probabilidad de ejes entre nodos de 0.05 y radio 3. Posteriormente se defini\'o manualmente cu\'ales nodos ser\'ian Nodos Concentradores cuidando que el backbone resultante sea lineal.\\
+
+Los grafos usados para hacer pruebas se crearon por distintos medios.
+
+Los tres primeros, incluido el grafo de 101 nodos, fueron creados manualmente. En cambio, el resto de los grafos fue creado autom\'aticamente mediante Visone, usando la funci\'on Network Generation de tipo ``Small World'' con probabilidad de ejes entre nodos de 0.05 y radio 3. En este caso el resultado fue un grafo donde cada nodo tiene asignado un \emph{id} num\'erico, y en el cual debe ``dibujarse'' el backbone. Este proceso consiste en elegir un conjunto de nodos que sea lineal, y asignar el texto NC en el \emph{id}.
+
+A nuestra implementaci\'on se le incorpor\'o una funci\'on que toma un grafo creado con Visone y exportado en formato UCINET DL, que utiliza la informaci\'on en el \emph{id} de cada nodo si es ``NC'' o ``CG'' acompa\~nado de un balance, e ignora los casos donde el \emph{id} est\'e vac\'io o sea un valor num\'erico. Ignorar en este caso equivale a asumir que ese nodo es una Central Generadora con balance $0$.
+
+\newpage
+\subsection{Otros Gr\'aficos}
+
+Gr\'afico de los tiempos de ejecuci\'on en base al tama\~no del grafo en cantidad de nodos.\\
+\begin{center}
+  \includegraphics[width=\textwidth]{TiempoEjecucion_x_CantNodos.eps}
+\end{center}
+
+\newpage
+Gr\'afico de los tiempos de ejecuci\'on en base al tama\~no del grafo en cantidad de ejes.\\
+\begin{center}
+  \includegraphics[width=\textwidth]{TiempoEjecucion_x_CantEjes.eps}
+\end{center}
+
+\newpage
+Gr\'afico del tamaño de la matriz en funci\'on de la cantidad de nodos.\\
+\begin{center}
+  \includegraphics[width=\textwidth]{TamanoMatriz_x_CantNodos.eps}
+\end{center}

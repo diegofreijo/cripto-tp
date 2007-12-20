@@ -1,0 +1,42 @@
+\subsection{An\'alisis del problema}
+
+\subsubsection{Modelo matem\'atico}
+
+Como paso previo al dise\~no de una soluci\'on en computadora del problema, analicemos el problema y sus implicaciones.
+
+La disciplina conocida como \emph{revenue management} se ocupa de establecer pol\'iticas de control sobre los recursos para maximizar los ingresos.
+
+En este caso tenemos las ciudades conectadas por distintos tramos con sus capacidades y costos definidos por una Aerol\'inea que opera sobre una determinada cantidad de rutas.
+
+Esto se puede modelar matem\'aticamente mediante un conjunto de ecuaciones que representan las restricciones en cuanto a la cantidad de pasajeros por tramo. Y la funci\'on a maximizar va a ser la ganancia que se va a obtener dependiendo del costo del pasaje y su cupo.
+Adem\'as de las restricciones que pone la aerol\'inea para un determinado producto, las esperanzas de las demandas, y su costo, la suma de todos los pasajeros que van a viajar en cada tramo no puede superar a la capacidad del avi\'on para dicho tramo.
+
+En resumen, el problema consiste en determinar la cantidad \'optima de pasajes a vender para cada producto teniendo en cuenta de conseguir la mayor ganancia posible.
+
+\subsubsection{Planteo como sistema de ecuaciones lineales}
+
+Primero debimos resolver un planteo del problema apropiado para resolver mediante un sistema de ecuaciones lineales. 
+El modelo que planteamos para resolver el problema fue el siguiente:
+$$\mbox{maximizar}  \hspace{1cm}   cx$$
+
+$$\mbox{sujeto a:}  \hspace{1cm}   Ax \leq b$$
+
+Nuestra matriz $A$ esta formada por $n$ columnas y $m$ filas. Donde: 
+$$n = Cantidad de Productos$$
+$$m = Cantidad de Productos + Cantidad de Tramos$$
+
+Las filas $1,2,...,n$ van a estar representando a los productos. O sea, cada $a_{kl} = 1$ si $k = l$ y $0$ si no. (Con $k = 1,2,...,n$ y $l = 1,2,...,n$).
+
+Las filas $n+1,n+2,...,m$ van a estar representando los tramos que abarca cada producto. O sea, cada $a_{ij} = 1$ si el tramo $k$ pertenece al producto $l$ y $0$ si no. (Con $i = n+1,n+2,...,m$ y $j = 1,2,...,n$).
+
+Nuestro vector $b$ va a tener la misma cantidad de filas que $A$ y va a ser de una sola columna. En las filas $1,2,...,n$ vamos a tener la demanda estimada por producto.
+Y en las filas $n+1,n+2,...,m$ vamos a tener la cantidad de asientos disponibles por tramos.
+
+Nuestro vector $c$ a maximizar va a tener 1 fila y n columnas. En cada posici\'on va a tener el precio de cada producto.
+
+COMPLETAR!!! Explicar mejor mas...
+
+COMPLETAR!!! El informe debe justificar la validez del modelo propuesto, explicando por qu\'e dicho sistema resuelve efectivamente el problema de asignaci\'on de asientos
+
+
+%------------------------------------------------------------------------------%

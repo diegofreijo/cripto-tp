@@ -1,0 +1,80 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage[activeacute, spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amssymb,amsmath}
+
+% \let\mathnumsetfont\mathbb
+\newcommand\Nset{\mathbb N}       % set of positive integer numbers
+\newcommand\Zset{\mathbb Z}       % set of integer numbers
+\newcommand\Rset{\mathbb R}       % set of real numbers
+\newcommand\real{\mathbb R}       % set of real numbers
+
+\author{ Guillermo T\'unez, Mat\'ias Albanesi, Mercedes Bianchi }
+
+\title{ \Huge
+        \textbf{Trabajo Práctico Nº 2}\\[2mm]
+        \LARGE
+        \textbf{Distribuci\'on el\'ectrica}\\[6mm]
+        \large
+        Universidad de Buenos Aires\\
+        Facultad de Ciencias Exactas y Naturales\\
+        Departamento de Computación\\
+        Métodos Númericos\\[10mm]
+        %\includegraphics[width=3cm]{uba.jpg}\\[6mm]
+        Primer Cuatrimestre - 2007\\ }
+
+\begin{document}
+\maketitle
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline
+                Nombre & LU & E-mail \\
+                Mat\'ias Albanesi C\'aceres & 522/00 & mac@sion.com \\
+      					Mar\'ia Mercedes Bianchi & 685/97 & mbianchi9@arnet.com.ar \\      	      							
+      					Guillermo T\'unez & 790/00 & guillermotunez@yahoo.com.ar\\
+		
+                \hline
+        \end{tabular}
+\end{center}
+
+
+\addvspace{3cm}
+
+\textbf{Extracto:} Este trabajo se centra en el an\'alisis de m\'etodos para resolver sistemas de ecuaciones lineales y su aplicaci\'on en problemas de flujo en grafos, en particular sobre una red de Morley.
+Se desarroll\'o una variante de la eliminaci\'on gaussiana con pivoteo parcial que puede trabajar con sistemas indeterminados y se aplic\'o al problema de la red de Morley. Se estudi\'o su performance y el n\'umero de condici\'on de la matriz del sistema para estimar el error num\'erico cometido.
+El algoritmo produce un resultado gr\'afico que permite comprobar f\'acilmente la correctitud de la soluci\'on y compartirla con usuarios sin que necesiten conocer detalles de la implementaci\'on.\\
+
+\textbf{Palabras Clave:} Sistema de ecuaciones lineales, Grafo, Red de Morley, Eliminaci\'on gaussiana, Error num\'erico.
+
+%----------------------------------------------------------------------------------------------%
+\newpage
+
+\tableofcontents
+
+\newpage
+\input{Introduccion}
+
+\newpage
+\input{Desarrollo}
+
+\newpage
+\input{Resultados}
+
+\newpage
+\input{Discusion}
+
+\newpage
+\input{Conclusiones}
+
+\newpage
+\input{ApendiceA}
+
+\newpage
+\input{ApendiceB}
+
+\newpage
+\input{ApendiceC}
+
+\end{document}
+
