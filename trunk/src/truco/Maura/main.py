@@ -21,13 +21,13 @@ Mano=ManoTruco(cartas,esServer)
 
 while opcion!=-1:
   if Mano.turnoDeJuego()==True:
-    jugadas=ManoTruco.jugadasPosibles()
+    jugadas=Mano.jugadasPosibles()
     opcion=raw_input('Ingrese la jugada a realizar:  ')
     print jugadas[opcion]
-    MantoTruco.jugar(jugadas[opcion])
+    Mano.jugar(jugadas[opcion])
   else:
-    ManoTruco.recibirJugada(jugada)
-  if ManoTruco.terminado()==None:
+    Mano.recibirJugada(jugada)
+  if Mano.terminado()==None:
       print "Terimno el Partido"
       opcion=-1
 
