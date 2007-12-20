@@ -1,0 +1,72 @@
+\section{Introducci\'on}
+
+\subsection{Sistemas de Ecuaciones Lineales}
+
+Un sistema lineal de ecuaciones consta de n ecuaciones sobre n inc\'ognitas y puede expresarse en notaci\'on matricial como $A \times x = b$. Estas t\'ecnicas  utilizan una serie finita de operaciones aritm\'eticas para determinar la soluci\'on exacta del sistema, sujeta \'unicamente al error de redondeo.\\
+
+Una propiedad importante acerca de la existencia o no de la soluci\'on del sistema es la existencia de una inversa $A^{-1}$ de la matriz $A$; si existe el sistema tiene soluci\'on y adem\'as es \'unica. Equivalentemente el sistema tiene soluci\'on si el determinante de la matriz $A$ no es cero. En este caso tambi\'en se dice que la matriz $A$ es no singular.\\
+
+La soluci\'on del sistema lineal es un vector $x$ tal que $x = A^{-1} b$.
+
+\subsection{M\'etodo de Gauss para la resoluci\'on de sistemas de ecuaciones Lineales}
+
+El m\'etodo de Gauss, conocido tambi\'en como de triangulaci\'on o de eliminaci\'on gaussiana, nos permite resolver sistemas de ecuaciones lineales con cualquier n\'umero de ecuaciones y de inc\'ognitas.\\ 
+
+La idea es muy simple; por ejemplo, para el caso de un sistema de tres ecuaciones con tres inc\'ognitas se trata de obtener un sistema equivalente cuya primera ecuaci\'on tenga tres inc\'ognitas, la segunda dos y la tercera una. Se obtiene as\'i un sistema triangular o en cascada.\\
+
+Al resolver un sistema puede suprimirse, sin que var\'ie su resoluci\'on, cualquier ecuaci\'on que pueda obtenerse a partir de otras aplicando las siguientes operaciones:
+\begin{itemize}
+\item Producto o cociente por un n\'umero real distinto de cero.
+\item Suma o diferencia de ecuaciones.
+\end{itemize}
+
+Es importante añadir que el sistema resultante es dependiente de la forma en que apliquemos estos criterios, es decir, las ecuaciones obtenidas no son siempre las mismas, pero si lo hemos aplicado correctamente, el sistema resultante es equivalente al dado.
+
+\newpage
+
+\subsection{Soluci\'on de un Sistema}
+
+La soluci\'on de un sistema es cada conjunto de valores que satisface a todas las ecuaciones.
+Los tipos de sistemas pueden clasificarse en 3:\\
+\begin{itemize}
+\item Sistemas Compatibles
+\item Sistemas Compatibles Indeterminados
+\item Sistemas Incompatibles
+\end{itemize}
+
+\subsubsection{Sistemas Determinados}
+
+Se llama sistema compatible determinado al que tiene una sola soluci\'on com\'un, es decir, que sus rectas asociadas se cortan en un s\'olo punto, por lo tanto sus vectores de direcci\'on son linealmente independientes.
+
+\subsubsection{Sistemas Compatibles Indeterminados}
+
+Se llama sistema compatible indeterminado al que tiene infinitas soluciones, es decir, que sus rectas asociadas son id\'enticas, por lo tanto sus ecuaciones son equivalentes.
+
+\subsubsection{Sistemas Incompatibles}
+
+Se llama sistema incompatible al que no tiene ninguna soluci\'on, es decir, que sus rectas asociadas son paraleleas, por lo tanto tiene alg\'un vector de direcci\'on linealmente dependiente.
+
+\subsection{Norma Matricial}
+
+Una norma matricial sobre el conjunto de todas las matrices de  $n \times n$ es una funci\'on de valor real, $\lVert * \rVert$ , definida en este conjunto y que satisface para todas las matrices  $A$ y $B$ de $n \times n$ y todos los n\'umeros reales $\alpha$:
+\\
+\\
+\begin{itemize}
+\item $\textbf{(i)} \lVert A \rVert \geq 0.$
+\item $\textbf{(ii)} \lVert A \rVert = 0$, si y s\'olo si $A$ es $0$, la matriz con todas las entradas cero.
+\item $\textbf{(iii)} \lVert \alpha A \rVert = \mid \alpha \mid \lVert A \rVert .$
+\item $\textbf{(iv)} \lVert A + B \rVert \leq \lVert A \rVert + \lVert B \rVert.$
+\item $\textbf{(v)} \lVert A  B \rVert \leq \lVert A \rVert  \lVert B \rVert.$
+\end{itemize}
+
+\newpage
+
+\subsection{N\'umero de Condici\'on }
+
+El n\'umero de condici\'on de una matriz no singular A relativo a la norma $\lVert * \rVert$ es \\
+$$k(A) = \lVert A \rVert . \lVert A^-1 \rVert $$
+
+Una matriz A es bien condicionada si $k(A)$ est\'a cerca a 1 y es  mal condicionada si $k(A)$ es significativamente mayor a 1. Dentro de este contexto, la condici\'on de la matriz es una medida de la seguridad relativa de que al tener un vector residual peque\~no implique que la soluci\'on obtenida sea cercana a la soluci\'on exacta.
+
+
+%--------------------------------------------------------------------------------------------------------

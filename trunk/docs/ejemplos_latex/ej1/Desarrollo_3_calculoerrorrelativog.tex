@@ -1,0 +1,66 @@
+\section{Triste intento de c\'alculo de error relativo de G(x)}
+
+\begin{eqnarray}
+\epsilon(\frac{e^{Q(x)^2}-1}{Q(x)^2}) & = & \epsilon(\frac{a}{b}) \nonumber \\
+\nonumber \\
+& \leq & \Big|\epsilon(a)\Big| + \Big|\epsilon(b)\Big| + \Big|\epsilon_{(\%)}\Big| \nonumber \\
+\nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+\epsilon(a) & = & \epsilon(e^{Q(x)^2} - 1) \nonumber \\
+\nonumber \\
+& = & \epsilon(a' - b') \nonumber \\
+\nonumber \\
+& \leq & \Big| \frac{1}{a' - b'} a' \epsilon(a') \Big| + \Big| \frac{b'}{a'-b'} \epsilon(b') \Big| + \epsilon_{(-)} \nonumber \\
+\nonumber
+& = & \Big| \frac{1}{a' - 1} a' \epsilon(a') \Big| + \Big| \frac{1}{a'-1} \epsilon(1) \Big| + \epsilon_{(-)} \nonumber \\
+& = & \Big| \frac{1}{a' - 1} a' \epsilon(a') \Big| + \epsilon_{(-)} \nonumber \\
+\nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+\epsilon(a') & = & \epsilon( e^{Q(x)^2} ) \nonumber \\
+\nonumber \\
+& = & \epsilon(e^{a''}) \nonumber \\
+\nonumber \\
+& \leq & \Big| \frac{e^{a''}}{e^{a''}} \epsilon(a'') \Big| + \epsilon_{(exp)} \nonumber \\
+\nonumber \\
+& = & \epsilon(a'') + \epsilon_{(exp)} \nonumber \\
+\nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+\epsilon(a'') & = & \epsilon(Q(x)^2) \nonumber \\
+\nonumber \\
+& = & \epsilon(a'''.a''') \nonumber \\
+\nonumber \\
+& \leq & \Big| \frac{a''' + a'''}{a'''^2} a''' \epsilon(a''') \Big| + \epsilon_{(x)} \nonumber \\
+\nonumber \\
+& = & \Big| 2 \epsilon(a''') \Big| + \epsilon_{(x)} \nonumber \\
+\nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+\epsilon(b) & = & \epsilon(Q(x)^2) \nonumber \\
+\nonumber \\
+& = & \epsilon(a''') \nonumber \\
+\nonumber \\
+& = & \Big| 2 \epsilon(a''') \Big| + \epsilon_{(x)} \nonumber \\
+\nonumber
+\end{eqnarray}
+
+\begin{eqnarray}
+\epsilon(a''') & = & \epsilon(Q(x)^2) \nonumber \\
+\nonumber \\
+& = & \epsilon(q_1(x) - q_2(x)) \nonumber \\
+\nonumber \\
+& \leq & \Big| \frac{1}{q_1(x) - q_2(x)} q_1(x) \epsilon(q_1(x)) \Big| +
+\Big| \frac{-1}{q_1(x) - q_2(x)} q_2(x) \epsilon(q_2(x)) \Big| + \epsilon_{(-)} \nonumber \\
+\nonumber
+\end{eqnarray}
+
+Que se me indefine, porque tengo en el denominador a $Q(x)$, que es matem'aticamente igual a cero
+para cualquier valor de x.
+Esto no s'e muy bien como salvarlo.
+

@@ -1,0 +1,17 @@
+\section{Conclusiones}
+
+% PAUTAS: esta sección debe contener las conclusiones generales del trabajo. Se deben 
+% mencionar las relaciones de la discución sobre las que se tiene certeza, junto con 
+% comentarios y observaciones generales aplicables a todo el proceso. Mencionar también 
+% posibles extensiones a los métodos, experimentos que hayan quedado pendientes, etc.
+
+% TAREAS: conclusiones generales sobre certezas. Mejoras y cosas pendientes.
+
+El valor del cual depende muy fuertemente el tiempo de ejecución del algoritmo que resulve el problema planteado para una red el\'ctrica con las restricciones de Morley es la cantidad de ejes del grafo que representada dicha red. En un principio esto nos tendr\'ia que haber resultado bastante razonable, sin tener en cuenta ninguno de los resultados obtenidos, ya que los valores del flujo de cada uno de los ejes eran inicialmente nuestras inc\'ognitas. De esta manera la cantidad de ejes representa una buena medida de la complejidad del problema planteado.\\
+Las instancias de prueba utilizadas son instancias poco densas. En general la relación entre la cantidad de nodos $n$ y ejes $m$ del grafo que representa a la red se corresponde con $m$ aprox $3n$.\\
+Hubiese sido muy interesante poder probar instancias con diferente cantidd de ejes para una misma cantidad de nodos. De esta manera hubi\'eramos podido notar m\'as claramente la influencia de la variación en la densidad de un grafo con respecto al tiempo de ejecución de cada una de las instancias. Llamamos densidad de un grafo (representaci\'on matem\'atica de la red el\'ectrica) a la cantidad de ejes que contiene dicho grafo, dividido la cantidad m\'axima posible de ese mismo grafo. Esto ser\'ia $m / (n*(n-1)/2)$.\\
+La reducci\'on en el espacio de almacenamiento debido a la nueva representac\'on del grafo mediante una matriz para poder resolver el problema fue del $25$ porciento. Esta reducci\'on en el espacio de almacenamiento trajo aparejada una disminuci\'on en el tiempo de ejecuci\'on y la posible inclusi\'on de instancias de mayor tamaño para las pruebas realizadas.\\
+El tiempo de ejecuci\'on, medido en segundos, en funci\'on de la cantidad de nodos o ejes, ya que ambas distribuciones pertenecen a una misma familia, se corresponden con una distribuci\'on exponencial.\\
+No existe relaci\'on aparente a simple vista entre el tiempo de ejecuci\'on y el n\'umero de condici\'on de la matriz. Como nosotros sabemos el n\'umero de condici\'on nos otorga una medida de confiabilidad sobre la soluci\'on encontrada al sistema de ecuaciones planteado para obtener la soluc\'on del problema de flujos sobre las interconexiones de una red el\'ectrica.\\
+
+

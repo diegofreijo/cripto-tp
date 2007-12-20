@@ -1,0 +1,91 @@
+\section{Apéndice B}
+
+\subsection{Funciones Relevantes}
+
+\begin{center} $Q(x)$ \end{center}
+
+\begin{verbatim}
+  pflotante calcularQ(pflotante& paramX) {
+		pflotante x, raiz, modulo, division;
+		// calcular fl(x)
+		x = paramX;
+		truncar(x);
+		// calcular x*x
+		raiz = x*x;
+		truncar(raiz);
+		// calcular x*x+1
+		raiz = raiz + 1;
+		truncar(raiz);
+		// calcular sqrt(x*x+1)
+		raiz = sqrt(raiz);
+		truncar(raiz);
+		// calcular x - sqrt(x*x+1)
+		modulo = x - raiz;
+		truncar(modulo);
+		// calcular abs(x - sqrt(x*x+1))
+		modulo = abs(modulo);
+		truncar(modulo);
+		// calcular x + sqrt(x*x+1)
+		division = x + raiz;
+		truncar(division);
+		// calcular 1 / (x + sqrt(x*x+1))
+		division = 1 / division;
+		truncar(division);
+		// valor final
+		modulo = modulo - division;
+		truncar(modulo);
+		// devolver
+		return modulo;
+	}
+\end{verbatim}
+
+...explicación de la implementación del método...
+
+\begin{center} $T(x)$ \end{center}
+
+\begin{verbatim}
+  pflotante calcularT(pflotante& paramX) {
+		pflotante x, cero, resultado, ealax;
+		// calcular fl(x)
+		x = paramX;
+		truncar(x);
+		// ver si x == 0
+		cero = 0.0;
+		truncar(cero);
+		if (x == cero) {
+			resultado = 1.0;
+		}
+		else {
+			// calcular e^x
+			ealax = exp(x);
+			truncar(ealax);
+			// calcular e^x - 1
+			ealax = ealax - 1;
+			truncar (ealax);
+			// calcular (e^x - 1)/x
+			resultado = ealax/x;
+		}
+		truncar(resultado);
+		return resultado;
+	}
+\end{verbatim}
+
+...explicación de la implementación del método...
+
+\begin{center} $G(x)$ \end{center}
+
+\begin{verbatim}
+  pflotante calcularG(pflotante& paramX) {
+		pflotante q2, resultado;
+		// calcular Q(x)^2;
+		q2 = calcularQ(paramX);
+		q2 = q2*q2;
+		truncar(q2);
+		// calcular T(Q(x)^2)
+		resultado = calcularT(q2);
+		truncar(resultado);
+		return resultado;
+	}
+\end{verbatim}
+
+...explicación de la implementación del método...

@@ -1,0 +1,274 @@
+\section{Apéndice B}
+
+\subsection{Funciones Relevantes}
+
+\begin{scriptsize} 
+Matriz spline(Matriz tablaValores, long double derivPrimerPunto) {
+    // Planteo
+    // 1) crear sistema de ecuaciones para obtener los valores c_j
+    // 2) resolver (siempre puede resolverse en la teoría, o hubo error de datos
+    //    de entrada)
+    // 3) con los valores despejados de c_j y los a_j obtenidos al principio
+    //    despejar b_j y d_j
+
+    // 1) crear sistema para obtener c_j
+    // El sistema a plantear tiene esta forma:
+    // - una fila 2*h_0*c_0 + h_0*c_1 = val(0) donde val(0) es la expresión
+    //   val(0) = 3(a_1 - a_0)/h_0 - 3*derivPrimerPunto
+    // - ecuaciones h_{j-1}*c_{j-1} + 2(h_{j-1}+h_{j})*c_j + h_{j}*c_{j+1} = val(j)
+    // para j entre 1 y n-1 donde val(j) es 3(a_{j+1}-a_j)/h_j - 3(a_j - a_{j-1})/h_{j-1}
+    // - una fila 0 0 ... 0 1 con valor de término independiente 0
+    // Esta matriz es diagonal dominante - el sistema siempre tiene solución
+    // Este spline es de frontera sujeta en el primer segmento, y de frontera
+    // libre en el último.
+
+    assert(tablaValores.getCol() == 2);
+    assert(tablaValores.getFil() >= 3); // al menos 3 filas, o no puede hacerse un spline!
+
+    // Definición: n es la cantidad de segmentos entre puntos, y la cantidad de
+    // ecuaciones de grado 3 que deben generarse. La tabla de valores de entrada
+    // proporciona entonces n+1 puntos
+    unsigned int n = tablaValores.getFil() - 1;
+
+    // Crear las matrices para el sistema de ecuaciones
+    Matriz A(n+1, n+1); // coeficientes de las variables
+    Matriz b(n+1, 1); // términos independientes
+
+    // Completar las matrices del sistema lineal
+
+	// Asignar la primera ecuación
+	// Frontera libre
+	// A.sub(1, 1) = 1.0; // c_0 == 0 (frontera libre)
+	// Frontera sujeta en el primer segmento del spline
+	// - calcular h0 para la ecuación en la primera fila
+
+    // Obtener h_0 = x_{0+1} - x_0
+    long double hjmas1 = tablaValores.sub(2, 1) - tablaValores.sub(1, 1); // x_1 - x_0
+    assert(hjmas1 > 0); // pedimos que los x_j estén en orden ascendente y no se repitan (!)
+    // Obtener a_j - a_{j-1} con j=1  ---------> obtener a_1 - a_0
+    long double Dajmas1 = tablaValores.sub(2, 2) - tablaValores.sub(1, 2);
+    // Obtener 3(a_j - a_{j-1}) / h_{j-1} con j=1  ---------> obtener 3(a_1 - a_0) / h_0
+    long double t3Dajmas1Dhjmas1 = (3.0*Dajmas1)/hjmas1;
+
+	A.sub(1, 1) = 2.0*hjmas1;
+	A.sub(1, 2) = hjmas1;
+	b.sub(1, 1) = t3Dajmas1Dhjmas1 - 3.0*derivPrimerPunto;
+
+	// Obtener 3(a_{j+1} - a_j) / h_j - 3(a_j - a_{j-1}) / h_{j-1} para j>=1
+    for (int j = 1; j<=n-1; j++) {
+        // Guardar los valores previos para esta iteración
+        long double prevhj = hjmas1;
+        long double prevDaj = Dajmas1;
+        long double prev3DajDhj = t3Dajmas1Dhjmas1;
+        // Calcular nuevos valores
+        hjmas1 = tablaValores.sub(j+1+1, 1) - tablaValores.sub(j+1, 1); // x_{j+1} - x_j
+        assert(hjmas1 > 0); // pedimos que los x_j estén en orden ascendente y no se repitan (!)
+        Dajmas1 = tablaValores.sub(j+1+1, 2) - tablaValores.sub(j+1, 2);
+        t3Dajmas1Dhjmas1 = (3.0*Dajmas1)/hjmas1;
+        // Guardarlo en el vector de términos independientes
+        b.sub(j+1, 1) = t3Dajmas1Dhjmas1 - prev3DajDhj;
+        // Guardar en la matriz asociada del sistema
+        A.sub(j+1, j) = prevhj; // h_j
+        A.sub(j+1, j+1) = 2.0*(prevhj+hjmas1); // 2(h_j + h_{j+1})
+        A.sub(j+1, j+2) = hjmas1; // h_{j+1}
+    }
+
+	// Asignar la última ecuación
+	// Tenemos un spline con frontera sujeta en el último segmento
+	A.sub(n+1, n+1) = 1.0; // c_{n+1} == 0 (idem)
+	b.sub(n+1, 1) = 0.0;
+	// Resolver el sistema
+	assert(A.triangular(b));
+	A.despejar(b);
+	// No necesito más la matriz A - la convierto en la matriz resultado
+    // Crear la matriz con los coeficientes de cada polinomio
+	A.resize(n, 5); // Devolver una matriz de n filas por 5 columnas
+
+    for (int jmas1 = 1; jmas1 <= n; jmas1++) {
+		// Asignar los valores de x_j
+		A.sub(jmas1, 1) = tablaValores.sub(jmas1, 1); // definición de x_j
+		// Asignar los valores de a_j
+		// Estos valores son sencillamente f(x_j) para j entre 0 y n-1
+		A.sub(jmas1, 2) = tablaValores.sub(jmas1, 2); // definición de a_j
+		// Asignar los valores de b_j
+		// Estos valores son:
+		// b_j = (a_{j+1} - a_j)/h_j - h_j*((2/3)*c_j + c_{j+1}/3) para j entre 0 y n-1
+		long double hj = tablaValores.sub(jmas1+1, 1) - tablaValores.sub(jmas1, 1);
+		A.sub(jmas1, 3) = (tablaValores.sub(jmas1+1, 2) - tablaValores.sub(jmas1, 2))/hj;
+		A.sub(jmas1, 3) -= hj*(2.0*b.sub(jmas1, 1) + b.sub(jmas1+1, 1))/3.0;
+		// Asignar los valores de c_j
+		// Estos valores son las incógnitas del sistema resuelto, y están en b
+		A.sub(jmas1, 4) = b.sub(jmas1, 1);
+		// Asignar los valores de d_j
+		// d_j = (c_{j+1} - c_j) / (3.0*h_j)
+		A.sub(jmas1, 5) = (b.sub(jmas1+1, 1) - b.sub(jmas1, 1)) / (3.0*hj);
+	}
+return A;
+}
+\end{scriptsize} 
+ \newpage 
+\begin{scriptsize} 
+ bool chequearPositivoBisec(long double (*func)(long double), long double (*deriv)(long double), long double a, long double b, const long double& tolBiseccion, long double& valorNegativo, std::ostream* pOutput) {
+        if (a >= b)
+            return true; // intervalo incorrecto - informar que la función se mantiene positiva
+
+        long double valF = func(a);
+        if (valF < 0) {
+            valorNegativo = a;
+            return false; // encontramos un negativo
+        }
+
+        valF = func(b);
+        if (valF < 0) {
+            valorNegativo = b;
+            return false; // encontramos un negativo
+        }
+
+        long double valDerivA = deriv(a);
+        long double valDerivB = deriv(b);
+        int signDerivA = sign(valDerivA);
+        int signDerivB = sign(valDerivB);
+        if (signDerivA == 0) {
+            a = salirDelCero(deriv, a, tolBiseccion); // omitir el punto crítico en la próxima iteración
+        }
+        if (signDerivB == 0) {
+            b = salirDelCero(deriv, b, -tolBiseccion); // omitir el punto crítico en la próxima iteración
+
+        }
+        // Iterar sobre un intervalo que excluya a el o los puntos críticos en los
+        // bordes anteriores del intervalo
+        if (signDerivA == 0 || signDerivB == 0)
+            return chequearPositivoBisec(func, deriv, a, b, tolBiseccion, valorNegativo, pOutput);
+
+        if (signDerivA != signDerivB) {
+            // raíz de la derivada en el medio! Usar bisección para encontrarla
+            long double nuevoa = a;
+            long double nuevob = b;
+            long double aproxRaiz = biseccion(deriv, nuevoa, nuevob, tolBiseccion);
+            cout << "Encontre una raiz de la derivada en " << aproxRaiz << endl;
+            *pOutput << "Encontre una raiz de la derivada en " << aproxRaiz << endl;
+            // chequear si la funcion se hace negativa
+            long double valF = func(aproxRaiz);
+            if (valF < 0) {
+                cout << "Encontré un valor negativo de la función en " << aproxRaiz << endl;
+								*pOutput << "Encontré un valor negativo de la función en " << aproxRaiz << endl;
+                valorNegativo = aproxRaiz;
+                //return false; // encontramos el negativo
+            }
+            // buscar recursivamente en [a, nuevoa] y [nuevob, b]
+            bool rv = chequearPositivoBisec(func, deriv, a, nuevoa, tolBiseccion,valorNegativo,pOutput);
+            if (rv) {
+                rv = chequearPositivoBisec(func, deriv, nuevob, b, tolBiseccion, valorNegativo,pOutput);
+            }
+            return rv;
+        }
+        else {
+            // subdividir el intervalo [a,b]
+            long double ancho = (b - a)/2.0;
+            if (ancho < tolBiseccion)
+                return true; // el intervalo ya era demasiado chico para subdividirlo
+            long double medio = a + ancho;
+            // buscar recursivamente en [a, medio] y [medio, b]
+            bool rv = chequearPositivoBisec(func, deriv, a, medio, tolBiseccion, valorNegativo,pOutput);
+            if (rv) {
+                rv = chequearPositivoBisec(func, deriv, medio, b, tolBiseccion, valorNegativo, pOutput);
+            }
+            return rv;
+        }
+    }
+
+\end{scriptsize} 
+ \newpage 
+\begin{scriptsize} 
+
+long double biseccion(long double (*func)(long double), long double& a, long double& b, long double tolBiseccion) {
+        long double valA = func(a);
+        int signA = sign(valA);
+        if (signA == 0) {
+            // Encontré la raíz: es a
+            return a;
+        }
+
+        while (true) {
+            long double mitad = (b - a)/2.0;
+            if (mitad < tolBiseccion) {
+                return a + mitad;
+            }
+            long double p = a + mitad;
+            long double valP = func(p);
+            int signP = sign(valP);
+            if (signA == signP)
+                a = p;
+            else
+                b = p;
+        }
+    }
+\end{scriptsize} 
+
+
+\begin{scriptsize} 
+
+ long double evalH(long double t) {
+        return (datos.masa*G + evalV2(t)*datos.coef_carga_dinam)*datos.coef_rozamiento - datos.masa*evalA(t);
+    }
+
+\end{scriptsize} 
+
+\begin{scriptsize} 
+long double evalDiffH(long double t) {
+        return (2.0*evalDiffV2(t)*datos.coef_carga_dinam*datos.coef_rozamiento - datos.masa*evalDiffA(t));
+    }
+\end{scriptsize} 
+ \newpage 
+\begin{scriptsize} 
+
+	void calcular(ofstream& salida) {
+		datos.spline_x = spline(datos.matriz_x, datos.dir_inicial_x);
+		datos.spline_y = spline(datos.matriz_y, datos.dir_inicial_y);
+		pOut = &salida;
+    // Buscar ceros de la derivada y evaluar la función en los puntos críticos
+		// También verificar el signo de la función H en los extremos del intervalo
+    long double tolBiseccion = 0.0001;
+    long double a, b, valorNegativo = 0.0;
+  	bool esPositivo = true;
+  
+    b = datos.matriz_x.sub(1, 1);
+    for (int i = 2; i <= datos.matriz_x.getFil(); i++) {
+			a = b;
+			b = datos.matriz_x.sub(i, 1);
+			esPositivo = calc::chequearPositivoBisec(evalH, evalDiffH, a, b, tolBiseccion, valorNegativo, pOut);
+			if (!esPositivo)
+		    	break;
+		}
+		if (!esPositivo) {
+			cout << "SE PUDRE TODO en t = " << valorNegativo << endl;
+			cout << "Ese punto cae dentro del segmento numero " << valorNegativo / datos.omega + 1.0 << endl;
+			salida << "SE PUDRE TODO en t = " << valorNegativo << endl;
+			salida << "Ese punto cae dentro del segmento numero " << valorNegativo / datos.omega + 1.0 << endl;
+			// Sugerir un punto
+			DatosTP4 orig = datos;
+			int problema = (int) ( 1.1 + valorNegativo / datos.omega );
+
+			datos.cant_muestras = problema + 1;
+			// Definir una matriz de problema + 1 puntos, los primeros problema - 1 son iguales
+			Matriz mX(problema + 1, 2);
+			Matriz mY(problema + 1, 2);
+			for (int i = 1; i <= problema + 1; i++) {
+				mX.sub(i, 1) = mY.sub(i, 1) = datos.omega * (i-1);
+				if (i < problema) {
+					mX.sub(i, 2) = datos.matriz_x.sub(i, 2);
+					mY.sub(i, 2) = datos.matriz_y.sub(i, 2);
+				}
+			}
+			datos.matriz_x = mX;
+			datos.matriz_y = mY;
+			// Hay que calcular los puntos problema y problema + 1
+			// 1era condición: ambos sobre la trayectoria original
+			// 2da condición: el punto problema debe hacer que la función H no reviente
+			// 3ra condición: el punto problema + 1 debe hacer que el vector aceleración en
+			// el punto problema no tenga mucho valor absoluto
+			datos = orig;
+		}
+        mostrarGraficos();
+ }
+\end{scriptsize}

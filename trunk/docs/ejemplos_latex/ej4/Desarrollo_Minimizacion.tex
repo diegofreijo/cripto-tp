@@ -1,0 +1,70 @@
+%Deben explicarse los metodos numericos que utilizaron y su aplicacion al problema concreto involucrado en el trabajo. Se deben mencionar los pasos que siguieron para la implementacion de los algoritmos, las dificultades que fueron encontrando y la descripcion de como las fueron resolviendo. %
+
+\subsection{Inecuaci\'on de no-derrape}
+
+	En cada punto de la trayectoria, el auto debe verificar esta ecuaci\'on:
+
+\begin{equation}
+m\: a(t) \ \le\ (mg + v(t)^2s) \: \mu_0 \nonumber
+\end{equation}
+
+	Para chequear que se cumpla esta condici\'on, se la transform\'o en una funci\'on $H$:
+
+\begin{eqnarray}
+H(t) & = & (mg + v(t)^2s) \: \mu_0 - m\: a(t) \nonumber
+\end{eqnarray}
+
+	Entonces el problema de verificar la restricci\'on para que el auto no derrape es ahora verificar que H(t) se mantenga positiva en todos los puntos de la trayectoria del auto.
+
+
+\subsection{Chequeo de signo positivo en $H(t)$}
+
+	Para chequear que H(t) se mantenga positiva cont\'abamos con dos enfoque principales:
+\begin{itemize}
+\item Buscar sus valores m\'inimos. En cada m\'inimo, ver si la funci\'on se vuelve negativa.
+\item Buscar los puntos cr\'iticos, mediante la b\'usqueda de ra\'ices de la derivada. Luego evaluar la funci\'on en estos puntos, y ver si se vuelve negativa.
+\end{itemize}
+
+En ambos casos tenemos el problema de que los algoritmos disponibles en la teor\'ia consultada requieren hip\'otesis bastante fuertes para trabajar. Por ejemplo, en el caso de la b\'usqueda de ra\'ices, debe tenerse un cambio de signo. Y tanto en la b\'usqueda de m\'inimos como en la b\'usqueda de ra\'ices, los algoritmos disponibles encuentran s\'olo UN m\'inimo o ra\'iz, dentro del intervalo de b\'usqueda.
+
+A pesar de tener disponibles los algoritmos de b\'usqueda de m\'inimos de www.nr.com (Numerical Recipes in C), preferimos la b\'usqueda de puntos cr\'iticos ya que la teor\'ia nos era mejor conocida.
+De hecho, desarrollamos un m\'etodo para chequear si una funci\'on se mantiene con signo positivo en un intervalo $[a, b]$ inspirado en el m\'etodo de Bisecci\'on. El pseudo-código del algoritmo es el siguiente:
+
+\begin{itemize}
+\item evaluar $f(a)$. Si es negativo, terminar
+\item evaluar $f(b)$. Si es negativo, terminar
+\item Si $f'(a) = 0$ o $f'(b) = 0$, obtener nuevos valores para $a$ y $b$ de forma que el signo de la derivada no sea $0$, e iterar.
+\item Si el signo de las derivadas en $a$ y $b$ cambia, hay un punto cr\'itico. Localizarlo con el m\'etodo de Bisecci\'on, y evaluar la funci\'on en la ra\'iz $p$ obtenida. Si se hace negativa, terminar. En caso contrario, buscar recursivamente si la funci\'on se mantiene positiva en $[a, p)$ y $(p, b]$.
+\item Si el signo de las derivadas en $a$ y $b$ no cambia, dividir el intervalo $[a, b]$ a la mitad, y chequear recursivamente si la funci\'on se mantiene positiva en cada sub-intervalo.
+\end{itemize}
+
+	Tenemos como condici\'on de parada para el algoritmo que el intervalo donde debe chequear se vuelve muy peque\~no.
+
+	A pesar de la evidente ineficiencia del algoritmo, funciona correctamente y su implementaci\'on fue relativamente r\'apida, una vez resueltos \emph{bugs} que hac\'ian que no termine.
+
+\subsection{M\'etodo de Newton}
+
+	Recibimos de parte de los docentes la recomendaci\'on de utilizar el m\'etodo de Newton-Raphson para encontrar la ra\'iz de una funci\'on luego de tenerla acotada en un intervalo con el m\'etodo de Bisecci\'on.
+	Inicialmente hab\'iamos decidido hacerlo de esta manera, pero no logramos que funcione correctamente. De todas formas la raz\'on principal fue otra: la ganancia utilizando ese algoritmo ser\'ia m\'inima, si de todas formas la funci\'on \emph{chequearPositivoBisec} ``barrer\'ia'' cada intervalo de tama\~no m\'inimo haciendo miles de evaluaciones de la funci\'on $H(t)$ y su derivada.
+
+
+\subsection{Problemas encontrados}
+
+Implementamos una variante del m\'etodo de Bisecci\'on, que devuelve adem\'as del valor m\'as aproximado encontrado de la ra\'iz, el intervalo donde se ``encerr\'o'' a la ra\'iz. Esto fue necesario ya que este intervalo se utiliza en \emph{chequearPositivoBisec} para seguir buscando recursivamente luego de encontrar un punto cr\'itico.
+
+
+\subsection{Graficaci\'on}
+
+Utilizando la librer\'ia gr\'afica CImg (cimg.sourceforge.net) nuestra implementaci\'on dibuja los siguientes gr\'aficos para una instancia del problema:
+
+\begin{itemize}
+\item Gr\'afico de la trayectoria en la pista, mostrando en los puntos dados como entrada los vectores velocidad y aceleraci\'on.
+\item Gr\'afico de la funci\'on $H(t)$ y su derivada $H'(t)$, para observar el punto donde $H(t)$ se vuelve negativa.
+\item Gr\'afico del m\'odulo del vector velocidad
+\item Gr\'afico del m\'odulo del vector aceleraci\'on, dandole signo seg\'un apunte ``hacia adelante'' o ``hacia atr\'as'' respecto del vector velocidad de la trayectoria.
+\end{itemize}
+
+
+%Explicar tambien como fueron planteadas y realizadas las mediciones experimentales. Los ensayos fallidos, hipotesis y conjeturas equivocadas, experimentos y metodos malogrados deben figurar en esta seccion, con una brave explicacion de los motivos de estas fallas(en caso de ser conocidas)%
+
+

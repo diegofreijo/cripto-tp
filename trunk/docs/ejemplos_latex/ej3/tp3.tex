@@ -1,0 +1,168 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{a4wide}
+\usepackage[dvips]{graphicx}
+\usepackage[spanish]{babel}
+\parindent = 0 pt
+\parskip = 11 pt
+
+\newcommand{\erf}{\hbox{erf}}
+\newcommand{\real}{\hbox{\bf R}}
+
+\begin{document}
+
+\begin{centering}
+\bf Laboratorio de M\'etodos Num\'ericos - Primer cuatrimestre 2007 \\
+\bf Trabajo Pr\'actico N\'umero 3: D\'onde est\'a el piloto? \\
+\end{centering}
+
+\vskip 25pt
+\hrule
+\vskip 11pt
+
+El problema general de programaci\'on lineal puede escribirse de la siguiente
+forma:
+\begin{eqnarray}
+\hbox{maximizar} \qquad cx & & \nonumber \\
+\hbox{sujeto a:} \qquad Ax & \le & b \nonumber \\
+x & \in & \hbox{\bf R}^n_+ \nonumber
+\end{eqnarray}
+Es decir, se busca optimizar una funci\'on lineal (la \emph{funci\'on
+objetivo}) sobre el conjunto de vectores $x\in\hbox{\bf R}^n_+$ que cumplen
+simult\'aneamente un cierto n\'umero de desigualdades lineales (las
+\emph{restricciones del problema}). Un m\'etodo general para resolver este
+tipo de problemas es el \emph{m\'etodo simplex}, descubierto por G.~Dantzig
+en 1947.
+
+Cuando $b\ge 0$, decimos que el problema es \emph{homog\'eneo positivo}.
+Es importante notar que un problema homog\'eneo positivo siempre es factible,
+puesto que $x=0$ es una soluci\'on factible. El objetivo del trabajo
+pr\'actico es implementar el m\'etodo simplex para resolver problemas de
+programaci\'on lineal homog\'eneos positivos y realizar experimentos sobre
+un problema particular.
+
+\textbf{El problema}
+
+La disciplina conocida como \emph{revenue management} se ocupa, entre otras
+cosas, de establecer pol\'{\i}ticas de control sobre los recursos de una
+organizaci\'on con el objetivo de maximizar sus ingresos. Se utilizan
+actualmente t\'ecnicas de revenue management en diferentes \'areas de
+servicios, como aerol\'{\i}neas, hoteles, y ferrocarriles. En el caso
+particular de las aerol\'{\i}neas, el problema consiste en manejar las
+capacidades de un conjunto de vuelos en una red que conecta varias ciudades.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.8]{tp3} \\
+\caption{Ejemplo de una red de aerol\'{\i}neas.}
+\label{fig:Network}
+\end{center}
+\vspace*{-3mm}
+\end{figure}
+
+Por ejemplo, la Figura~\ref{fig:Network} muestra una posible red con tres
+ciudades y tres vuelos que las conectan.
+Llamamos \emph{tramo} a un vuelo directo entre dos ciudades (tambi\'en
+llamado vuelo punto a punto). Cada tramo posee una cantidad determinada de
+asientos disponibles. Un \emph{producto} sobre la red se define como una
+combinaci\'on entre un \emph{itinerario} (ciudades de origen-destino y,
+eventualmente, paradas intermedias) y una tarifa.
+
+En el ejemplo, un posible
+producto corresponde a un vuelo directo desde A hasta C, con una tarifa de
+\$1200. Otro producto podr\'{\i}a ser un vuelo directo desde A hasta C pero,
+a diferencia del caso anterior, con una tarifa de \$800. Tambi\'en es
+posible tener productos distintos con igual origen-destino y tarifa, pero
+con distintos itinerarios. Por ejemplo, un tercer producto podr\'\i a ser
+el que va desde A hasta C haciendo un \emph{stop} en B, y con una tarifa de
+\$500. El Cuadro~\ref{table:Products} muestra una posible definici\'on de
+productos sobre esta red.
+
+\begin{table}[!h]
+{\small
+\begin{center}
+\begin{tabular}{|c|l|c|}
+\hline
+Producto & Origen-Destino & Tarifa\\
+\hline
+1 & A $\rightarrow$ C & 1200\\
+2 & A $\rightarrow$ B $\rightarrow$ C & 800\\
+3 & A $\rightarrow$ B & 500\\
+4 & B $\rightarrow$ C & 500\\
+5 & A $\rightarrow$ C & 800\\
+6 & A $\rightarrow$ B $\rightarrow$ C & 500\\
+7 & A $\rightarrow$ B & 300\\
+8 & B $\rightarrow$ C & 300\\
+\hline
+\end{tabular}
+\caption{Definici\'on de productos.}
+\label{table:Products}
+\end{center}
+}
+\vspace*{-4mm}
+\end{table}
+
+En esta tabla podemos ver que distintos productos pueden compartir uno o m\'as
+tramos. Adem\'as, cada producto tiene asociada una esperanza
+(determin\'{\i}stica) de la demanda que recibir\'a. Es importante destacar
+que, en general, la demanda sobre productos con tarifas bajas suele
+ser mayor que para productos con tarifas m\'as caras.
+
+Llamamos $m$ a la cantidad de tramos de la red y $n$ a la cantidad de
+productos. Denotamos por $c = (c_1, \dots, c_m)$ al vector de capacidades
+de los tramos, de modo tal que el tramo $i$ tiene una capacidad de $c_i$
+asientos. Denotamos por $r = (r_1,\dots,r_n)$ al vector de tarifas de los
+productos definidos sobre la red, de modo tal que el ingreso obtenido por
+reservar un asiento para el producto $j$ es $r_j$. Por \'ultimo,
+llamamos $\mu_j$ a la esperanza de la demanda sobre el producto $j$,
+para $j=1,\dots,n$.
+
+El problema que la aerol\'{\i}nea debe resolver consiste en determinar
+cu\'antos asientos debe reservar para cada producto, de manera tal de
+maximizar los ingresos generados y cumpliendo al mismo tiempo las siguientes
+condiciones:
+\vspace*{-5mm}
+\begin{itemize}
+\item[(i)] Para cada tramo $i=1,\dots,m$, la cantidad de asientos
+reservados para los productos que utilizan el tramo no debe exceder la
+capacidad inicial $c_i$.
+
+\item[(ii)] Para cada producto $j=1,\dots,n$, la cantidad de asientos
+reservados no debe exceder la esperanza $\mu_j$ de la demanda.
+\end{itemize}
+
+\textbf{Enunciado}
+
+El objetivo del trabajo pr\'actico es implementar un programa que tome como
+entrada la definici\'on de la red, las capacidades iniciales, las
+definiciones de los productos y las esperanzas de las demandas, y que
+determine una asignaci\'on \'optima de asientos para los productos
+considerando las condiciones (i) y (ii). El programa implementado debe tomar
+los datos de entrada de un archivo de texto, cuyo formato queda a criterio
+del grupo.
+
+Se pide plantear un modelo de programaci\'on lineal \emph{homog\'eneo
+positivo} para este problema. El informe debe justificar la validez del
+modelo propuesto, explicando por qu\'e dicho sistema resuelve efectivamente
+el problema de asignaci\'on de asientos. Es importante observar que al
+plantear un modelo de programaci\'on lineal para el problema, en realidad
+estamos proponiendo una \emph{relajaci\'on} del problema original, dado que
+se permite que para un producto se reserve una cantidad fraccionaria de
+asientos. Para la resoluci\'on de este modelo se debe implementar cualquiera
+de las variantes vistas en clase del m\'etodo simplex.
+
+Se pide tambi\'en realizar experimentos con distintas instancias para validar
+el funcionamiento de la implementaci\'on. Para cada una de las instancias
+propuestas, escalar el vector de capacidades $c$ multiplic\'andolo por
+$\beta =$ 0.6, 0.8, 1.0, 1.2, 1.4 y resolver estas nuevas instancias
+escaladas. ?`Se observa alguna relaci\'on entre las capacidades y el
+tiempo de ejecuci\'on del algoritmo?.
+
+\vskip 15pt
+
+\hrule
+
+\vskip 11pt
+
+Fecha de entrega: Lunes 4 de Junio
+
+\end{document}

@@ -1,0 +1,80 @@
+ 
+
+%----------------------------------------------------------------------------------------------%
+\newpage
+\subsection{Implementaci\'on}
+
+Para la implementaci\'on del M\'etodo Simplex optamos por realizar la version que se conoce como \emph{Simplex Revizado} la cual nos provee una reducci\'on en el costo de almacenamiento de los diccionarios y asi como de c\'alculos en cada una de las itaraciones.
+
+En nuestra implementaci\'on utilizamos estos nombre para referenciar cada una de las matrices y vectores utilizados en la implementaci\'on del M\'etodo Simplex:
+$$ B, A_n, x_b, x_n, xval_b, c_b y c_n$$
+
+\begin{itemize}
+\item La matriz $B$ representa a la parte del sistema de ecuaciones correspondiente a el conjunto de variables b\'asicas.
+\item Como contrapartida tenemos a la matriz $A_n$ que contiene la porci\'on del sistema de ecuaciones correspondiente a las variables no b\'asicas.
+\item Construimos $x_b$ con los \'indices de las variables base. Vector Columna.
+\item Construimos $x_n$ con los \'indices de las variables no base. Vector Fila.
+\item Inicializamos el vector columna $xval_b$ con los valores de la m\'axima demanda por producto
+ y la capacidad m\'axima por tramo. 
+\item Construimon $c_b$ inicialmente conteniendo todos 0's. Vector Fila.
+\item Construimos $c_n$ inicialmente los coeficientes de la funci\'on objetivo $Z$ a ser maximizada. Vector Fila.
+\end{itemize}
+
+Estos dos ultimos vectores contienen los coeficientes que acompañan a las variables b\'asicas y no b\'asicas utilizados para los c\'alculos intermedios.
+
+\subsubsection{Plataforma y compilador}
+
+La primer decisi\'on a tomar consiste en plataforma y compilador a utilizar. Como el desarrollo debe cumplir con el requisito de poder compilarse y ejecutarse con el software disponible en los laboratorios del Departamento de Computaci\'on, optamos por computadoras con procesadores compatibles con la arquitectura Intel x86, y el compilador g++ de la Free Software Foundation.
+
+\subsubsection{Entrada y salida}
+
+Dise\~namos un formato muy simple de entrada para el programa: en primer lugar tenemos la cantidad de tramos y productos. Luego se enumeran los tramos y su capacidad maxima. Finalmente los productos con los tramos que estos abarcan, el costo del mismo y el cupo maximo.
+
+En cambio la salida va a tener los productos con sus tarifas, el cupo maximo y el optimo hallado luego de resolver el sistema de ecuaciones y maximizar la ganancia.
+
+
+%----------------------------------------------------------------------------------------------%
+\newpage
+\subsection{Problemas encontrados}
+
+El M/'etodo Simplex Revizado presenta 3 tipos de errores principalmente:
+
+\begin{itemize}
+\item Inicializaci\'on
+\item Iteraci\'on
+\item Terminaci\'on
+\end{itemize}
+
+\subsubsection{Inicializaci\'on}
+
+Este problema surge de la imposibilidad de tener inicialmente una soluci\'on sobre la cual comenzar la b\'usqueda de la soluci\'on \'optima, darnos cuenta de que el problema es no acotado o que existe m\'as de una soluci\'on. Dado que el sistema que planteamos siempre es Homog\'eneo Positivo el valor $0$ satisface todas las condiciones, por lo tanto en ninguna de las instancias podremos toparnos con este inconveniente.\\
+
+\subsubsection{Iteraci\'on}
+
+Dado alg\'un diccionario factible, tenemos que seleccionar una variable entrante para luego encontrar la variable saliente y luego reconstruir nuestro diccionario para la siguiente iteraci\'on permutando la variable entrante con la saliente.\\
+
+\emph{Elecci\'on de la variable entrante}
+La variable entrante es una variable \emph{no b/'asica} con un coeficiente positivo en $C*_n$. Esta regla es ambigua ya que puede haber m\'as de un candidato para ocupar el lugar de la variable entrante o ninguno. Si no existe ninguno la solucio\'on \'optima fue alcanzada.\\
+
+\emph{Elecci\'on de la variable saliente}
+La variable saliente es una variable \emph{b/'asica} cuya no negatividad impone el l\'imite superior m\'as restrictivo para la variable entrante. Nuevamente, esta regla es ambigua ya que podemos encontrarnos con m\'as de un candidato para salir del conjunto de las variables b\'asicas o ninguno. El siguiente diccionario es un ejemplo de no poseer ninguna variable saliente:
+$$x2 = 5 + 2x3 -  x4 - 3x1$$
+$$x5 = 7       - 3x4 - 4x1$$
+$$ z = 5 +  x3 -  x4 -  x1$$
+
+La variable entrante en este caso es $x3$ pero ninguna de las variables $x2$ o $x5$ impone un l\'imite superior en el incrementeo de $x3$. En este caso el problema es no acotado.\\
+
+\emph{Degeneraci\'on}
+Hay casos patol\'ogicos en los que el valor de la funci\'on objetivo no aumenta entre una iteraci\'on y la siguiente. En estos casos solo se permutan las variables entrantes y salientes. Las instancias de prueba aero2.txt, aero3.txt y aero4.txt presentaban estos inconvenientes.\\
+
+\subsubsection{Terminaci\'on}
+El M\'etodo Simplex puede atravesar una secuencia infinita de iteraciones sin encontra la soluci\'on \'optima o darse cuenta de que el problema es no acotado.\\
+
+\subsubsection{Comparaci\'on con Cero}
+Al momento de seleccionar la variable entrante; una variable no b\'asica es potencialmente util si y solo si su coeficiente correspondiente a la equaci\'on $C_n - y.A_n$ es mayor a $0$. Por lo tanto errores de aritm\'etica finita del computador pueden hacer que valores muy pequeños y negativos cercanos a cero y representaciones del valor cero aparezcan como valores muy pequeños pero positivos. Este problema nos har\'ia seleccionar a variables no b\'asicas como b\'asicas equivocadamente.
+
+\subsubsection{Resoluci'on de los problemas encontrados}
+Para superar los inconvenientes presentados tanto para la elecci\'on de la variable entrante como la variable saliente se aplico el Teorema 3.3 conocido con el nombre de \emph{Smallest Subcript Rule} al cual se hace referencia en la página 37 del libro Chvatal. Este teorema nos garantiza la finalizaci\'on del algoritmo si en cada una de las iteraciones del M\'etodo Simplex Revisado en caso de que haya m\'as de un candidato a dejar el conjunto de las variables base o no base se opta por aquel cuyo \'indice $i$, en ambos casos, es el menor. Llamamos \'indice $i$ al \'indice que acompaña a la incognita $x$, en nuestro caso la cantidad de productos $i$ que se necesitan vender para obtener el mayor redito posible.\\
+Para resolver el problema de la comparaci\'on con cero se fijo un $epsilon$ arbitrario crecano a cer. De esta manera los valores contenidos entre $epsilon$ y $-epsilon$ son tomados como el valor cero.  
+
+

@@ -1,0 +1,83 @@
+\section{Introducci\'on}
+
+\subsection{Programaci\'on Lineal}
+
+La programaci\'on lineal es el estudio de modelos matem\'aticos concernientes a la asignaci\'on eficiente de los recursos limitados en las actividades conocidas, con el objetivo de satisfacer las metas deseadas (tal como maximizar beneficios o minimizar costos).
+
+En general, si $c_1, c_2, ..., c_n$ son numeros reales, entonces la funci\'on f de variables reales $x_1, x_2, ..., x_n$ definida por 
+
+$$ f(x_1, x_2, ..., x_n) = c_1x_1 + c_2x_2 + ... + c_nx_n = \sum_{j=1}^n c_jx_j$$
+
+es llamada \emph{funcion lineal}. Si $f$ es una funci\'on lineal y si $b$ es un n\'umero real, entonces la ecuaci\'on
+
+$$f(x_1, x_2, ..., x_n) = b$$
+
+es llamada una \emph{ecuaci\'on lineal} y las desigualdades 
+
+$$f(x_1, x_2, ..., x_n)  \leq b$$
+$$f(x_1, x_2, ..., x_n)  \geq b$$
+
+son llamadas \emph{desigualdades lineales}. Tanto las ecuaciones lineales como las desigualdades lineales son llamadas \emph{restricciones lineales}. Finalmente, el problema de la programaci\'on lineal consiste en un problema de maximizaci\'on (o minimizaci\'on) de una funci\'on lineal sujeta a un finito n\'umero de restricciones lineales. Generalmente uniremos diversos sub\'indices $i$ a diversas restricciones  y diversos sub\'indices $j$ a diferentes variables. Esto lo haremos de la siguiente forma:
+
+$$\mbox{maximizar}  \hspace{1cm}   \sum_{j=1}^n c_jx_j $$
+
+$$\mbox{sujeto  a} \hspace{1cm} \sum_{j=1}^n a_{ij}x_j \leq b_i \hspace{1cm} (i = 1,2,...,m)$$
+
+$$x_j \geq 0  \hspace{1cm} (j = 1,2,...,n).$$
+
+
+La funci\'on lineal a maximizar o minimizar es llamada como la \emph{funci\'on objetivo} en los problemas LP. Finalmente, a la posible soluci\'on que maximiza la funci\'on objetivo (o que la minimiza) se la denomina \emph{soluci\'on \'optima}; el correspondiente valor de la funci\'on objetivo es llamado como el \emph{valor \'optimo} del problema.
+
+No todo problema LP tiene una \'unica soluci\'on \'optima, algunos problemas tienen varias soluciones \'optimas y otros no tienen ninguna soluci\'on \'optima. El tipo de problema que no tiene una soluci\'on posible se lo llama insatisfactible. Otro tipo de problema sucede cuando tenemos varias posibles soluciones pero ninguna es la \'optima. Este tipo de problema es llamado como no acotado. Los problemas de programaci\'on lineal pertenecen  a una de estas tres categor\'ias: los que tienen una soluci\'on \'optima, los insatisfactible o los no acotados.
+
+El m\'etodo m\'as conocido y habitual para resolver problemas de PL es el m\'etodo Simplex. 
+
+\subsection{M\'etodo Simplex}
+
+
+El m\'etodo Simplex es un procedimiento iterativo que permite ir mejorando la soluci\'on a cada paso. El proceso concluye cuando no es posible seguir mejorando m\'as dicha soluci\'on.
+
+Partiendo del valor de la funci\'on objetivo en un v\'ertice cualquiera, el m\'etodo consiste en buscar sucesivamente otro v\'ertice que mejore al anterior. La b\'usqueda se hace siempre a trav\'es de los lados del pol\'igono (o de las aristas del poliedro, si el n\'umero de variables es mayor). C\'omo el n\'umero de v\'ertices (y de aristas) es finito, siempre se podr\'a encontrar la soluci\'on.
+
+
+El m\'etodo Simplex se basa en la siguiente propiedad: si la funci\'on objetivo, f, no toma su valor m\'aximo en el v\'ertice A, entonces hay una arista que parte de A, a lo largo de la cual f aumenta.
+
+
+Deber\'a tenerse en cuenta que este m\'etodo s\'olo trabaja para restricciones que tengan un tipo de desigualdad $<=$ y coeficientes independientes mayores o iguales a 0, y habr\'a que estandarizar las mismas para el algoritmo. En caso de que despu\'es de \'este proceso, aparezcan (o no var\'ien) restricciones del tipo $\geq$ o $=$ habr\'a que emplear otros m\'etodos.
+
+
+\newpage
+\subsection{Forma estandar del m\'odelo}
+
+
+				
+				Funci\'on objetivo: 
+									
+										$$c1 x1 + c2 x2 + ... + cn xn $$
+				
+				Sujeto a: 	
+				
+										$$a11 x1 + a12 x2 + ... + a1n xn \leq b1$$
+				
+										$$a21 x1 + a22 x2 + ... + a2n xn \leq b2$$
+										
+										$$...$$
+										
+										$$am1 x1 + am2 x2 + ... + amn xn \leq bm$$
+										
+										$$x1,..., xn \geq 0 $$
+				
+Para ello se deben cumplir las siguientes condiciones:
+
+\begin{itemize}
+\item El objetivo es de la forma de maximizaci\'on.
+\item Todas las restricciones son desigualdades del tipo $\leq$.
+\item Todas las variables son no negativas.
+\item Las constantes a la derecha de las restricciones son no negativas.
+\end{itemize}
+
+\newpage
+\subsection{Conversi\'on de signo de los t\'erminos independientes}
+
+Deberemos preparar nuestro modelo de forma que los t\'erminos independientes de las restricciones sean mayores o iguales a 0, sino no se puede emplear el m\'etodo Simplex. Lo \'unico que habr\'ia que hacer es multiplicar por $-1$ las restricciones donde los t\'erminos independientes sean menores que 0.
+
