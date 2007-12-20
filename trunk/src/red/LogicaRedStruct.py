@@ -18,24 +18,25 @@ def long_to_u128(nro):
   """
   Empaqueta el nro como un entero largo unsigned de 128 bits
   """
-  p0 = nro & (~(1L<<32))
-  p1 = (nro>>32) & (~(1L<<32))
-  p2 = (nro>>64) & (~(1L<<32))
-  p3 = (nro>>96) & (~(1L<<32))
-  return struct.pack('IIII', p0, p1, p2, p3)
+  #p0 = nro & 0xffffffffL
+  #p1 = (nro>>32) & 0xffffffffL
+  #p2 = (nro>>64) & 0xffffffffL
+  #p3 = (nro>>96) & 0xffffffffL
+  #return struct.pack('IIII', p0, p1, p2, p3)
+  return Matematica.long2bytes(nro, 16) # 16 bytes = 128 bits
 
 def u128_to_long(txt128bits):
   """
   Desempaqueta un texto de 128 bits que son 4 unsigned long's de 32 bits
   a un numero long de 128 bits
   """
-  t = struct.unpack('IIII', txt128bits)
-  u0 = t[0]
-  u1 = t[1]
-  u2 = t[2]
-  u3 = t[3]
-  rv = ((((u3<<32) | u2)<<32) | u1)<<32 | u0
-  return rv
+  #t = struct.unpack('IIII', txt128bits)
+  #u0 = t[0]
+  #u1 = t[1]
+  #u2 = t[2]
+  #u3 = t[3]
+  #rv = ((((u3<<32) | u2)<<32) | u1)<<32 | u0
+  return Matematica.bytes2long(txt128bits)
 
 def long_to_infint(nro):
   """
