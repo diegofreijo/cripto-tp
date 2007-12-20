@@ -129,9 +129,9 @@ def handshakeServer():
   #    elegir 3 cartas de las enviadas por B y firmarlas con e2a
   #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
   #    Enviar el resto de las cartas encriptadas con e1a
-  e1a, d1a = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1)
+  e1a, d1a = Rsa.generarEyD(primo, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1)
   while True:
-    e1a, d1a = generarEyD(p, 2)
+    e1a, d1a = Rsa.generarEyD(primo, 2)
     if e2a != e1a and d2a != d1a:
       break
   # elegir cartas para B

@@ -85,11 +85,8 @@ def desempaquetar_Lista_Generica(texto, func):
   longLista = u32_to_long(texto[4:8])
   msg = texto[8:(4+longBytes)]
   while len(lista) < longLista:
-    print len(lista), longLista
     # Tomar un elemento mas
     if len(msg) < 4:
-      print lista
-      print len(msg)
       raise 'desempaquetar_Lista_Generica(): longitud en bytes de elemento demasiado corta'
     longBytesElem = u32_to_long(msg[0:4])
     if 4 + longBytesElem > len(msg):

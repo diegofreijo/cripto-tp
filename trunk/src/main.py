@@ -128,4 +128,7 @@ def elegirModo():
     elegirIp(modo)
   #
 
-elegirModo()
+# A menos que se importe este módulo desde otro, ir a la selección de modo client/server,
+# ip/puerto, y jugar
+if __name__ == '__main__':
+  elegirModo()
