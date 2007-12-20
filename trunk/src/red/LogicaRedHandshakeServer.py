@@ -126,7 +126,7 @@ def handshakeServer():
   e1a, d1a = generarEyD(p, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1)
   while True:
     e1a, d1a = generarEyD(p, 2)
-    if e2a != e1a and d2a ! d1a:
+    if e2a != e1a and d2a != d1a:
       break
   # elegir cartas para B
   # mezclar el mazo enviado por B y tomar las primeras 3 cartas
@@ -188,14 +188,16 @@ def handshakeServer():
   # desencriptar las cartas con d1a
   p6_misCartas_d1a = map(lambda n: Rsa.Desencriptar(n, d1a, primo), p6_misCartas_encrip)
   # ahora tengo k(A1), e2b(k(A1)), k(A2), e2b(k(A2)), idem 3er carta
+  # Obtener una lista de 3 tuplas asociando k(Ai) con e2b(k(Ai))
+  p6_misCartas_lista = []
+  p6_misCartas_lista.append( (p6_misCartas_d1a[0], p6_misCartas_d1a[1]) )
+  p6_misCartas_lista.append( (p6_misCartas_d1a[2], p6_misCartas_d1a[5]) )
+  p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[6]) )
   # Desencriptar k(Ai) con k para obtener Ai
-  p6_misCartas_k = [].append(p6_misCartas_d1a[0])
-  p6_misCartas_k.append(p6_misCartas_d1a[2])
-  p6_misCartas_k.append(p6_misCartas_d1a[4])
-  p6_misCartas = map(lambda n: Aes.AesDesencriptar(keyAes, n), p6_misCartas_k)
+  p6_misCartas = map(lambda kAi, e2bkAi: (Aes.AesDesencriptar(keyAes, kAi), e2bkAi), p6_misCartas_lista)
   # chequear que las cartas estén en el mazo original
-  for e in p6_misCartas:
-    if e not in cartas:
+  for ai, e2bkAi in p6_misCartas:
+    if ai not in cartas:
       logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
       raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
 
@@ -208,27 +210,75 @@ def handshakeServer():
 
   # 7) B recibe k, la utiliza para ver que el mazo es válido y para ver las cartas
   # que le tocaron.
+  #  Luego genera una clave RSA clásica (e3b, d3b, n) y envia la parte publica (e3b, n)
+  # a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
+  #  Formato: lista(infint(e3b), infint(n), str(d3b("SOY MANO")))
   pass
   nroPaso = 7
   logger.info(pf + '--- PASO 7')
 
-  # 8) B genera una clave RSA clásica (e3b, d3b, n) y envia la parte publica (e3b, n)
-  #    a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
-  pass
-  nroPaso = 8
-  logger.info(pf + '--- PASO 8')
-
-  # 9) A desencripta con (e3b, n) el mensaje encriptado "SOY MANO", chequeandolo.
+  # 8) A desencripta con (e3b, n) el mensaje encriptado, chequeandolo.
   #    Luego A genera una clave RSA clásica (e3a, d3a, n) y envia la parte publica
   #    (e3a, n), más el mensaje "SOS MANO" encriptado con d3a
-  nroPaso = 9
-  logger.info(pf + '--- PASO 9')
-  # TODO
+  nroPaso = 8
+  logger.info(pf + '--- PASO 8')
+  #
+  logger.debug(pf + 'Red.Recibir(4)')
+  tamStr = Red.Recibir(4) # tamaño en bytes del resto del mensaje
+  tam = _u32tolong(tam)
+  if tam <= 0:
+    logger.error(pf + 'paso 8, Longitud del mensaje recibido incorrecta')
+    raise 'Longitud del mensaje recibido incorrecta'
+  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
+  msg = Red.Recibir(tam)
+  if len(msg) < tam:
+    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
+  t = _desempaquetarListaGenerica(msg, lambda x: x) # no desempaquetar los elementos
+  # La lista debe tener 3 elementos
+  # - el primer elem. es e3b, un long grande
+  # - el segundo elem. es n, un long grande
+  # - el tercer elem. es un string encriptado con d3b
+  if len(t) != 3:
+    logger.error(pf + 'ERROR FATAL: se esperaban exactamente 3 elementos')
+    raise 'ERROR FATAL: se esperaban exactamente 3 elementos'
+  p8_e3b = _infinttolong(t[0])
+  p8_nb = _infinttolong(t[1])
+  p8_mensaje_encrip = t[2]
+  p8_mensaje = Rsa.DesencriptarTexto(p8_mensaje_encrip, p8_e3b, p8_nb)
+  if p8_mensaje != MENSAJE_SOY_MANO:
+		logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')')
+		raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
 
-  # 10) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
+  logger.info(pf + '--- PASO 8 (envio)')
+  while True:
+   p8_na, e3a, d3a = Rsa.GenerarClaves(CANT_BITS_RSA)
+   # chequear que las claves no coincidan con las de B
+   if p8_na != p8_nb and e3a != p8_e3b and d3a != p8_e3b: break
+  logger.debug(pf + 'clave RSA generada: (e3a, d3a, n3a) = (' + str(e3a) + ', ' + str(d3a) + ', ' + str(p8_na) + ')')
+  # generar elementos del mensaje a enviar
+  t = [_longtoinfint(e3a), _longtoinfint(p8_na), Rsa.EncriptarTexto(MENSAJE_SOS_MANO, d3a, p8_na)]
+  # empaquetar en una lista
+  msg = _empaquetarListaGenerica(t, lambda x: x) # no empaquetar los elementos, ya son string
+  msg = _longtou32(len(msg)) + msg
+  logger.debug(pf + 'Red.Enviar([e3a, n3a, d3a(SOS_MANO)])')
+  Red.Enviar(msg)
+
+  # 9) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
   # la confirmacion de que es mano, el protocolo de handshake esta terminado.
   pass
-  nroPaso = 10
+  nroPaso = 9
+  logger.info(pf + '--- PASO 9')
+
+  # Datos para jugar:
+  # - cartas para jugar con B: debe enviarse e2b(k(Ai)) cuando se quiera jugar la carta Ai
+  #   (p6_misCartas_lista)
+  # - la clave (p8_e3b, p8_nb) para poder verificar los mensajes enviados por B
+  #
+  # De la misma manera, B necesita estos datos para jugar con nosotros:
+  # - cartas para jugar con A: son los valores e2A(k(Bi)) cuando B quiera jugar Bi
+  #   enviará un código, que debe estar como primer elemento de alguna tupla en p4_cartasParaB_e2a
+  # - la clave (e3a, p8_na) para poder verificar los mensajes enviados por A
 
   raise 'No implementado'
 

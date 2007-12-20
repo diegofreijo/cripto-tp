@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
 import struct
+import Matematica
 
 def _longtou32(nro):
   """
@@ -40,13 +41,15 @@ def _longtoinfint(nro):
   """
   Empaqueta el nro como un entero de longitud ilimitada (string)
   """
-  return repr(long(nro))
+  #return repr(long(nro))
+  return Matematica.long2bytesIlim(nro)
 
 def _infinttolong(txt):
   """
   Desempaqueta un texto como un entero long
   """
-  return long(txt)
+  #return long(txt)
+  return Matematica.bytes2long(txt)
 
 def _empaquetarListaGenerica(lista, func):
   """
