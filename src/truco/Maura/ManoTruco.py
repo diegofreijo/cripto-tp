@@ -166,7 +166,7 @@ class ManoTruco:
     #for i in range(0,len(self.cartasQueTengo)):
     i=0
     while i<=len(self.cartasQueTengo):
-      JPosibles.append(self.cartasQueTengo[i].str())
+      JPosibles.append(self.cartasQueTengo[i])
     if len(self.juegoMio)==0 and self.estadoEnvido.valor()<5:
       for i in range(self.estadoEnvido.valor()+1,len(self.estadoEnvido.opciones)):
         JPosibles=JPosobles+ self.estadoEnvido.opciones[i]
