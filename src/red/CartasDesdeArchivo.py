@@ -76,4 +76,4 @@ def cartasValidas():
 # Inicializar los diccionarios para obtener codigo segun carta y viceversa
 # en el momento de hacer import (discutible: podria usarse inicializar()
 # manualmente para mayor flexibilidad)
-inicializar("hasheadas.txt")
+#inicializar("hasheadas.txt")
