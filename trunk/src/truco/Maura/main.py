@@ -9,19 +9,26 @@ x=str(raw_input('Es un servidor??  '))
 opcion=-2
 
 print x
+c1=Carta(1,Palo.ESPADA)
+c2=Carta(7,Palo.ORO)
+c3=Carta(3,Palo.ORO)
+c4=Carta(1,Palo.BASTO)
+c5=Carta(7,Palo.BASTO)
+c6=Carta(3,Palo.COPA)
 
 if x=='s':
   esServer=True
-  cartas=[(1,'ESPADA'),(7,'ORO'),(3,'ORO')]
+  cartas=[c1,c2,c3]
 else:
   esServer=False
-  cartas=[(1,'BASTO'),(7,'BASTO'),(3,'COPA')]
+  cartas=[c4,c5,c6]
 
 Mano=ManoTruco(cartas,esServer)
 
 while opcion!=-1:
   if Mano.turnoDeJuego()==True:
     jugadas=Mano.jugadasPosibles()
+    print jugadas
     opcion=raw_input('Ingrese la jugada a realizar:  ')
     print jugadas[opcion]
     Mano.jugar(jugadas[opcion])
