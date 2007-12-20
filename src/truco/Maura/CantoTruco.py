@@ -38,9 +38,9 @@ class cantotruco:
     return 'CantoTruco('+repr(self.codigo)+', '+repr(self.valor)+')'
 
 # pseudo constantes
-NOCANTADO=_cantotruco('',0)
-TRUCO = _cantotruco('TRUCO', 1)
-RETRUCO = _cantotruco('RETRUCO', 2)
-VALE4 = _cantotruco('VALE4', 3)
-QUIEROTRUCO = _cantotruco('QUIERO', 4)
-NOQUIEROTRUCO = _cantotruco('NO QUIERO', 4)
+NOCANTADO=cantotruco('',0)
+TRUCO = cantotruco('TRUCO', 1)
+RETRUCO =cantotruco('RETRUCO', 2)
+VALE4 = cantotruco('VALE4', 3)
+QUIEROTRUCO = cantotruco('QUIERO', 4)
+NOQUIEROTRUCO = cantotruco('NO QUIERO', 4)
