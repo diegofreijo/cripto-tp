@@ -5,9 +5,10 @@ sys.path.append("truco")
 from ManoTruco import *
 
 esServer=None
-x=str(raw_input('Es un servidor??'))
-opcion=-1
-Mano=ManoTruco(cartas,esServer)
+x=str(raw_input('Es un servidor??  '))
+opcion=-2
+
+print x
 
 if x=='s':
   esServer=True
@@ -15,9 +16,19 @@ if x=='s':
 else:
   esServer=False
   cartas=[(1,'BASTO'),(7,'BASTO'),(3,'COPA')]
-  
-while (opcion!=-1):
+
+Mano=ManoTruco(cartas,esServer)
+
+while opcion!=-1:
   if Mano.turnoDeJuego()==True:
+    jugadas=ManoTruco.jugadasPosibles()
+    opcion=raw_input('Ingrese la jugada a realizar:  ')
+    print jugadas[opcion]
+    MantoTruco.jugar(jugadas[opcion])
+  else:
+    ManoTruco.recibirJugada(jugada)
+  if ManoTruco.terminado()==None:
+      print "Terimno el Partido"
       opcion=-1
 
 
