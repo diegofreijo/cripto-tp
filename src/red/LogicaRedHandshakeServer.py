@@ -201,7 +201,34 @@ def handshakeServer():
 
   # Por último, enviar k a B
   logger.info(pf + '--- PASO 6 (envio)')
+  msg = _longtou128(keyAes)
+  msg = _longtou32(len(msg)) + msg
+  logger.debug(pf + 'Red.Enviar(k)')
+  Red.Enviar(msg)
 
+  # 7) B recibe k, la utiliza para ver que el mazo es válido y para ver las cartas
+  # que le tocaron.
+  pass
+  nroPaso = 7
+  logger.info(pf + '--- PASO 7')
+
+  # 8) B genera una clave RSA clásica (e3b, d3b, n) y envia la parte publica (e3b, n)
+  #    a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
+  pass
+  nroPaso = 8
+  logger.info(pf + '--- PASO 8')
+
+  # 9) A desencripta con (e3b, n) el mensaje encriptado "SOY MANO", chequeandolo.
+  #    Luego A genera una clave RSA clásica (e3a, d3a, n) y envia la parte publica
+  #    (e3a, n), más el mensaje "SOS MANO" encriptado con d3a
+  nroPaso = 9
+  logger.info(pf + '--- PASO 9')
+  # TODO
+
+  # 10) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
+  # la confirmacion de que es mano, el protocolo de handshake esta terminado.
+  pass
+  nroPaso = 10
 
   raise 'No implementado'
 
