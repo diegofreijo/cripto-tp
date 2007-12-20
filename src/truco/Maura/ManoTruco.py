@@ -22,8 +22,8 @@ class ManoTruco:
 			# 				o si _subManoActual=2 o _subManoActual=3, el que gano la mano anterior
 			#				si no _manoEnSubManoActual=0
   esMiTurno = None # vale 1 si soy mano en _manoEnSubManoActual o si me llega un canto del otro lado y tengo que responder
-  juegoMio=None 		# me parece mejoruno  que _cartaMiaEnSubManoActual = None 
-  juegoOtro=None 	# me parece mejor que _cartaContricanteEnSubManoActual = None
+  juegoMio= []		# me parece mejoruno  que _cartaMiaEnSubManoActual = None 
+  juegoOtro= [] 	# me parece mejor que _cartaContricanteEnSubManoActual = None
   estadoEnvido=cantoenvido('',0)
   estadoTruco=cantotruco('',0)
   PtosEnvidoMios=0 # Los puntos los deberia guardar para despues comprobar cuando termine la mano
@@ -63,7 +63,7 @@ class ManoTruco:
 
   def nivelCarta(carta):
     #carta es de la forma (1,'ESPADA')
-    if isinstance(Carta,carta):
+    if isinstance(carta,Carta):
       return self.maso[carta]
     else:
       raise ValueError('La carta no tiene el formato esperado (1,''ESPADA'')!!')
@@ -165,26 +165,28 @@ class ManoTruco:
     JPosibles=[]
     #for i in range(0,len(self.cartasQueTengo)):
     i=0
-    while i<=len(self.cartasQueTengo):
-      JPosibles.append(self.cartasQueTengo[i])
-    if len(self.juegoMio)==0 and self.estadoEnvido.valor()<5:
-      for i in range(self.estadoEnvido.valor()+1,len(self.estadoEnvido.opciones)):
-        JPosibles=JPosobles+ self.estadoEnvido.opciones[i]
-      if self.estadoEnvido.valor()>0:
+    while i<len(self.cartasQueTengo):
+      JPosibles.append((self.cartasQueTengo[i]))
+      i=i+1
+    if len(self.juegoMio)==0 and self.estadoEnvido.valor<5:
+      for i in range(self.estadoEnvido.valor,len(self.estadoEnvido.opciones)):
+        JPosibles.append(self.estadoEnvido.opciones[i])
+      if self.estadoEnvido.valor>0:
         JPosibles.append('QUIERO')
         JPosibles.append('NO QUIERO')
-      if self.estadoEnvido.valor()>=5 and self.estadoEnvido.codigo=='QUIERO':
+      if self.estadoEnvido.valor>=5 and self.estadoEnvido.codigo=='QUIERO':
         if self.PtosEnvidoOtro==0:
           JPosibles.append('TENGO' + str(CalcularEnvido()))
         else:
           JPosibles.append(str(CalcularEnvido()) + 'SON MEJORES')
           JPosibles.append('SON BUENAS')
-    if self.estatoTruco.valor()<4:
-      for i in range(self.estadoTruco+1, len(self.estadoTruco.opciones)):
+    if self.estadoTruco.valor<4:
+      i = self.estadoTruco.valor
+      while i < len(self.estadoTruco.opciones):
         JPosibles.append(self.estadoTruco.opciones[i])
-      if self.estadoTruco.valor()<4:
-          JPosibles.append('QUIERO')
-          JPosibles.append('NO QUIERO')
+        i=i+1
+      JPosibles.append('QUIERO')
+      JPosibles.append('NO QUIERO')
     return JPosibles # me parece que convendria devolver la lista con las opciones posibles que son las que forman el menu
 
   def actualizarCanto(jugada):
@@ -261,11 +263,13 @@ class ManoTruco:
     # Si se jugaba un canto de carta y canto se dividia en dos y se trataba por separado sin necesidad de preguntar dos veces??
     # Irse al maso!!!
 
-    if isinstance(Carta,jugada):
+    if isinstance(jugada,Carta):
       self.cartasQueTengo.remove(jugada)
       self.juegoMio.append(jugada)
+      # self.esMiTurno=False
     else:
       actualizarCanto(jugada)
+      # self.esMiTurno=True
     
       
   def recibirJugada(self, jugada):
@@ -300,7 +304,7 @@ class ManoTruco:
     #		si jugada=QUIERO, no incremento el score. Cuando se termine la mano veo quien gano y actualizo el score
     #		si jugada=NOQUIERO, no incremento el score. Cuando se termine la mano veo quien gano y actualizo el score
     # Si se jugaba un canto de carta y canto se dividia en dos y se trataba por separado sin necesidad de preguntar dos veces??
-    if isinstance(Carta,jugada):
+    if isinstance(jugada,Carta):
       self.juegoOtro.append(jugada)
     else:
       actualizarCanto(jugada)
