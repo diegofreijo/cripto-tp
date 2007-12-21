@@ -3,26 +3,20 @@
 # Uso:
 # import CantoTruco
 
-class cantotruco:
+class _cantotruco:
   codigo = None
-  valor = 0
-  opciones=['TRUCO','RE TRUCO','VALE CUATRO']
 
-  def __init__(self, codigo, valor):
-    if not isinstance(codigo, str) or not isinstance(valor, int):
-      raise ValueError('Argumentos de tipo no permitido - deben ser str e int.');
+  def __init__(self, codigo):
+    if not isinstance(codigo, str) :
+      raise ValueError('Argumentos de tipo no permitido - debe ser str');
     self.codigo = codigo
-    self.valor = valor
 
   def codigo():
     return self.codigo
 
-  def valor():
-    return self.valor
-
   def __eq__(self, otro):
     if isinstance(otro, _cantotruco):
-      return (self.codigo == otro.codigo and self.valor == otro.valor)
+      return (self.codigo == otro.codigo)
     raise ValueError('Argumento de tipo no permitido: ' + str(otro))
 
   def __ne__(self, otro):
@@ -35,12 +29,11 @@ class cantotruco:
     return self.codigo
 
   def __repr__(self):
-    return 'CantoTruco('+repr(self.codigo)+', '+repr(self.valor)+')'
+    return 'CantoTruco('+repr(self.codigo)+')'
 
 # pseudo constantes
-NOCANTADO=cantotruco('',0)
-TRUCO = cantotruco('TRUCO', 1)
-RETRUCO =cantotruco('RETRUCO', 2)
-VALE4 = cantotruco('VALE4', 3)
-QUIEROTRUCO = cantotruco('QUIERO', 4)
-NOQUIEROTRUCO = cantotruco('NO QUIERO', 4)
+TRUCO = _cantotruco('TRUCO')
+RETRUCO = _cantotruco('RETRUCO')
+VALE4 = _cantotruco('VALE4')
+QUIEROTRUCO = _cantotruco('QUIERO')
+NOQUIEROTRUCO = _cantotruco('NO QUIERO')
