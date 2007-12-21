@@ -14,7 +14,7 @@ from CantoEnvido import _cantoEnvido
 from CantoEnvido import _cantoEnvidoTantos
 from CantoTruco import *
 
-class ManoTruco:
+class PieTruco:
    # variables de instancia
   soyMano = None # esta en 1 si es el servidor, si no, 0
   cartasQueTengo = None # una lista que contiene las posibles cartas a jugar. Cuando se juega una, se la saca de la lista
