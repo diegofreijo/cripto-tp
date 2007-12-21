@@ -15,9 +15,9 @@ class _cantoEnvido:
     return self.codigo
 
   def __eq__(self, otro):
-    if issubclass(otro, cantoenvido):
+    if isinstance(otro,_cantoEnvido):   # antes decis issubclass me parece que es un error
       return (self.codigo == otro.codigo )
-    raise ValueError('Argumento de tipo no permitido: ' + str(otro))
+    raise ValueError('Argumento de tipo no permitido: ')
 
   def __ne__(self, otro):
     return not (self == otro)
@@ -48,6 +48,7 @@ class _cantoEnvidoTantos(_cantoEnvido):
 
 
 # pseudo constantes
+ENVIDONOCANTADO=_cantoEnvido('NADA')
 ENVIDO = _cantoEnvido('Envido')
 ENVIDOENVIDO = _cantoEnvido('Envido Envido')
 REALENVIDO = _cantoEnvido('Real Envido')
@@ -60,18 +61,20 @@ def Tantos(tantos):
   return _cantoEnvidoTantos('Tantos', tantos)
 
 
-CANTOS_ENVIDO = [ENVIDO, ENVIDOENVIDO, REALENVIDO, FALTAENVIDO]
+CANTOS_ENVIDO = [ENVIDONOCANTADO,ENVIDO, ENVIDOENVIDO, REALENVIDO, FALTAENVIDO]
 
 def cantosMayores(canto):
   i = None
-  if canto == ENVIDO:
-    i = 1
-  elif canto == ENVIDOENVIDO:
+  if canto==ENVIDONOCANTADO:
+    i=1
+  elif canto == ENVIDO:
     i = 2
-  elif canto == REALENVIDO:
+  elif canto == ENVIDOENVIDO:
     i = 3
-  elif canto == FALTAENVIDO:
+  elif canto == REALENVIDO:
     i = 4
+  elif canto == FALTAENVIDO:
+    i = 5
   else:
     raise ValueError('No es un canto de envido: ' + repr(canto))
   return CANTOS_ENVIDO[i:]
