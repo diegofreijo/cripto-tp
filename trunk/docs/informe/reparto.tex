@@ -32,7 +32,7 @@ El siguiente es el protocolo que da como resultado tres cartas para cada jugador
   
 
 
-\item B genera un $p$ primo grande y genera $e^1_b$, $d^1_b$ (utilizadas para asegurar una repartici'on justa) y  $e^2_b$, $d^2_b$ (utilizadas para asegurar que se jueguen las cartas tocadas) tal que
+\item B genera un $p$ primo grande y genera $e^1_b$, $d^1_b$ (utilizadas para asegurar un reparto justo) y  $e^2_b$, $d^2_b$ (utilizadas para asegurar que se jueguen las cartas repartidas) tal que
 
 $$	e^1_b * d^1_b = 1 [mod\ p-1] = e^2_b * d^2_b $$
 
@@ -61,7 +61,7 @@ Elige al azar 3 cartas de las enviadas por B ($B_1, B_2, B_3$) y las firma con $
 $$	<e^1_b(k(Bi)), 			e^2_a(e^1_b(k(Bi)))> = 
 	<k(Bi)^{e^1_b} [mod\ p], 	k(Bi)^(e^1_b * e^2_a) [mod\ p]> $$
 	
-A su vez, repite el paso anterior realizado por B enviandole a este el resto de las cartas (Ri) encriptadas con su clave:
+A su vez, repite el paso anterior realizado por B envi'andole a este el resto de las cartas (Ri) encriptadas con su clave:
 
 $$	e^1_a(e^1_b(k(Ri))) = k(Ri)^(e^1_b * e^1_a) [mod\ p] $$
 	
@@ -87,13 +87,13 @@ $$	e^1_a(e^1_b(k(Ri))) = k(Ri)^(e^1_b * e^1_a) [mod\ p] $$
 	
 	
 	
-\item B recibe sus cartas (las tuplas) y les aplica la desencripcion de $e^1_b$ con $d^1_b$:
+\item B recibe sus cartas (las tuplas) y les aplica la desencripci'on de $e^1_b$ con $d^1_b$:
 
 $$	<d^1_b(k(B_i)^{e^1_b} [mod\ p]), 		d^1_b(k(B_i)^{e^1_b * e^2_a} [mod\ p])> = $$
 $$	<k(B_i)^{e^1_b * d^1_b} [mod\ p], 	k(B_i)^{e^1_b * e^2_a * d^1_b} [mod\ p]> = $$
 $$	<k(B_i), 						k(B_i)^{e^2_a} [mod\ p]> $$
 
-A su vez, elige 3 cartas al azar ($A_1, A_2, A_3$) del resto (las $R_i$) y les aplica tambien $d^1_b$:
+A su vez, elige 3 cartas al azar ($A_1, A_2, A_3$) del resto (las $R_i$) y les aplica tambi'en $d^1_b$:
 	
 $$	d^1_b(k(A_i)^{e^1_b * e^1_a} [mod\ p]) = 
 	k(A_i)^{e^1_b * e^1_a * d^1_b} [mod\ p] =
@@ -135,7 +135,7 @@ A utiliza $k$ para ver las cartas que le tocaron, su mano queda
 
 $$	<A_i, k(A_i)^{e^2_b} [mod\ p]> $$
 
-Por ultimo, envia $k$ a B
+Por 'ultimo, envia $k$ a B
 
 
 \begin{verbatim}
@@ -167,7 +167,7 @@ Este es final del inicio del juego. Se setean datos para ser usados durante el r
 
 $$	(e^3_b, n_b), (d^3_b, n_b)  $$
 	
-y envia la publica $(e^3_b, n_b)$ a A. Usar'a $d^3_b$ s'olo para firmar sus acciones.
+y env'ia la p'ublica $(e^3_b, n_b)$ a A. Usar'a $d^3_b$ s'olo para firmar sus acciones.
 
 A su vez, genera un paquete con el timestamp inicial decretando esta como la hora de inicio de juego. Lo env'ia firmado con $d^3_b$.
 
