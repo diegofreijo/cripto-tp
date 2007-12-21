@@ -1,1 +1,23 @@
 \subsection{Transcurso del juego}
+Durante el transcurso del juego se deber'an cumplir las siguientes reglas:
+
+\begin{itemize}
+\item Es mano el que pidi'o conexion.
+
+\item Supongo que B quiere jugar $B_2$. Entonces debe enviar la firma que posee:
+
+$$	k(B_2)^{e^2_a} [mod\ p] $$
+	
+Cuando A lo recibe, le aplica su desencripci'on:
+
+$$	d^2_a(k(B_2)^{e^2_a} [mod\ p]) = 
+	k(B_2)^{e^2_a * d^2_a} [mod\ p] = 
+	k(B_2) $$
+
+Y con aplicar $k$, obtiene $B_2$.
+
+\item Cada vez que se canta o se juega una carta, se debe adjuntar un timestamp del momento del canto/juego. Luego, el paquete debe ser firmado (con $d^3_a$ / $d^3_b$ seg'un corresponda) para evitar el repudio del emisor mas adelante ("...no no, yo no te cante, entendiste mal...") y la reutilizaci'on del canto como prueba falsa m'as adelante ("...si si, vos cantaste truco; hace 5 horas, pero cantaste, mira...").
+
+\item El que finalize el juego (el que se vaya al mazo, el que mate la ultima carta del contrincante, el que cante 33 en el falta envido) debe adem'as enviar un el timestamp firmado, marc'andolo como el final oficial del juego. El oponente, aunque est'e caliente, debe confirmarle si la hora es v'alida.
+
+\end{itemize}
