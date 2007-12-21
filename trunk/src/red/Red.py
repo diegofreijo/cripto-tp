@@ -64,14 +64,20 @@ def enviar(datos):
     sock.send(datos)
     DEBUGLOG(pf + "datos enviados")
 
-	
+
 def recibir(longitud):
     pf = prefijo + '[recibir()] '
     DEBUGLOG(pf + "recibir(" + str(longitud)+")")
-    try:
-    	rv = sock.recv(longitud)
-    	DEBUGLOG(pf + "datos recibidos: \"" + rv + "\"");
-    except socket.error, e:
-    	DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"");
-    	rv = None
-    return rv
+    recibido = ''
+    while len(recibido) < longitud:
+        try:
+            rv = sock.recv(longitud - len(recibido))
+            DEBUGLOG(pf + "datos recibidos: \"" + repr(rv) + "\"");
+        except socket.error, e:
+            DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"");
+            rv = ''
+        recibido = recibido + rv
+        if rv == '': break
+    #
+    return recibido
+

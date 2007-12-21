@@ -95,15 +95,23 @@ def handshakeClient():
 
   # - generar el primo grande p
   while True:
-    primo = Azar.Primo(CANT_BITS_RSA)
+    #primo = Azar.Primo(CANT_BITS_RSA)
+    primo = 138840242304691757590023665847446776817598442866265113948085287165398284915819274685055955941003493073746599347005050384080452466398775813599382092517423548091124621361229576163611353039506204507457079134949940379860948903986001100674364455764235458126250127210569882368429663718956895185189386532208487637179
     if primo >= PRIMO_MINIMO: break
   # - generar e1b, d1b
-  e1b, d1b = Rsa.generarEyD(primo, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
+  #e1b, d1b = Rsa.generarEyD(primo, 2) # 2 porque N = p entonces fi(N) = (p-1)*(2-1) = (p-1)
+  e1b = 25261129233546366239000711258765890878154280731632357063850830772921569144120163159891847665475984550223585490471831861707028884954588142104689396180765239749584971174398742697371256201427146212084793574724656554872815877201051081516330429228929501060276190638579326346940551015518000874430228023794076619237
+  d1b = 55469733050751556334887129895050081961458054304101178843311861100448787538821316851214183384509616274264381564700424425116771261044472078026359622971420625782369264447076816529175832499647945955197658267901667396561213380622294751600696944942896583186534272366286455577522452613555761593283387791225540799429
   # - generar e2b, d2b (distintos a los anteriores)
   while True:
-    e2b, d2b = Rsa.generarEyD(primo, 2)
+    #e2b, d2b = Rsa.generarEyD(primo, 2)
+    e2b = 77228495887273096394999494922045365713843816690381277274999463142039579118667119677873729117261834284978584451609904311341496458202352726720496674165660231086939480044838177077697372649548905639806687936837163333571753827706811652513036818609532883029261006374009297124944344482022096957254333616947698779339
+    d2b = 95663379056590315904958259825834214901237003770599243544865165365208432669683997300142786161500211393549178381765643941129509422466069713188826218843822811512538281155704057027426538594807456920233809771753714104220104416437553691968044000337886418775070864441063105697251708650336883364209545450177248989131
     if e2b != e1b and d2b != d1b:
       break
+  logger.debug(pf + 'primo P: ' + str(primo))
+  logger.debug(pf + 'e1b, d1b = ' + str(e1b) + ', ' + str(d1b))
+  logger.debug(pf + 'e2b, d2b = ' + str(e2b) + ', ' + str(d2b))
   # encriptar con e1b todo el mazo encriptado que se recibió
   # mezclar el mazo enviado por A (opcional)
   p3_k_cartas = Azar.mezclar(p2_k_cartas)
@@ -245,149 +253,3 @@ def handshakeClient():
 
 
   return
-
-
-
-
-  pass
-  nroPaso = 3
-  logger.info(pf + '--- PASO 3')
-
-  # 5) B desencripta las cartas que le envio A, obteniendo k(Bi) para su mano y
-  #    e1a(k(Ri)) para el resto
-  #    Entonces elige 3 cartas Ai del resto y las desencripta con d1b, de manera
-  #    que obtiene e1a(k(Ai)). Envia estas cartas asi y tambien encriptadas con
-  #    e2b
-  # formato: lista(e1a(k(Ai)), e2b(e1a(k(Ai)), ...)
-  pass
-  nroPaso = 5
-  logger.info(pf + '--- PASO 5')
-  logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
-  if tamStr == None or tamStr == None or len(tamStr) < 4:
-    logger.error(pf + 'paso 5, mensaje recibido truncado')
-    raise 'paso 5, mensaje recibido truncado'
-  tam = u32_to_long(tamStr)
-  if tam <= 0:
-    logger.error(pf + 'paso 5, Longitud del mensaje recibido incorrecta')
-    raise 'Longitud del mensaje recibido incorrecta'
-  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
-  msg = Red.recibir(tam)
-  if len(msg) < tam:
-    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
-    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
-
-  # 6) A recibe las cartas y aplica la desencripcion de e1a con d1a.
-  #    Luego utiliza K y desencripta las cartas que le tocaron, de manera que se
-  #    tienen las cartas Ai elegidas por B
-  # obtener las cartas propias
-  nroPaso = 6
-  logger.info(pf + '--- PASO 6')
-  p6_misCartas_encrip, tmp = desempaquetar_Lista_Generica(msg, infint_to_long)
-  if tmp != '':
-    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
-  if len(p6_misCartas_encrip) != 6:
-    logger.error(pf + 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)')
-    raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)'
-  # desencriptar las cartas con d1a
-  p6_misCartas_d1a = map(lambda n: Rsa.Desencriptar(n, d1a, primo), p6_misCartas_encrip)
-  # ahora tengo k(A1), e2b(k(A1)), k(A2), e2b(k(A2)), idem 3er carta
-  # Obtener una lista de 3 tuplas asociando k(Ai) con e2b(k(Ai))
-  p6_misCartas_lista = []
-  p6_misCartas_lista.append( (p6_misCartas_d1a[0], p6_misCartas_d1a[1]) )
-  p6_misCartas_lista.append( (p6_misCartas_d1a[2], p6_misCartas_d1a[5]) )
-  p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[6]) )
-  # Desencriptar k(Ai) con k para obtener Ai
-  p6_misCartas = map(lambda kAi, e2bkAi: (Aes.AesDesencriptar(keyAes, kAi), e2bkAi), p6_misCartas_lista)
-  # chequear que las cartas estÃ©n en el mazo original
-  for ai, e2bkAi in p6_misCartas:
-    if ai not in cartas:
-      logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
-      raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
-
-  # Por Ãºltimo, enviar k a B
-  logger.info(pf + '--- PASO 6 (envio)')
-  msg = long_to_u128(keyAes)
-  msg = long_to_u32(len(msg)) + msg
-  logger.debug(pf + 'Red.Enviar(k)')
-  Red.enviar(msg)
-
-  # 7) B recibe k, la utiliza para ver que el mazo es vÃ¡lido y para ver las cartas
-  # que le tocaron.
-  #  Luego genera una clave RSA clasica (e3b, d3b, n) y envia la parte publica (e3b, n)
-  # a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
-  #  Formato: lista(infint(e3b), infint(n), str(d3b("SOY MANO")))
-  pass
-  nroPaso = 7
-  logger.info(pf + '--- PASO 7')
-
-  # 8) A desencripta con (e3b, n) el mensaje encriptado, chequeandolo.
-  #    Luego A genera una clave RSA clasica (e3a, d3a, n) y envia la parte publica
-  #    (e3a, n), mas el mensaje "SOS MANO" encriptado con d3a
-  nroPaso = 8
-  logger.info(pf + '--- PASO 8')
-  #
-  logger.debug(pf + 'Red.Recibir(4)')
-  tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
-  if tamStr == None or tamStr == None or len(tamStr) < 4:
-    logger.error(pf + 'paso 8, mensaje recibido truncado')
-    raise 'paso 8, mensaje recibido truncado'
-  tam = u32_to_long(tam)
-  if tam <= 0:
-    logger.error(pf + 'paso 8, Longitud del mensaje recibido incorrecta')
-    raise 'Longitud del mensaje recibido incorrecta'
-  logger.debug(pf + 'Red.Recibir('+ str(tam) + ')')
-  msg = Red.recibir(tam)
-  if len(msg) < tam:
-    logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
-    raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
-  t, tmp = desempaquetar_Lista_Generica(msg, lambda x: x) # no desempaquetar los elementos
-  if tmp != '':
-    logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
-  # La lista debe tener 3 elementos
-  # - el primer elem. es e3b, un long grande
-  # - el segundo elem. es n, un long grande
-  # - el tercer elem. es un string encriptado con d3b
-  if len(t) != 3:
-    logger.error(pf + 'ERROR FATAL: se esperaban exactamente 3 elementos')
-    raise 'ERROR FATAL: se esperaban exactamente 3 elementos'
-  p8_e3b = infint_to_long(t[0])
-  p8_nb = infint_to_long(t[1])
-  p8_mensaje_encrip = t[2]
-  p8_mensaje = Rsa.DesencriptarTexto(p8_mensaje_encrip, p8_e3b, p8_nb)
-  if p8_mensaje != MENSAJE_SOY_MANO:
-    logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')')
-    raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
-
-  logger.info(pf + '--- PASO 8 (envio)')
-  while True:
-   p8_na, e3a, d3a = Rsa.GenerarClaves(CANT_BITS_RSA)
-   # chequear que las claves no coincidan con las de B
-   if p8_na != p8_nb and e3a != p8_e3b and d3a != p8_e3b: break
-  logger.debug(pf + 'clave RSA generada: (e3a, d3a, n3a) = (' + str(e3a) + ', ' + str(d3a) + ', ' + str(p8_na) + ')')
-  # generar elementos del mensaje a enviar
-  t = [long_to_infint(e3a), long_to_infint(p8_na), Rsa.EncriptarTexto(MENSAJE_SOS_MANO, d3a, p8_na)]
-  # empaquetar en una lista
-  msg = empaquetar_Lista_Generica(t, lambda x: x) # no empaquetar los elementos, ya son string
-  msg = long_to_u32(len(msg)) + msg
-  logger.debug(pf + 'Red.Enviar([e3a, n3a, d3a(SOS_MANO)])')
-  Red.enviar(msg)
-
-  # 9) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
-  # la confirmacion de que es mano, el protocolo de handshake esta terminado.
-  pass
-  nroPaso = 9
-  logger.info(pf + '--- PASO 9')
-
-  # Datos para jugar:
-  # - cartas para jugar con B: debe enviarse e2b(k(Ai)) cuando se quiera jugar la carta Ai
-  #   (p6_misCartas_lista)
-  # - la clave (p8_e3b, p8_nb) para poder verificar los mensajes enviados por B
-  #
-  # De la misma manera, B necesita estos datos para jugar con nosotros:
-  # - cartas para jugar con A: son los valores e2A(k(Bi)) cuando B quiera jugar Bi
-  #   enviar un cÃ³digo, que debe estar como primer elemento de alguna tupla en p4_cartasParaB_e2a
-  # - la clave (e3a, p8_na) para poder verificar los mensajes enviados por A
-
-  raise 'No implementado'
-
