@@ -103,6 +103,7 @@ def handshakeServer():
   msg = Red.recibir(tam)
   if len(msg) < tam:
     logger.error(pf + 'ERROR FATAL: mensaje de longitud menor a la esperada')
+    logger.error(pf + 'long. mensaje: ' + str(len(msg)) + ', long. esperada: ' + str(tam))
     raise 'ERROR FATAL: mensaje de longitud menor a la esperada'
   msg = tamStr + msg
   t, tmp = desempaquetar_Lista_Generica(msg, infint_to_long) # desempaquetar los strings como longs
@@ -218,6 +219,7 @@ def handshakeServer():
   for ai, e2bkAi in p6_misCartas:
     if ai not in cartas:
       logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
+      logger.error(pf + 'Carta desconocida: ' + str(ai))
       raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
 
   # Por último, enviar k a B
