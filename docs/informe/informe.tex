@@ -105,6 +105,9 @@ Encriptaci'on, algoritmos de clave p'ublica/privada y sim'etricos, RSA, AES, Men
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \section{El protocolo}
+Se define un procotolo que permite el reparto de cartas previo a una mano de truco y la posterior utilizaci'on de las mismas durante la mano. El dise'no del protocolo se hizo con los objetivos de garantizar la transparencia del juego, tanto en el reparto de las cartas como durante el desarrollo del juego.
+El protocolo brinda cierta seguridad de que las cartas han sido repartidas azarosamente, y permite verificar que cada jugador haya recibido las cartas que decide jugar.
+Durante la especificai'on del protocolo, se usar'a A para referirse al servidor, y B para referirse al cliente.
 \input{reparto.tex}
 \input{transcurso.tex}
 
