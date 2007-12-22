@@ -58,6 +58,7 @@ def MillerRabin(n, k=10): # e < 4**(-10) ~~~ e < 10**(-6)
       if (n % t) == 0: return (n == t)
   if n < 62: return True # es primo
   d = n - 1
+  nMenos1Sobre2 = d >> 1
   s = 0
   # obtener n-1 = 2**s * d
   while (d & 1) == 0:
@@ -65,7 +66,6 @@ def MillerRabin(n, k=10): # e < 4**(-10) ~~~ e < 10**(-6)
       s = s + 1
   # proceder k veces:
   i = 0
-  nMenos1Sobre2 = (n-1) >> 1
   while i < k:
       i = i + 1
       # obtener un numero aleatorio a entre 1 y (n-1)/2
@@ -91,15 +91,15 @@ def MillerRabin(n, k=10): # e < 4**(-10) ~~~ e < 10**(-6)
 
 
 
-def Primo(bits):
+def Primo( bits, p=10 ):
   """
   Devolver un numero primo aleatorio con la cantidad de bits pedida.
   Existe la posibilidad (muy baja) que el numero devuelto sea compuesto, ya que se utiliza
   un test de primalidad probabilistico.
   """
   while True:
-    n = Bits(bits)
-    if MillerRabin(n,10): break
+    n = ( Bits( bits - 1 ) << 1 ) + 1 # elijo al azar un n impar
+    if MillerRabin(n,p): break # si MillerRabin dice que es primo, listo
   return n
 
 def PrimoFuerte( bits, p, q ):
@@ -113,7 +113,6 @@ def PrimoFuerte( bits, p, q ):
   """
   bits = bits - 1
   while True:
-    n = Bits( bits )
-    if MillerRabin( n , q ):
-      if MillerRabin( ( n << 1 ) + 1, p ): break
+    n = Primo( bits, q )
+    if MillerRabin( ( n << 1 ) + 1, p ): break
   return ( n << 1 ) + 1

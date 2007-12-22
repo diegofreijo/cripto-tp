@@ -3,7 +3,7 @@ sys.path.append("..\\lib")
 import Azar
 import time
 
-bits = 768
+bits = 128
 cant = 10
 print "Comenzando pruebas de " + str(cant) + " primos de " + str(bits) + " bits"
 for i in xrange(10):
