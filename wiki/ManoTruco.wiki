@@ -5,6 +5,10 @@
 Este módulo define la case !ManoTruco, que contiene todo el estado de una mano de truco.
 El servidor creará un objeto de esta clase y el cliente creará otro, y ambos los utilizarán para determinar quién tiene el turno de juego, qué se puede jugar, realizar jugadas, determinar quién ganó la partida y contabilizar los tantos.
 
+Este módulo *NO* tendrá obligación de manejar códigos o claves, ni realizar ningún tipo de encriptación o desencriptación - su única responsabilidad es mantener y actualizar el estado de una jugada de truco.
+
+Este módulo manejará objetos de alto nivel como [Carta], [CantoTruco] y [CantoEnvido].
+
 = Detalles =
 
 Add your content here.  Format your content with:
