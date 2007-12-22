@@ -1,4 +1,5 @@
 # -*- coding: cp1252 -*-
+# cuando se dice quiero o no quiero del envido o truco hay que ver a quien le tocaba jugar. LLamo a terminoSbMano
 
 # El caso es el siguiente. Si me toca jugar, muestro las jugadas posibles y le pido al usuario que seleccione una.
 # El usuario le manda la jugada con el metodo Jugar y actualizo los valores de las variables para ver si termino el juego.
@@ -28,7 +29,6 @@ class PieTruco:
   juegoOtro= [] 	# me parece mejor que _cartaContricanteEnSubManoActual = None
   estadoEnvido=ENVIDONOCANTADO
   estadoTruco=TRUCONOCANTADO
-  PtosEnvidoMios=0 # Los puntos los deberia guardar para despues comprobar cuando termine la mano
   PtosEnvidoOtro=0
   PtosEnvidoQuerido=0
   PtosEnvidoNQuerido=0
@@ -36,7 +36,7 @@ class PieTruco:
   PtostrucoNQuiero=0
   alMaso=None
   tengoTantas=None
-  noTengoNada=_cantoEnvidoTantos('TANTOS')
+  noTengoNada=_cantoEnvidoTantos('TANTOS',0)
   # Ahora definimos el diccionario que contiene las cartas con los niveles
   maso={Carta(1,Palo.ESPADA):0,Carta(2,Palo.ESPADA):5,Carta(3,Palo.ESPADA):4,Carta(4,Palo.ESPADA):13,Carta(5,Palo.ESPADA):12,Carta(6,Palo.ESPADA):11,
 Carta(7,Palo.ESPADA):2,Carta(10,Palo.ESPADA):9,Carta(11,Palo.ESPADA):8,Carta(12,Palo.ESPADA):7,Carta(1,Palo.ORO):6,Carta(2,Palo.ORO):5,Carta(3,Palo.ORO):4,
@@ -52,7 +52,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.soyMano = soyMano
     self.cartasQueTengo = cartasIniciales # cartasIniciales es una lista de las tres cartas del juego de la forma (1,'ESPADA')
     self.tengoTantas=_cantoEnvidoTantos('TANTOS',self.calcularEnvido())
-
+    print "Tengo tantas " + str(self.tengoTantas)
     # inicializacion del estado
     self.manoActual = 1
     self.esMiTurno = soyMano
@@ -140,36 +140,9 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     """A quién le toca jugar. Notar que NO ES LO MISMO que soyMano()"""
     # aca me parece que iria el control de las variables _manoEnSubManoActual y _esMiturno ???
     # cuando soy mano; cuando gane la anterior, o cuando el otro jugo y yo no
-    if len(self.juegoMio)==len(self.juegoOtro) and len(self.juegoOtro)==0: # caso inicial
-      if self.soyMano:
-        print "Entre en el primer caso"
-        self.manoEnSubManoActual=True
-        self.esMiTurno=True
-      else:
-        print "Entre en el segundo caso"
-        self.manoEnSubManoActual=False
-        self.esMiTurno=False
-    if len(self.juegoMio)==len(self.juegoOtro) and len(self.juegoOtro)>0: # se termino la mano, me fijo quien la gano e incremento subManoActual y esMiTurno
-      largo=len(self.juegoMio)
-      if self.ganeMano(largo-1)==-1:
-        self.esMiTurno=False
-      elif self.ganeMano(largo-1)==1:
-        self.esMiTurno==True
-      elif self.ganeMano(largo-1)==0 and self.soyMano:
-        self.esMiTurno=True
-      else:
-        self.esMiTurno=False
-      self.subManoActual=self.subManoActual+1
-      self.manoEnSubManoActual=self.esMiTurno
-    elif len(self.juegoMio)>len(self.juegoOtro):
-      self.esMiTurno=False
-    elif len(self.juegoMio)<len(self.juegoOtro):
-      self.esMiTurno=True
-    else:
-      print "Entre en el caso no pensado"
-      self.esMiTurno=False    
-    return self.esMiTurno
- 
+    if self._terminaSubMano()==None:
+      self.esMiTurno=not self.esMiTurno
+
   def jugadasPosibles(self):
     # esto seria: for each _cartasQueTengo armar una jugada que sea poner esa carta y agregarla a una lista, y retornar esa lista
     # Si _esMiTurno (llamo a turnoDeJuego) muestro las siguientes opciones
@@ -198,24 +171,20 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       lista=[] + cantosMayores(self.estadoEnvido)
       JPosibles=JPosibles + cantosMayores(self.estadoEnvido)
       if self.estadoEnvido!=ENVIDONOCANTADO:
-        JPosibles.append('QUIERO')
-        JPosibles.append('NO QUIERO')
-      if self.estadoEnvido==QUIEROENVIDO:
-        #if self.PtosEnvidoOtro==0:
-        #  JPosibles.append('TENGO TANTAS' + str(CalcularEnvido()))
-        #else:
-        #  JPosibles.append(str(CalcularEnvido()) + 'SON MEJORES')
-        #  JPosibles.append('SON BUENAS')
-        jPosibles.append(self.noTengoNada)
-        jPosibles.append(self.tengotantos)
+        JPosibles.append(QUIEROENVIDO)
+        JPosibles.append(NOQUIEROENVIDO)
+    elif len(self.juegoMio)==0 and self.estadoEnvido==QUIEROENVIDO:
+        if self.PtosEnvidoOtro>0:
+          JPosibles.append(self.noTengoNada)
+        JPosibles.append(self.tengoTantas)
     if self.estadoTruco in CANTOS_TRUCO:
       JPosibles.append(cantoSiguiente(self.estadoTruco))
     if self.estadoTruco in CANTOS_TRUCO and self.estadoTruco!=TRUCONOCANTADO:
-      JPosibles.append('QUIERO')
-      JPosibles.append('NO QUIERO')
+      JPosibles.append(QUIEROTRUCO)
+      JPosibles.append(NOQUIEROTRUCO)
     return JPosibles # me parece que convendria devolver la lista con las opciones posibles que son las que forman el menu
 
-  def actualizarCanto(self,jugada): # 0 si el usuario pide jugar algo y 1 si recibe una jugada
+  def actualizarCanto(self,jugada,jugar): # 0 si el usuario pide jugar algo y 1 si recibe una jugada
     if jugada==ENVIDO:
       self.PtosEnvidoQuerido=2
       self.PtosEnvidoNQuerido=1
@@ -234,16 +203,27 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       self.estadoEnvido=FALTAENVIDO
     elif jugada==QUIEROENVIDO:
       self.estadoEnvido=QUIEROENVIDO
+      self.esMiTurno=self.soyMano #el que es mano es el que empieza cantando
     elif jugada==NOQUIEROENVIDO:
       self.estadoEnvido=NOQUIEROENVIDO
+      # me fijo a quien le tocaba el turno de jugar. Esto deberia ir en una funcion aparte
+      self.turnoDeJuego()
     elif isinstance(jugada,_cantoEnvidoTantos): # para el envido cuando hay que cantar los puntos se van a mandar objetos de la clase _cantoEnvidoTanto
                                                 # de tal manera que si cuando se dice quiero una manda los puntos en este objeto. El otro responde con otro
                                                 #  paquete que contiene 0 si le gane o los puntos si no le gane (el otro puede mandar los puntos sabiendo)
                                                 # que igualmente pierde. Quedara en el contrincante pedir que se muestren las cartas y modificar el score
-      if Tantos(jugada)>0: # lo interpreto como "son buenas"
-        print "Son buenas"
-      else:
-        print "Son mejores " + str(jugada)
+      if jugar==0 and self.PtosEnvidoOtro!=0: # estoy mandando la jugada el otro ya me dijo los puntos que tenia
+        #actualizo los turnos. se sigue con el juego de cartas
+        print "Recibi los puntos del otro y ahora le digo si gano o no. PtosEnvidoOtro: " + str(self.PtosEnvidoOtro)
+        if self.PtosEnvidoOtro>self.tengoTantas:
+          print "Perdi el Envido"
+        else:
+          print "Gane el Envido"
+        self.turnoDeJuego()
+      elif jugar==1: # estoy recibiendo una jugada
+        #el otro canto los puntos
+        self.PtosEnvidoOtro=Tantos(jugada)
+        print "Estoy recibiendo los puntos de la otra parte: " + str(self.PtosEnvidoOtro) + "    " + str(Tantos(jugada))
     elif jugada==TRUCO:
       self.PtosTrucoQuerido=2
       self.PtosTrucoNQuerido=1
@@ -262,8 +242,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       self.estadoTruco=NOQUIEROTRUCO
     else:
       raise ValueError('El canto o la carta no tiene el formato establecido o no existe!!')
-    print "Estado Envido " + str(self.estadoEnvido)
-    print "\nEstado Truco " + str(self.estadoTruco)
+#    print "Estado Envido " + str(self.estadoEnvido)
+#    print "\nEstado Truco " + str(self.estadoTruco)
     
   def jugar(self, jugada):
     """realizar una lista de jugadas (o sea, Cantos y/o Cartas) que hace esta parte"""
@@ -305,10 +285,9 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     if isinstance(jugada,Carta):
       self.cartasQueTengo.remove(jugada)
       self.juegoMio.append(jugada)
+      self.turnoDeJuego()
     else:
-      self.actualizarCanto(jugada)
-      self.esMiTurno=not self.esMiTurno
-    if self._terminaSubMano()==None:
+      self.actualizarCanto(jugada,0)
       self.esMiTurno=not self.esMiTurno
     return  True
       
@@ -349,11 +328,11 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       return False
     if isinstance(jugada,Carta):
       self.juegoOtro.append(jugada)
+      self.turnoDeJuego()      
     else:
-      self.actualizarCanto(jugada)
+      if isinstance(jugada,_cantoEnvidoTantos): print "estoy recibiendo los puntos del otro lado " +  str(jugada)
+      self.actualizarCanto(jugada,1)
       self.esMiTurno=True
-    if self._terminaSubMano()==None:
-      self.esMiTurno=not self.esMiTurno
     return True
   
   def _terminaSubMano(self):
@@ -374,7 +353,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     if len(self.juegoMio)!=len(self.juegoOtro):
       return
     
-    if len(self.juegoMio)==len(self.juegoOtro) and len(self.juegoOtro)==0: # caso inicial
+    if len(self.juegoMio)==len(self.juegoOtro) and len(self.juegoOtro)==0 and self.estadoEnvido==ENVIDONOCANTADO: # caso inicial
       if self.soyMano:
         self.manoEnSubManoActual=True
         self.esMiTurno=True
@@ -401,7 +380,10 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
 	# si hay palos distintos devuelvo la mas alta
 	# Puede ser que tenga que calcular los puntos cuando yo ya haya jugado (el caso en que canta el otro y diga quiero)
 	# Para el caso anterior me fijo en _cartasQueTengo y _juegoMio
-    self.PtosEnvidoMios=20
+    if self.soyMano:
+      self.PtosEnvidoMios=27
+    else:
+      self.PtosEnvidoMios=20
     return self.PtosEnvidoMios
 
   def puntaje(self):

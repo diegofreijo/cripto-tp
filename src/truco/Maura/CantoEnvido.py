@@ -35,10 +35,11 @@ class _cantoEnvidoTantos(_cantoEnvido):
   tantos = 0
 
   def __init__(self, codigo,tantos = 0):
-    if not isinstance(codigo, str) or not isinstance(tantos, int):
+    if isinstance(codigo, str) and isinstance(tantos, int):
+      self.codigo = codigo
+      self.tantos = tantos
+    else:
       raise ValueError('Argumentos de tipo no permitido - deben ser str, int.');
-    self.codigo = codigo
-    self.tantos = tantos
 
   def __str__(self):
     return self.codigo + ':' + repr(self.tantos)
@@ -55,10 +56,12 @@ REALENVIDO = _cantoEnvido('Real Envido')
 FALTAENVIDO = _cantoEnvido('Falta Envido')
 QUIEROENVIDO = _cantoEnvido('Quiero')
 NOQUIEROENVIDO = _cantoEnvido('No quiero')
+NOTENGOTANTOS=_cantoEnvidoTantos('TANTOS')
 
 # pseudo constructor
-def Tantos(tantos):
-  return _cantoEnvidoTantos('Tantos', tantos)
+def Tantos(puntos):
+  return puntos.tantos
+#  return _cantoEnvidoTantos('Tantos', tantos)
 
 
 CANTOS_ENVIDO = [ENVIDONOCANTADO,ENVIDO, ENVIDOENVIDO, REALENVIDO, FALTAENVIDO]
