@@ -41,17 +41,9 @@ Truco
   * El ganador de 2 de 3 manos es el que gana la mano.
   * Una vez que los 2 jugaron las 3 cartas no se puede cantar "Truco".
 
-      ---------                       ------------                       ---------------
-      | Truco |---------------------> | Re Truco |---------------------> | Vale Cuatro |
-      ---------                       ------------                       ---------------
+\includegraphics{Estados Truco Y Envido.png}
+\includegraphics{Quien Tiene El Quiero.png}
 
-
-
-        -------------          ----------
-        | No Quiero |          | Quiero |
-        -------------          ----------
-
-  Los arcos se dibujan a mano (es mas facil que aca) y contienen los puntajes que se suman en el Score.
 * Los cantos deben manejarse como interrupciones. Un jugador puede cantar "Truco" habiendo jugado su carta o no. No es asi el caso del "Envido"; aca hay que controlar que el jugador tenga el token (le toque jugar) y no haya tirado su carta.
 
 
@@ -59,10 +51,10 @@ Truco
 ==============================
 
   * Cantidad de Manos Ganadas
-  * Si se canto "Envido"
-  * Si se canto "Truco"
+  * Si se cant'o "Envido"
+  * Si se cant'o "Truco"
   * Al finalizar la mano:
-    - Si se cant'o "Envido" me fijo si en las cartas sobre la mesa estan los puntos del "Envido". Si no, muestro las que faltan aunque se haya ido al mazo.
+    - Si se cant'o "Envido" me fijo si en las cartas sobre la mesa est'an los puntos del "Envido". Si no, muestro las que faltan aunque se haya ido al mazo.
     - Si se fue al mazo (o se canta "Truco" y no se quiere), entonces no se deben mostrar las cartas que no se hayan jugado a menos que ocurra el caso anterior.
 
 
