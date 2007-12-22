@@ -66,20 +66,37 @@ def handshakeServer():
   nroPaso = 2
   logger.info(pf + '--- PASO 2')
   # obtener una clave aleatoria de 128 bits para AES
-  keyAes = Azar.Bits(128)
-  keyAes = long_to_u128(keyAes)
-  logger.debug(pf + 'generado K = ' + repr(keyAes))
+  keyAesLong = Azar.Bits(128)
+  logger.debug(pf + 'keyAesLong = ' + repr(keyAesLong))
+  keyAes = long_to_u128(keyAesLong)
+  logger.debug(pf + 'keyAes = ' + repr(keyAes))
   # encriptar las cartas
   cartas = CartasDesdeArchivo.cartas()
-  logger.debug(pf + 'las cartas son: ' + repr(cartas))
+  logger.debug(pf + 'cartas = ' + repr(cartas))
   cartas_str = map(lambda x: long_to_u128(x), cartas)
-  logger.debug(pf + 'las cartas convertidas a bytes son: ' + repr(cartas_str))
+  logger.debug(pf + 'cartas_str = ' + repr(cartas_str))
   p2_k_cartas_str = map(lambda x: Aes.AesEncriptar(x, keyAes), cartas_str)
-  logger.debug(pf + 'las cartas encriptadas con K son: ' + repr(p2_k_cartas_str))
+  logger.debug(pf + 'p2_k_cartas_str = ' + repr(p2_k_cartas_str))
+  p2_k_cartas = map(infint_to_long, p2_k_cartas_str)
+  logger.debug(pf + 'p2_k_cartas = ' + repr(p2_k_cartas))
+
+  # debug
+  t = map(lambda y: Aes.AesDesencriptar(y, keyAes), p2_k_cartas_str)
+  logger.debug(pf + 'debug las cartas desencriptadas con K son: ' + repr(t))
+  logger.debug(pf + 'debug son iguales: ' + str(t == cartas_str))
+  t1 = map(lambda y: u128_to_long(y), t)
+  logger.debug(pf + 'debug volvimos a código numérico: ' + str(t1))
+  logger.debug(pf + 'debug son iguales numéricamente: ' + str(t1 == cartas))
+  t2 = map(lambda y: infint_to_long(y), t)
+  logger.debug(pf + 'debug volvimos a código numérico: ' + str(t2))
+  logger.debug(pf + 'debug son iguales numéricamente: ' + str(t2 == cartas))
+  p3_k_cartas = p2_k_cartas
+  #/debug
+
   # enviar
   # formato: tamaño en bytes + códigos de las cartas, encriptados con AES, como strings de bytes
   msg = empaquetar_Lista_Generica(p2_k_cartas_str, lambda x: x) # sin conversion de elementos de la lista
-  logger.debug(pf + 'Red.Enviar(cartas encriptadas con K)')
+  logger.debug(pf + 'Red.Enviar(p2_k_cartas_str)')
   Red.enviar(msg)
 
 
@@ -112,9 +129,14 @@ def handshakeServer():
   # La lista debe tener 41 elementos
   # - el primer elem. es p, un primo grande
   # - el resto de los elementos son las cartas k(Ci) encriptadas con e1b
-  if len(t) != 1 + len(p2_k_cartas_str):
-    logger.error(pf + 'ERROR FATAL: se esperaban exactamente ' + str(1 + len(p2_k_cartas_str)) + ' elementos')
-    raise 'ERROR FATAL: se esperaban exactamente ' + str(1 + len(p2_k_cartas_str)) + ' elementos'
+  # debug
+  #if len(t) != 1 + len(p2_k_cartas_str):
+  #  logger.error(pf + 'ERROR FATAL: se esperaban exactamente ' + str(1 + len(p2_k_cartas_str)) + ' elementos')
+  #  raise 'ERROR FATAL: se esperaban exactamente ' + str(1 + len(p2_k_cartas_str)) + ' elementos'
+  if len(t) != 2 + len(p2_k_cartas_str):
+    logger.error(pf + 'ERROR FATAL: se esperaban exactamente ' + str(2 + len(p2_k_cartas_str)) + ' elementos')
+    raise 'ERROR FATAL: se esperaban exactamente ' + str(2 + len(p2_k_cartas_str)) + ' elementos'
+  #/debug
   primo = t[0]
   if primo < PRIMO_MINIMO:
     logger.error(pf + 'ERROR FATAL: el primo recibido es demasiado chico')
@@ -122,12 +144,29 @@ def handshakeServer():
   if not Azar.MillerRabin(primo): # if not Matematica.esPrimo(primo):
     logger.error(pf + 'ERROR FATAL: el primo recibido no es un primo!')
     raise 'ERROR FATAL: el primo recibido no es un primo!'
+  #debug
+  if primo != 138840242304691757590023665847446776817598442866265113948085287165398284915819274685055955941003493073746599347005050384080452466398775813599382092517423548091124621361229576163611353039506204507457079134949940379860948903986001100674364455764235458126250127210569882368429663718956895185189386532208487637179:
+    print 'ERROR, el primo recibido es distinto!'
+    quit()
+  #/debug
   # obtener la lista de cartas
-  p3_e1b_k_cartas = t[1:]
+  p3_e1b_k_cartas = t[1:-1]
+  logger.debug(pf + 'recibido p3_e1b_k_cartas == ' + repr(p3_e1b_k_cartas))
   if len(p3_e1b_k_cartas) != len(p2_k_cartas_str):
     logger.error(pf + 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p3_e1b_k_cartas)) + ' no coincide con la cantidad esperada (' + str(len(p2_k_cartas_str)) + ')')
     raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p3_e1b_k_cartas)) + ' no coincide con la cantidad esperada (' + str(len(p2_k_cartas_str)) + ')'
   # TODO: chequear que no haya cartas repetidas
+  # debug
+  d1b = t[-1]
+  if d1b != 55469733050751556334887129895050081961458054304101178843311861100448787538821316851214183384509616274264381564700424425116771261044472078026359622971420625782369264447076816529175832499647945955197658267901667396561213380622294751600696944942896583186534272366286455577522452613555761593283387791225540799429:
+    print 'ERROR, el d1b recibido es distinto'
+    quit()
+  p3_dbg = map(lambda n: Rsa.Desencriptar(n, d1b, primo), p3_e1b_k_cartas)
+  logger.debug('p3_dbg == ' + repr(p3_dbg))
+  if p3_dbg != p3_k_cartas:
+      print 'ERROR, son distintos!'
+      quit()
+  #/debug
 
 
   # 4) A usa P para generarse sus propias claves e1a, d1a tq e1a*d1a = 1 (mod p-1)
@@ -199,6 +238,7 @@ def handshakeServer():
   nroPaso = 6
   logger.info(pf + '--- PASO 6')
   p6_misCartas_encrip, tmp = desempaquetar_Lista_Generica(msg, infint_to_long)
+  logger.debug('p6_misCartas_encrip == ' + repr(p6_misCartas_encrip))
   if tmp != '':
     logger.warn(pf + 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.')
   if len(p6_misCartas_encrip) != 6:
@@ -206,25 +246,33 @@ def handshakeServer():
     raise 'ERROR FATAL: cantidad de cartas recibidas (' + str(len(p6_misCartas_encrip)) + ' no coincide con la cantidad esperada (6)'
   # desencriptar las cartas con d1a
   p6_misCartas_d1a = map(lambda n: Rsa.Desencriptar(n, d1a, primo), p6_misCartas_encrip)
+  logger.debug('p6_misCartas_d1a = ' + repr(p6_misCartas_d1a))
   # ahora tengo k(A1), e2b(k(A1)), k(A2), e2b(k(A2)), idem 3er carta
   # Obtener una lista de 3 tuplas asociando k(Ai) con e2b(k(Ai))
   p6_misCartas_lista = []
   p6_misCartas_lista.append( (p6_misCartas_d1a[0], p6_misCartas_d1a[1]) )
   p6_misCartas_lista.append( (p6_misCartas_d1a[2], p6_misCartas_d1a[3]) )
   p6_misCartas_lista.append( (p6_misCartas_d1a[4], p6_misCartas_d1a[5]) )
+  logger.debug('p6_misCartas_lista = ' + repr(p6_misCartas_lista))
   # Desencriptar k(Ai) con k para obtener Ai
   # Recordar que hay que convertir a una cadena de bytes (de 16 bytes)
-  p6_misCartas = map(lambda t: (Matematica.bytes2long(Aes.AesDesencriptar(keyAes, Matematica.long2bytes(t[0], 16))), t[1]), p6_misCartas_lista)
+  p6_misCartas = map(lambda t: (Matematica.bytes2long(Aes.AesDesencriptar(Matematica.long2bytes(t[0], 16), keyAes)), t[1]), p6_misCartas_lista)
+  logger.debug('p6_misCartas = ' + repr(p6_misCartas))
   # chequear que las cartas estén en el mazo original
+  logger.debug(pf + 'chequear que las cartas estén en el mazo original')
   for ai, e2bkAi in p6_misCartas:
+    logger.debug('Ai, e2bkAi = ' + repr(ai) + ', ' + repr(e2bkAi))
     if ai not in cartas:
       logger.error(pf + 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original')
-      logger.error(pf + 'Carta desconocida: ' + str(ai))
+      logger.error(pf + 'Carta desconocida: ' + repr(ai))
       raise 'ERROR FATAL: las cartas recibidas del cliente no estan en el mazo original'
+    else:
+      carta = CartasDesdeArchivo.carta(ai)
+      logger.info('Me toco la carta ' + str(carta) + ' - ' + repr(carta))
 
   # Por último, enviar k a B
   logger.info(pf + '--- PASO 6 (envio)')
-  msg = long_to_u128(keyAes)
+  msg = keyAes # ya es str
   msg = long_to_u32(len(msg)) + msg
   logger.debug(pf + 'Red.Enviar(k)')
   Red.enviar(msg)
