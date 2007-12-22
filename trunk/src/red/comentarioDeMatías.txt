@@ -12,3 +12,63 @@ El módulo CartasDesdeArchivo se encarga de:
 - desde una carta, obtener el código hasheado
 
 - desde un código hasheado, obtener una carta
+
+
+
+
+-------------
+
+Listita de TO DO's:
+
+- cambiar el nombre de CartasDesdeArchivo
+
+- hacer otro módulo similar (o dentro de ese mismo) para asignar un código
+  a los Cantos de envido y truco
+
+- terminar los modulos para el handshake; deben devolver los valores necesarios
+  para que LogicaRed pueda jugar, a saber:
+
+  (A) Ai y e2b(k(Ai))    vs   (B) Bi y e2a(k(Bi))
+  (A) (e3a, n3a)         vs   (B) (d3a, n3a)
+  (A) (d3b, n3b)         vs   (B) (e3b, n3b)
+  (A y B) el K (???)
+
+- terminar de definir la interaccion de comandos de LogicaRed
+
+Una idea provisional sería: cada comunicacion es una lista de cosas
+El primer elemento de la lista es un string, que puede ser:
+  - JUGAR: el resto de los elementos sería un Canto, una Carta o ambos
+  - AL MAZO: el resto de los elementos serían las cartas no jugadas que se quiere
+    mostrar al contrario (decisión del jugador)
+  - YO GANÉ: el resto de los elementos serían dos valores enteros con los puntos
+    ganados por uno y por el contrincante en la partida
+
+Una idea provisional es usar un comando aparte para cantar los tantos.
+Los tantos ("Mis tantos son 25", "30 son mejores", "son buenas") se mapearían
+a
+  - TANTOS: el resto de los elementos sería un único valor entero con el puntaje
+    a cantar. "Son buenas" sería cantar TANTOS 0, por ejemplo.
+
+- ver si es necesario definir un ACKNOWLEDGE luego de cada recepción de comando
+  Podría ser util para que la contraparte sepa si el comando previamente recibido
+  estuvo bien (ACK) o resultó en error (ERR)
+  La comunicación podría ser una lista, el ACK/ERR el primer elemento
+  y en el caso de ERR agregar mensajes de error a la lista
+
+- ver si vale la pena poner un comando MENSAJE que se usaría para chatear.
+  En este caso la respuesta sería ACK, u otro MENSAJE.
+  Esto NO cambiaría el orden de jugada; el turno lo seguiría teniendo el mismo
+  que envió el primer MENSAJE de la cadena (la cadena se termina con un ACK)
+
+- timestamping: definimos ya que va a ser un número de secuencia de mensaje
+
+- logging: todo va logueado para ayudar al debugging
+
+- cierre del juego: el protocolo de finalización sería el YO GANÉ de parte del ganador,
+  y ACK o ERR de su contrincante
+
+- firma del envío: ¿encriptar con RSA la lista entera, o cada elemento de la
+lista por separado?
+
+- ¿cómo encriptar los tantos? ¿viajan como un código dentro del cual está el valor,
+o como dos códigos?
