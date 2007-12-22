@@ -1,0 +1,1 @@
+Handshake (intercambio inicial de claves) para jugar, del lado del cliente. Ver [LogicaRedHandshake]
