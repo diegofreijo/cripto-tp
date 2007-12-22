@@ -1,0 +1,15 @@
+#summary Descripción del protocolo de handshake, según Matías
+
+= Introducción =
+
+El concepto del handshake que diseñó Diego se mantiene. Pero el formato binario que él diseñó se descartó completamente.
+
+= Diseño de módulos de Python =
+
+El handshake es gestionado por dos módulos: LogicaRedHandshakeClient.py y LogicaRedHandshakeServer.py, que tienen la versión cliente y servidor respectivamente del protocolo de handshake.
+Notas:
+
+  * *NO* realizan la conexión. Utilizan una conexión ya establecida por el módulo Red.py
+  * proveen todos los datos necesarios para jugar al módulo LogicaRed.py
+  * si algo falla, generan una excepción
+  * loguean todo (si se les pasa un objeto Registro)
