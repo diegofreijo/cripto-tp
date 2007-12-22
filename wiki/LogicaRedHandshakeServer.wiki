@@ -1,0 +1,2 @@
+#summary LogicaRedHandshakeServer.py
+Handshake (intercambio inicial de claves) para jugar, del lado del servidor. Ver [LogicaRedHandshake]
