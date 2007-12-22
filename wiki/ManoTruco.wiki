@@ -1,0 +1,13 @@
+#summary ManoTruco.py
+
+= Introducción =
+
+Este módulo define la case ManoTruco, que contiene todo el estado de una mano de truco.
+El servidor creará un objeto de esta clase y el cliente creará otro, y ambos los utilizarán para determinar quién tiene el turno de juego, qué se puede jugar, realizar jugadas, determinar quién ganó la partida y contabilizar los tantos.
+
+= Detalles =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
