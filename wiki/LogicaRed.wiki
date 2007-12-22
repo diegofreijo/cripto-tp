@@ -1,0 +1,13 @@
+#summary LogicaRed.py
+
+= Introducción =
+
+Se encarga del envío y recepción de datos encriptados, convirtiéndolos a objetos de alto nivel necesarios para ManoTruco.py
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
