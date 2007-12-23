@@ -1,0 +1,6 @@
+Falta Implementar:
+
+	- CUANDO UNO CANTA TRUCO Y EL OTRO LE RESONDE "PRIMERO ESTA EL ENVIDO"
+		Para este caso se resuelve primero el Envido, despues el Truco y por ultimo se sigue jugando
+
+Errores: 
