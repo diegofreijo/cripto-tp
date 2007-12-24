@@ -10,13 +10,6 @@ import LogicaRedHandshakeServer
 import LogicaRedHandshakeClient
 
 
-#def ComenzarPartida(ip):
-#	raise "No implementado"
-
-#def DejarPartida():
-#	raise "No implementado"
-
-
 ## PARA EL LOG DEL MODULO
 prefijo = '[' + __name__ + '] ' # nombre del modulo
 logger = Registro.newRegistro()
@@ -39,6 +32,15 @@ def activarRegistro(nuevoLogger):
 
 
 modo = None
+# Datos para jugar:
+# - Mis cartas: diccionario con las 3 cartas que nos tocaron. Las claves son las cartas y los valores
+# asociados son los valores encriptados e2b(k(Ai)) que interpretará la contraparte.
+misCartas = None
+# - Clave pública RSA de B: (p8_e3b, p8_n3b) para poder verificar los mensajes enviados por B
+rsaContrincante = None # tupla (e, n)
+# - Clave privada RSA propia: (e3a, d3a, n3a) para encriptar mensajes enviados a B
+rsaPropio = None # tupla (e, d, n)
+
 
 def servirJuego(direccion, puerto):
   """
@@ -46,6 +48,7 @@ def servirJuego(direccion, puerto):
   Una vez iniciada la conexion, se encarga de realizar el handshake necesario
   para jugar al Truco de manera segura
   """
+  global misCartas, rsaContrincante, rsaPropio
   pf = prefijo + '[servirJuego()] '
 
   logger.debug(pf + 'servirJuego(' + str(direccion) + ', ' + str(puerto) + ')')
@@ -53,7 +56,6 @@ def servirJuego(direccion, puerto):
   modo = 'server'
 
   # 1) B le pide conexion a A
-  nroPaso = 1
   logger.info(pf + '--- PASO 1')
   logger.debug(pf + 'Red.EsperarConexion(direccion, puerto)')
   Red.esperarConexion(direccion, puerto)
@@ -63,13 +65,12 @@ def servirJuego(direccion, puerto):
   # pasos 2) al 9)
   LogicaRedHandshakeServer.handshakeServer()
 
-  # Handshake completado - ahora entrar al pre-inicio del juego
-  pass
-
-  # Pre-inicio completado - preparar para el intermcambio de jugadas
-  pass
+  # Handshake completado - preparar para el intermcambio de jugadas
+  misCartas = LogicaRedHandshakeServer.misCartas
+  rsaContrincante = LogicaRedHandshakeServer.rsaContrincante
+  rsaPropio = LogicaRedHandshakeServer.rsaPropio
   
-  raise 'No implementado'
+  return True
 
 
 def conectarAJuego(direccion, puerto):
@@ -80,9 +81,10 @@ def conectarAJuego(direccion, puerto):
   """
   pf = prefijo + '[conectarAJuego()] '
   logger.debug(pf + 'conectarAJuego(' + str(direccion) + ', ' + str(puerto) + ')')
+  global modo
+  modo = 'client'
 
   # 1) B le pide conexion a A
-  nroPaso = 1
   logger.info(pf + '--- PASO 1')
   logger.debug(pf + 'Red.AbrirConexion(direccion, puerto)')
   Red.abrirConexion(direccion, puerto)
@@ -92,13 +94,12 @@ def conectarAJuego(direccion, puerto):
   # pasos 2) al 9)
   LogicaRedHandshakeClient.handshakeClient()
 
-  # Handshake completado - ahora entrar al pre-inicio del juego
-  pass
+  # Handshake completado - preparar para el intermcambio de jugadas
+  misCartas = LogicaRedHandshakeClient.misCartas
+  rsaContrincante = LogicaRedHandshakeClient.rsaContrincante
+  rsaPropio = LogicaRedHandshakeClient.rsaPropio
 
-  # Pre-inicio completado - preparar para el intermcambio de jugadas
-  pass
-
-  raise 'No implementado'
+  return True
 
 
 def cerrarConexion():
@@ -108,12 +109,13 @@ def cerrarConexion():
   pf = prefijo + '[cerrarConexion()] '
   logger.debug(pf + 'cerrarConexion()')
   pass
+  Red.cerrarConexion()
   raise 'No implementado'
 
 
 def enviarJugada(jugadas):
   """
-  Envia una jugada (lista cartas o cantos) a enviar a la contraparte
+  Envia una jugada (lista de cartas o cantos) a la contraparte
   """
   pf = prefijo + '[enviarJugada()] '
   logger.debug(pf + 'rnviarJugada(' + str(jugadas) + ')')
