@@ -8,3 +8,5 @@ Errores:
 * Cuando el envido no es querido queda en un estado feo, porque no puedo jugar mas cartas
 * Si canto truco, retruco, vale4, al cantar vale4 pincha con un IndexError: list index out of range.
 * si juego el 2 de espada, la compu el 3 de oro y el ancho de basto, y despues yo juego el 3 de espada, el juego deberia teminar, porque la compu gano las 2 submanos. Sin embargo, el programa no se da cuenta y me pide la siguiente jugada para la compu
+* se puede cantar envido envido de entrada! eso esta mal. Por que envido envido es una opcion aparte, pero envido real envido no?
+* Los tantos estan hardcodeados. El usuario tendria que poder elegir cuanto cantar!

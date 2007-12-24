@@ -97,8 +97,9 @@ def Primo( bits, p=10 ):
   Existe la posibilidad (muy baja) que el numero devuelto sea compuesto, ya que se utiliza
   un test de primalidad probabilistico.
   """
+  bits = bits - 1
   while True:
-    n = ( Bits( bits - 1 ) << 1 ) + 1 # elijo al azar un n impar
+    n = ( Bits( bits ) << 1 ) | 1 # elijo al azar un n impar
     if MillerRabin(n,p): break # si MillerRabin dice que es primo, listo
   return n
 
@@ -109,10 +110,10 @@ def PrimoFuerte( bits, p, q ):
   un test de primalidad probabilistico.
   p define la probabilidad de que el numero sea primo.
   q define la probabilidad de que el numero sea de la forma 2 * primo + 1
-  Nota de Pablo: en mi maquina, para primos de 512 bits, ya era insufriblemente lento...
+  Nota de Pablo: en mi maquina, para primos de 256 bits, ya era insufriblemente lento...
   """
   bits = bits - 1
   while True:
     n = Primo( bits, q )
-    if MillerRabin( ( n << 1 ) + 1, p ): break
-  return ( n << 1 ) + 1
+    if MillerRabin( ( n << 1 ) | 1, p ): break
+  return ( n << 1 ) | 1
