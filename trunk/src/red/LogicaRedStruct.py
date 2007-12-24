@@ -52,7 +52,7 @@ def infint_to_long(txt):
   #return long(txt)
   return Matematica.bytes2long(txt)
 
-def empaquetar_Lista_Generica(lista, func):
+def empaquetar_Lista_Generica(lista, func = lambda x:x):
   """
   Codifica en texto una lista de valores, usando el codificador func
   para cada elemento de la lista
@@ -105,3 +105,50 @@ def desempaquetar_Lista_Generica(texto, func):
   # Se reconstruyo correctamente la lista. Devolver lista y datos restantes
   restante = texto[(4+longBytes):]
   return (lista, restante)
+
+
+def recibirListaGenerica(moduloRed, logger = None, pfLog = None, pfErr = None, pfId = None, func = lambda x:x):
+  if logger:
+    logger.debug(pfLog + moduloRed.__name__ + '.recibir(4)')
+  tamStr = moduloRed.recibir(4) # tamaño en bytes del resto del mensaje
+  if tamStr == None or tamStr == None or len(tamStr) < 4:
+    m = 'Mensaje recibido truncado'
+    if pfErr: m = pfErr + m
+    if logger:
+      m2 = m
+      if pfLog: m2 = pfLog + m2
+      logger.error(m2)
+    raise ValueError(m)
+  tam = u32_to_long(tamStr)
+  if tam <= 0:
+    m = 'Longitud del mensaje recibido incorrecta'
+    if pfErr: m = pfErr + m
+    if logger:
+      m2 = m
+      if pfLog: m2 = pfLog + m2
+      logger.error(m2)
+    raise ValueError(m)
+  if logger:
+    m = moduloRed.__name__ + '.recibir('+ str(tam) + ')'
+    if pfLog: m = pfLog + m
+    logger.debug(m)
+  msg = moduloRed.recibir(tam)
+  if len(msg) < tam:
+    m = 'ERROR FATAL: mensaje de longitud menor a la esperada'
+    if pfErr: m = pfErr + m
+    if logger:
+      m2 = m
+      if pfLog: m2 = pfLog + m2
+      logger.error(m2)
+    raise ValueError(m)
+  t, tmp = desempaquetar_Lista_Generica(tamStr + msg, func)
+  if pfId and logger:
+    m = pfId + repr(t)
+    if pfLog: m = pfLog + m
+    logger.debug(m)
+  if tmp != '':
+    if logger:
+      m2 = 'hay datos sobrantes al final del mensaje recibido. Se ignoran esos datos.'
+      if pfLog: m2 = pfLog + m2
+      logger.warn(m2)
+  return t
