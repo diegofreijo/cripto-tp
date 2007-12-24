@@ -1,4 +1,7 @@
+\section{Introducci'on}
+La motivaci'on del trabajo surge de la necesidad que imponen ciertos juegos de cartas de poder repartir los naipes entre distintos jugadores en forma azarosa (justa), y que garantice de alguna manera que ninguno de los jugadores haga trampa en lo que al reparto y juego de las cartas se refiere. Lograr esto en una implementaci'on por software de juegos de este tipo requiere obligatoriamente de t'ecnicas criptogr'aficas, ya sea de firma y/o encriptaci'on de mensajes. Dentro de estos juegos, el Truco tiene la particularidad de que puede ser necesario que un jugador muestre ninguna, alguna, o todas las cartas que recibi'o.
+
 El objetivo del trabajo es dise'nar e implementar un protocolo para el reparto de cartas y juego de Truco Mental entre dos jugadores.
-El protocolo est'a dise'nado para garantizar una justa repartici'on de cartas y que cada parte juege s'olo cartas que le fueron repartidas.
+El protocolo est'a dise'nado para garantizar una justa repartici'on de cartas y que cada parte juege s'olo cartas que le fueron repartidas. Adem'as, el protocolo permite que un jugador muestre sus cartas selectivamente, y que verifique que las cartas pertenecen a un mazo inalterado.
 
 El lenguaje elegido es Python. La implementaci'on realizada permite que dos jugadores juegen una mano a trav'es de una conexi'on por red. Al ejecutar el programa, 'este pregunta si debe ser ejecutado en modo cliente o modo servidor. Si se ejecutaran varias instancias del servidor en la misma computadora, se podr'ia dar un servicio de truco a varios jugadores simult'anea e independientemente.
