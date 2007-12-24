@@ -32,14 +32,14 @@ class ManoTruco:
   PtosEnvidoNQuerido=None
   PtosTrucoQuiero=None
   PtostrucoNQuiero=None
-  alMaso=None
+  alMazo=None
   tengoTantas=None
   noTengoNada=None
   intercambiandoTantos=None
   canteMisTantos=None
   ultimoEstadoTruco=None
   # Ahora definimos el diccionario que contiene las cartas con los niveles
-  maso={Carta(1,Palo.ESPADA):0,Carta(2,Palo.ESPADA):5,Carta(3,Palo.ESPADA):4,Carta(4,Palo.ESPADA):13,Carta(5,Palo.ESPADA):12,Carta(6,Palo.ESPADA):11,
+  mazo={Carta(1,Palo.ESPADA):0,Carta(2,Palo.ESPADA):5,Carta(3,Palo.ESPADA):4,Carta(4,Palo.ESPADA):13,Carta(5,Palo.ESPADA):12,Carta(6,Palo.ESPADA):11,
 Carta(7,Palo.ESPADA):2,Carta(10,Palo.ESPADA):9,Carta(11,Palo.ESPADA):8,Carta(12,Palo.ESPADA):7,Carta(1,Palo.ORO):6,Carta(2,Palo.ORO):5,Carta(3,Palo.ORO):4,
 Carta(4,Palo.ORO):13,Carta(5,Palo.ORO):12,Carta(6,Palo.ORO):11,Carta(7,Palo.ORO):3,Carta(10,Palo.ORO):9,Carta(11,Palo.ORO):8,Carta(12,Palo.ORO):7,
 Carta(1,Palo.BASTO):1,Carta(2,Palo.BASTO):5,Carta(3,Palo.BASTO):4,Carta(4,Palo.BASTO):13,Carta(5,Palo.BASTO):12,Carta(6,Palo.BASTO):11,Carta(7,Palo.BASTO):10,
@@ -68,10 +68,11 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.PtosEnvidoNQuerido=-1
     self.PtosTrucoQuiero=-1
     self.PtostrucoNQuiero=-1
-    self.alMaso=0
+    self.alMazo=0
     self.intercambiandoTantos=False
     self.canteMisTantos=False
     self.ultimoEstadoTruco=TRUCONOCANTADO
+
   def soyMano(self):
     """True si soy mano (no soy pie, reparti yo, y fui mano en la primera submano), False si no."""
     return self.soyMano
@@ -83,7 +84,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
   def nivelCarta(self,carta):
     #carta es de la forma (1,'ESPADA')
     if isinstance(carta,Carta):
-      return self.maso[carta]
+      return self.mazo[carta]
     else:
       raise ValueError('La carta no tiene el formato esperado (1,''ESPADA'')!!')
     
@@ -101,7 +102,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     """ Esta funcion devuelve None en manoActual si la partida se termino. De lo contrario, la mano que se juega"""
     # Cuando se jugaron las 6 cartas. Si hay parda en tercera gana el que gano primera. Me tengo que fijar como se jugaron las cartas
     # Cuando hay parda en primera y se juegan las dos cartas en la segunda. Si hay parda en segunda estoy en el caso anterior
-    # Cuando se va al maso alguno de los dos
+    # Cuando se va al mazo alguno de los dos
     # Cuando se canta falta envido ( lo podemos considerar por ahora por simplicidad)
     # seteo la variable a None si se da alguna de las condiciones
     cont=0
@@ -236,7 +237,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     # 		muestro estadoTruco.codigo()+ 1
     # 	Si estadoTruco.valor()>=4
     # 		no muestro nada porque esta todo cantado
-    # Irse al maso!!!
+    # Irse al mazo!!!
     JPosibles=[]
     #for i in range(0,len(self.cartasQueTengo)):
     i=0
@@ -383,7 +384,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     #		si jugada=QUIERO, no incremento el score. Cuando se termine la mano veo quien gano y actualizo el score
     #		si jugada=NOQUIERO, no incremento el score. Cuando se termine la mano veo quien gano y actualizo el score
     # Si se jugaba un canto de carta y canto se dividia en dos y se trataba por separado sin necesidad de preguntar dos veces??
-    # Irse al maso!!!
+    # Irse al mazo!!!
 
     if not self.esMiTurno:
       return False
