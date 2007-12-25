@@ -66,7 +66,7 @@ def comenzarJuego(modo, direcc, puerto):
   return
 
 
-def valElegirIp(texto):
+def _valElegirIp(texto):
   """
   Chequear si el texto es una dirección IP válida
   """
@@ -78,13 +78,13 @@ def valElegirIp(texto):
     return (None, False)
   #
 
-def valElegirIpBlanco(texto):
+def _valElegirIpBlanco(texto):
   if texto.strip() == '':
     return ('', True)
   else:
-    return valElegirIp(texto)
+    return _valElegirIp(texto)
 
-def valElegirIpPuerto(texto):
+def _valElegirIpPuerto(texto):
   try:
     i = int(texto)
     if i >= 1024 and i <= 65535:
@@ -98,21 +98,21 @@ def valElegirIpPuerto(texto):
 def elegirIp(modo):
   if modo == 'S':
     msg = 'Modo Server. Elegir la dirección ip donde se escucharán conexiones (dejar en blanco para cualquier interfase): '
-    direcc = obt_texto(msg, valElegirIpBlanco)
+    direcc = obt_texto(msg, _valElegirIpBlanco)
   else:
     msg = 'Modo Client. Elegir la dirección ip a donde hay que conectar (requerido): '
-    direcc = obt_texto(msg, valElegirIp)
+    direcc = obt_texto(msg, _valElegirIp)
   #
   if modo == 'S':
     msg = 'Modo Server. Elegir el puerto donde se escucharán conexiones (requerido): '
   else:
     msg = 'Modo Client. Elegir el puerto a donde conectarse (requerido): '
-  puerto = obt_texto(msg, valElegirIpPuerto)
+  puerto = obt_texto(msg, _valElegirIpPuerto)
   puerto = int(puerto)
   #
   comenzarJuego(modo, direcc, puerto)
   
-def valElegirModo(texto):
+def _valElegirModo(texto):
   texto = texto.strip().upper()
   if texto in ['C', 'S', '']:
     return (texto, True)
@@ -121,7 +121,7 @@ def valElegirModo(texto):
 
 def elegirModo():
   while True:
-    modo = obt_texto('Elija el modo (Cliente, Servidor, en blanco para salir): ', valElegirModo)
+    modo = obt_texto('Elija el modo (Cliente, Servidor, en blanco para salir): ', _valElegirModo)
     if modo == '':
       break
     # elegir la dirección
