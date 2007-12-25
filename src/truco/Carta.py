@@ -48,9 +48,8 @@ class Carta:
     return self.numero >= 10
 
   def __eq__(self, otra):
-    if isinstance(otra, Carta):
-      return (self.palo == otra.palo and self.numero == otra.numero)
-    raise ValueError('Argumento de tipo no permitido: ' + str(otra))
+    if not isinstance(otra, Carta): return False
+    return (self.palo == otra.palo and self.numero == otra.numero)
 
   def __ne__(self, otra):
     return not (self == otra)

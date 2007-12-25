@@ -31,7 +31,7 @@ class _palo:
   def __eq__(self, otro):
     if isinstance(otro, _palo): return (self.palo == otro.palo)
     if isinstance(otro, str): return (self.palo == otro)
-    raise ValueError('Argumento de tipo no permitido: ' + str(otro))
+    return False
 
   def __ne__(self, otro):
     return not (self == otro)
