@@ -7,7 +7,10 @@ import doctest
 
 
 def _test():
-  os.chdir(r'C:\workspace\Cripto-TP\test\truco_v1')
+  # Reemplazar con el directorio donde estén los archivos *.test y
+  # este script (UnitTestingManoTruco.py)
+  #os.chdir(r'C:\Documents and Settings\malbanesi\Mis documentos\_personal\workspace\cripto-tp\test\truco_viejo')
+  #os.chdir(r'D:\mac@sion.com\workspace\cripto-tp\test\truco_viejo')
   regexp = re.compile('^ManoTruco.+\\.test$', re.IGNORECASE)
   t = os.listdir('.')
   lista = []
