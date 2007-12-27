@@ -1,5 +1,5 @@
 # -*- coding: cp1252 -*-
-execfile(r'..\..\setpath.py')
+execfile(r'..\..\setpath_viejo.py')
 
 import os
 import re
@@ -9,7 +9,7 @@ import doctest
 def _test():
   # Reemplazar con el directorio donde estén los archivos *.test y
   # este script (UnitTestingManoTruco.py)
-  #os.chdir(r'C:\Documents and Settings\malbanesi\Mis documentos\_personal\workspace\cripto-tp\test\truco_viejo')
+  os.chdir(r'C:\Documents and Settings\malbanesi\Mis documentos\_personal\workspace\cripto-tp\test\truco_viejo')
   #os.chdir(r'D:\mac@sion.com\workspace\cripto-tp\test\truco_viejo')
   regexp = re.compile('^ManoTruco.+\\.test$', re.IGNORECASE)
   t = os.listdir('.')

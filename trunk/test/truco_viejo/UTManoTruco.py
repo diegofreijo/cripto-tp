@@ -1,5 +1,5 @@
 # -*- coding: cp1252 -*-
-execfile(r'..\..\setpath.py')
+execfile(r'..\..\setpath_viejo.py')
 from Carta import *
 import Canto
 from ManoTruco import ManoTruco

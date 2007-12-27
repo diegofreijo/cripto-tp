@@ -1,4 +1,4 @@
-execfile(r'..\..\setpath.py')
+execfile(r'..\..\setpath_viejo.py')
 import Palo
 import Carta
 import Canto
