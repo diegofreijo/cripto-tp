@@ -42,7 +42,7 @@ class _cantoEnvidoTantos(_cantoEnvido):
       raise ValueError('Argumentos de tipo no permitido - deben ser str, int.');
 
   def __str__(self):
-    return self.codigo + ':' + repr(self.tantos)
+    return self.codigo + ':' #+ repr(self.tantos)
 
   def __repr__(self):
     return 'CantoEnvido.Tantos('+repr(self.tantos)+')'
