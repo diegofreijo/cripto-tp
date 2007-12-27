@@ -14,9 +14,9 @@ def mostrarLista(jugadas):
   return
 
 cartasMano = []
-cartasMano.append( Carta( 1,Palo.ESPADA ) )
-cartasMano.append( Carta( 2,Palo.ESPADA ) )
 cartasMano.append( Carta( 3,Palo.ESPADA ) )
+cartasMano.append( Carta( 2,Palo.ESPADA ) )
+cartasMano.append( Carta( 1,Palo.ESPADA ) )
 cartasPie = []
 cartasPie.append( Carta( 1,Palo.BASTO ) )
 cartasPie.append( Carta( 2,Palo.ORO ) )
@@ -25,7 +25,7 @@ cartasPie.append( Carta( 3,Palo.ORO ) )
 TrucoMano = ManoTruco.ManoTruco( cartasMano, True )
 TrucoPie = ManoTruco.ManoTruco( cartasPie, False )
 
-while (TrucoMano.terminado()!=None) or (TrucoPie.terminado()!=None):
+while TrucoMano.terminado()!=None and TrucoPie.terminado()!=None:
   if TrucoMano.esMiTurno:
     jugadas = TrucoMano.jugadasPosibles()
     mostrarLista(jugadas)
@@ -38,18 +38,23 @@ while (TrucoMano.terminado()!=None) or (TrucoPie.terminado()!=None):
     print "TrucoMano.juegomio " + str(TrucoMano.juegoMio)
     print "TrucoMano.juegootro " + str(TrucoMano.juegoOtro)
     print "TrucoMano.esMiTurno "  + str(TrucoMano.esMiTurno)
+    print "TrucoMano.estadoTruco " + str(TrucoMano.estadoTruco)
     print "Trucopie.juegomio " + str(TrucoPie.juegoMio)
     print "Trucopie.juegootro " + str(TrucoPie.juegoOtro)
     print "Trucopie.esMiTurno " + str(TrucoPie.esMiTurno)
+    print "TrucoPie.estadoTruco " + str(TrucoPie.estadoTruco)
+    
     TrucoPie.recibirJugada( opcionJugada );
     print "TrucoMano.juegomio " + str(TrucoMano.juegoMio)
     print "TrucoMano.juegootro " + str(TrucoMano.juegoOtro)
     print "TrucoMano.esMiTurno "  + str(TrucoMano.esMiTurno)
+    print "TrucoMano.estadoTruco " + str(TrucoMano.estadoTruco)
     print "Trucopie.juegomio " + str(TrucoPie.juegoMio)
     print "Trucopie.juegootro " + str(TrucoPie.juegoOtro)
     print "Trucopie.esMiTurno " + str(TrucoPie.esMiTurno)
+    print "TrucoPie.estadoTruco " + str(TrucoPie.estadoTruco)
     opcionInt = raw_input("Presione una tecla para continuar...")
-  if TrucoPie.esMiTurno:
+  elif TrucoPie.esMiTurno:
     jugadas = TrucoPie.jugadasPosibles()
     mostrarLista(jugadas)
     print "\nELIJA LA OPCION QUE JUEGA LA COMPU: (empezando en 0)"
@@ -61,15 +66,29 @@ while (TrucoMano.terminado()!=None) or (TrucoPie.terminado()!=None):
     print "TrucoMano.juegomio " + str(TrucoMano.juegoMio)
     print "TrucoMano.juegootro " + str(TrucoMano.juegoOtro)
     print "TrucoMano.esMiTurno "  + str(TrucoMano.esMiTurno)
+    print "TrucoMano.estadoTruco " + str(TrucoMano.estadoTruco)
     print "Trucopie.juegomio " + str(TrucoPie.juegoMio)
     print "Trucopie.juegootro " + str(TrucoPie.juegoOtro)
     print "Trucopie.esMiTurno " + str(TrucoPie.esMiTurno)
+    print "TrucoPie.estadoTruco " + str(TrucoPie.estadoTruco)
 
     TrucoMano.recibirJugada( opcionJugada )
     print "TrucoMano.juegomio " + str(TrucoMano.juegoMio)
     print "TrucoMano.juegootro " + str(TrucoMano.juegoOtro)
     print "TrucoMano.esMiTurno "  + str(TrucoMano.esMiTurno)
+    print "TrucoMano.estadoTruco " + str(TrucoMano.estadoTruco)
     print "Trucopie.juegomio " + str(TrucoPie.juegoMio)
     print "Trucopie.juegootro " + str(TrucoPie.juegoOtro)
     print "Trucopie.esMiTurno " + str(TrucoPie.esMiTurno)
+    print "TrucoPie.estadoTruco " + str(TrucoPie.estadoTruco)
 
+if TrucoMano.terminado()==None:
+  if TrucoMano.ganePartida==True:
+    print "La Mano gano la Partida!"
+  else:
+    print "El Pie gano la Partida!"
+elif TrucoPie.terminado()==None:
+  if TrucoPie.ganePartida==False:
+    print "La Mano gano la Partida!"
+  else:
+    print "El Pie gano la Partida!"

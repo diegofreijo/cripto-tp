@@ -50,7 +50,7 @@ def cantoSiguiente(canto):
   elif canto == RETRUCO:
     i = 3
   elif canto == VALE4:
-    i = 4
+    i=4
   else:
     raise ValueError('No es un canto de truco: ' + repr(canto))
-  return CANTOS_TRUCO[i]
+  return CANTOS_TRUCO[i:i+1]
