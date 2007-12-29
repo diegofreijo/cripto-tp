@@ -1,0 +1,14 @@
+Me parece que para el caso de irse al Mazo y el de mostrar las cartas para verificar tienen
+que ser dos comandos distintos que se agreguen a la lista.
+
+AL MAZO tendria que se un comando que diga solamente eso. Asi, cuando alguno de los dos se
+va, se termina la partida y se le pregunta al que perdio el envido si quiere que el otro
+muestre las cartas que forman su envido. De esta manera, si las cartas estan sobre la mesa o
+si tiene confianza en que tiene los puntos que dijo, va a responder que no. Si de lo 
+contrario quiere ver lar cartas le manda un mensaje que sea MOSTRAR TANTOS. Este comando 
+cuando uno lo recibe le adjunta las cartas y se lo vuelve a mandar.
+
+Tengo una duda sobre la reparticion de cartas del protocolo. Existe la posibilidad que
+cuando quiero jugar una carta, yo digo cual jugar y le mando al otro la firmada con su firma.
+Puede ser que esta carta que yo digo de jugar y la que mando con la firma del otro sean 
+distintas??

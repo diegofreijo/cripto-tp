@@ -37,6 +37,7 @@ class ManoTruco:
   intercambiandoTantos=None
   canteMisTantos=None
   cartasEnvido=None
+  envidoNoQuerido=None # vale true si yo dije no quiero. De lo Contrario, False
   
   estadoTruco=TRUCONOCANTADO
   PtosTrucoQuiero=None
@@ -45,7 +46,7 @@ class ManoTruco:
   canteTruco=None
 
   ganePartida=None
-  alMazo=None
+  meFuiAlMazo=None
 
   
   # Ahora definimos el diccionario que contiene las cartas con los niveles
@@ -78,16 +79,16 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.canteMisTantos=False
     self.tengoTantas=_cantoEnvidoTantos('TANTOS')
     self.cartasEnvido=self.calcularEnvido() # esto es un par que contiene los puntos y las cartas que forman el envido
-    print self.cartasEnvido
+    self.envidoNoQuerido=False
+    
     self.estadoTruco=TRUCONOCANTADO
     self.PtosTrucoQuiero=-1
     self.PtostrucoNQuiero=-1
-
     self.ultimoEstadoTruco=TRUCONOCANTADO
     self.canteTruco=False
 
     self.ganePartida=None
-    self.alMazo=0
+    self.meFuiAlMazo=0 # 1 si yo me fui. -1 si se fue el otro
 
   def soyMano(self):
     """True si soy mano (no soy pie, reparti yo, y fui mano en la primera submano), False si no."""
@@ -169,6 +170,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       return None
     elif self.estadoTruco==NOQUIEROTRUCO:
       print "Se temino la partido porque no se quizo el Truco"
+      return None
+    elif self.meFuiAlMazo==1 or self.meFuiAlMazo==-1 :
       return None
     return self.subManoActual
 
@@ -278,14 +281,24 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
           JPosibles.append(self.noTengoNada)
         JPosibles.append(self.tengoTantas)
     if (self.envidoCerrado() or self.estadoEnvido==ENVIDONOCANTADO) and self.intercambiandoTantos==False and \
-       (self.estadoTruco in CANTOS_TRUCO or self.estadoTruco==QUIEROTRUCO):
+       (self.estadoTruco in CANTOS_TRUCO or self.estadoTruco==QUIEROTRUCO) and self.canteTruco==False:
       JPosibles=JPosibles+cantoSiguiente(self.ultimoEstadoTruco)
       if self.estadoTruco!=TRUCONOCANTADO and not self.trucoCerrado():
         JPosibles.append(QUIEROTRUCO)
         JPosibles.append(NOQUIEROTRUCO)
+    if (self.envidoCerrado() or self.estadoEnvido==ENVIDONOCANTADO) and \
+       (self.trucoCerrado() or self.estadoTruco==TRUCONOCANTADO) and self.intercambiandoTantos==False:
+      JPosibles.append("AL_MAZO")
     return JPosibles # me parece que convendria devolver la lista con las opciones posibles que son las que forman el menu
 
   def actualizarCanto(self,jugada,jugar): # 0 si el usuario pide jugar algo y 1 si recibe una jugada
+    if isinstance(jugada,str):
+      if jugada=="AL_MAZO":
+        if jugar==0:
+          self.meFuiAlMazo=1
+        else:
+          self.meFuiAlMazo=-1
+      return        
     if isinstance(jugada,_cantoEnvidoTantos):# or jugada==NOTENGOTANTOS: # para el envido cuando hay que cantar los puntos se van a mandar objetos de la clase _cantoEnvidoTanto
                                                 # de tal manera que si cuando se dice quiero una manda los puntos en este objeto. El otro responde con otro
                                                 #  paquete que contiene 0 si le gane o los puntos si no le gane (el otro puede mandar los puntos sabiendo)
@@ -340,6 +353,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         self.intercambiandoTantos=True
       elif jugada==NOQUIEROENVIDO:
         self.estadoEnvido=NOQUIEROENVIDO
+        if jugar==0: #estoy diciendo que no quiero
+          self.envidoNoQuerido=True
         if not self.trucoCerrado() and self.estadoTruco!=TRUCONOCANTADO:
           self.esMiTurno=not self.canteTruco #self.turnoDeJuegoTruco()
         else:
@@ -502,12 +517,36 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         indice=indice+1
       return (tantos,palos[maximopalo])
 
-  def puntaje(self):
-    """mi puntaje"""
-
-  def puntajeContrincante(self):
-    """puntaje de mi contrincante"""
-
-  def recibirFinJuego(self, cartasMostradas):
-    """Mi contrincante cierra el juego mostrando las cartas en cartasMostradas"""
-
+  def ptosGanados(self):
+    puntos=0
+    print "estado envido " + str(self.estadoEnvido)
+    print "estado truco " + str(self.estadoTruco)
+    print "gane ganePartida " + str(self.ganePartida)
+    # calculo los puntos del envido en caso que se haya cantado y lo haya ganado
+    if self.estadoEnvido==QUIEROENVIDO and (self.cartasEnvido[0]>self.PtosEnvidoOtro or \
+      (self.cartasEnvido[0]==self.PtosEnvidoOtro and self.soyMano==True)):
+      puntos=puntos+self.PtosEnvidoQuerido
+      print "Gane Envido"
+    if self.estadoEnvido==NOQUIEROENVIDO and self.envidoNoQuerido==False:
+      puntos=puntos+self.PtosEnvidoNQuerido # gane yo porque el otro dijo NO QUIERO
+      print "Gane Envido por no querido"
+    # calculo los puntos en caso que se haya cantando truco y los haya ganado
+    if self.estadoTruco==QUIEROTRUCO and self.ganePartida==True:
+      puntos=puntos+self.PtosTrucoQuerido
+      print "Gane truco querido" 
+    if self.estadoTruco==NOQUIEROTRUCO and self.canteTruco==True:
+      puntos=puntos+self.PtosTrucoNQuerido # me sumo los puntos porque cante y el otro dijo que no queria
+      print "Gane truco por no querido"
+    # calculo los puntos en caso que el otro se haya ido al mazo. Los puntos del otro son para mi
+    if self.estadoTruco==TRUCONOCANTADO and self.estadoEnvido==ENVIDONOCANTADO and self.meFuiAlMazo==-1:
+      # el otro se fue. los puntos los gano yo
+      if  self.subManoActual==0:
+        puntos=puntos+2 # como si se hubiera cantado envido y truco y no se quisieron los dos
+        print "Se fui al mazo si cantar envido y truco"
+      else:
+        puntos=puntos+1 # como si no se quizo el truco
+        print "Se fue al mazo si cantar truco"
+    if self.estadoTruco==TRUCONOCANTADO and self.meFuiAlMazo==-1:
+        puntos=puntos+1
+    return puntos
+      
