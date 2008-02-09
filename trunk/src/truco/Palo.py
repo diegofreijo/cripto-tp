@@ -9,12 +9,12 @@ class _palo:
   palo = None
 
   def __init__(self, palo):
-    if esPalo(palo):
+    if isinstance(palo, _palo):
       self.palo = palo.palo
     elif palo == 'BASTO' or palo == 'COPA' or palo == 'ESPADA' or palo == 'ORO':
       self.palo = palo
     else:
-      raise ValueError('Argumento de tipo no permitido: ' + repr(palo))
+      raise ValueError('Argumento de tipo no permitido: ' + str(palo))
 
   def esBasto(self):
     return (self.palo == BASTO.palo)
@@ -31,7 +31,7 @@ class _palo:
   def __eq__(self, otro):
     if isinstance(otro, _palo): return (self.palo == otro.palo)
     if isinstance(otro, str): return (self.palo == otro)
-    return False
+    raise ValueError('Argumento de tipo no permitido: ' + str(otro))
 
   def __ne__(self, otro):
     return not (self == otro)
@@ -45,12 +45,7 @@ class _palo:
   def __repr__(self):
     return 'Palo('+repr(self.palo)+')'
 
-def esPalo(obj):
-  return isinstance(obj, _palo)
-
 BASTO = _palo('BASTO')
 COPA = _palo('COPA')
 ESPADA = _palo('ESPADA')
 ORO = _palo('ORO')
-
-__all__ = ['esPalo', 'BASTO', 'COPA', 'ESPADA', 'ORO']
