@@ -58,13 +58,32 @@ def comenzarJuego(modo, direcc, puerto):
   if modo == 'S':
     logger.info('Modo server - esperando conexion')
     LogicaRed.servirJuego(direcc, puerto)
+    Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
   else:
     logger.info('Modo client - realizando conexion')
     LogicaRed.conectarAJuego(direcc, puerto)
-  #
+    Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
   logger.info('Conectado')
+  while not Jugador.terminado()!=None:
+    if Jugador.esMiTurno==True:
+      jugadas = Jugador.jugadasPosibles()
+      mostrarLista(jugadas)
+      print "Elija el numero de la opcion a jugar: (empezando en 0)"
+      opcionInt = int(raw_input("> "))
+      opcionJugada = jugadas[opcionInt]
+      print "Usted eligio jugar  ",
+      print str( opcionJugada )
+    else:
+      print "Tengo que recibir la jugada del otro!"
+  
   return
 
+def mostrarLista(jugadas):
+  i=0
+  while i<len(jugadas):
+    print "\t" + str(i) + "- " + str(jugadas[i])
+    i=i+1
+  return
 
 def _valElegirIp(texto):
   """
