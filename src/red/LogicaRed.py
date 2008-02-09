@@ -18,16 +18,16 @@ logger.setArchivo(False)
 DEBUGLOG=lambda x: logger.debug(x)
 
 def activarRegistro(nuevoLogger):
-	global logger, DEBUGLOG
-	if logger != None:
-                DEBUGLOG(prefijo + "Fin del registro")
-                logger.setArchivo(None)
-        logger = nuevoLogger
-	if logger == None:
-		DEBUGLOG=lambda x: 0
-	else:
-		DEBUGLOG=lambda x: logger.debug(x)
-	DEBUGLOG(prefijo + "Comienzo del registro")
+  global logger, DEBUGLOG
+  if logger != None:
+    DEBUGLOG(prefijo + "Fin del registro")
+    logger.setArchivo(None)
+  logger = nuevoLogger
+  if logger == None:
+    DEBUGLOG=lambda x: 0
+  else:
+    DEBUGLOG=lambda x: logger.debug(x)
+  DEBUGLOG(prefijo + "Comienzo del registro")
 ## FIN LOG DEL MODULO
 
 
@@ -97,7 +97,7 @@ def conectarAJuego(direccion, puerto):
   # Handshake completado - preparar para el intermcambio de jugadas
   misCartas = LogicaRedHandshakeClient.misCartas
   rsaContrincante = LogicaRedHandshakeClient.rsaContrincante
-  rsaPropio = LogicaRedHandshakeClient.rsaPropio
+  rsaPropio = LogicaRedHandshakeClient.rsaPropio # n,e,d
 
   return True
 
@@ -118,7 +118,9 @@ def enviarJugada(jugadas):
   Envia una jugada (lista de cartas o cantos) a la contraparte
   """
   pf = prefijo + '[enviarJugada()] '
-  logger.debug(pf + 'rnviarJugada(' + str(jugadas) + ')')
+  logger.debug(pf + 'enviarJugada(' + str(jugadas) + ')')
+  encrip=Rsa.EncriptarTexto(jugadas,rsaPropio[2],rsaPropio[0])
+  
   pass
   raise 'No implementado'
 
