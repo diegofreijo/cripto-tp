@@ -59,12 +59,17 @@ def comenzarJuego(modo, direcc, puerto):
     logger.info('Modo server - esperando conexion')
     LogicaRed.servirJuego(direcc, puerto)
     Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
+    print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeServer.misCartas.keys())
   else:
     logger.info('Modo client - realizando conexion')
     LogicaRed.conectarAJuego(direcc, puerto)
     Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
+    print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeClient.misCartas.keys())
   logger.info('Conectado')
-  while not Jugador.terminado()!=None:
+
+  print "Jugador.terminado() " + str(Jugador.terminado())
+  while Jugador.terminado()!=None:
+    print "Jugador.esMiTurno " + str(Jugador.esMiTurno)
     if Jugador.esMiTurno==True:
       jugadas = Jugador.jugadasPosibles()
       mostrarLista(jugadas)
