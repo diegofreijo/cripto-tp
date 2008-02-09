@@ -1,18 +1,14 @@
 \documentclass[spanish, a4paper, 11pt]{article}
 
 \usepackage[a4paper,margin=3.5cm,top=3.0cm,bottom=3.0cm]{geometry}	% Define los margenes
-\usepackage[spanish,activeacute]{babel}								% Idioma castellano
-\usepackage{sty/caratula}														% Caratula de Algo2
-%\usepackage[a4paper=true,pagebackref=true]{hyperref}				% Agrega la TOC al PDF e hipervinculos
-%\usepackage[pdftex]{graphicx} 											% Permite insertar graficos
-\usepackage{fancyhdr}														% Permite manejo de cabeceras de pagina
-\usepackage{eufrak}															% Usado en el enunciado del trabajo
+\usepackage[spanish,activeacute]{babel}										% Idioma castellano
+\usepackage{sty/caratula}															% Caratula de Algo2
+%\usepackage[a4paper=true,pagebackref=true]{hyperref}						% Agrega la TOC al PDF e hipervinculos
+\usepackage[pdftex]{graphicx} 													% Permite insertar graficos
+\usepackage{fancyhdr}																% Permite manejo de cabeceras de pagina
+\usepackage{eufrak}																	% Usado en el enunciado del trabajo
 \usepackage{latexsym}
 \usepackage{graphicx}
-%\usepackage{algorithmic}													% Para escribir los algos
-%\usepackage{dsfont}															% Para el simbolo de naturales
-%\usepackage[font=small,labelfont=bf]{caption}						% Para editar las captions
-
 
 % Estilo de pagina para tener las cabeceras
 \pagestyle{fancy}
@@ -68,7 +64,7 @@
 \integrante{Albanesi, Mat'ias}{??/??}{@}
 \integrante{Carbajo, Pablo}{717/04}{pcarbajo@dc.uba.ar}
 \integrante{Freijo, Diego}{4/05}{giga.freijo@gmail.com}
-\integrante{Venturini, Maura}{??/??}{@}
+\integrante{Venturini, Maura}{-}{venturinimaura@gmail.com}
 \maketitle
 
 \subsection*{Abstracto}
@@ -76,7 +72,7 @@ En el presente trabajo se dise'no e implement'o un protocolo para jugar al truco
 
 
 \subsection*{Palabras Clave}
-Encriptaci'on, algoritmos de clave p'ublica/privada y sim'etricos, RSA, AES
+Encriptaci'on, algoritmos de clave p'ublica/privada y sim'etricos, RSA, AES.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,8 +103,11 @@ Encriptaci'on, algoritmos de clave p'ublica/privada y sim'etricos, RSA, AES
 \clearpage
 \section{El protocolo}
 Se define un procotolo que permite el reparto de cartas previo a una mano de truco y la posterior utilizaci'on de las mismas durante la mano. El dise'no del protocolo se hizo con los objetivos de garantizar la transparencia del juego, tanto en el reparto de las cartas como durante el desarrollo del juego.
+
 El protocolo brinda cierta seguridad de que las cartas han sido repartidas azarosamente, y permite verificar que cada jugador haya recibido las cartas que decide jugar.
+
 Durante la especificai'on del protocolo, se usar'a A para referirse al servidor, y B para referirse al cliente.
+
 \input{reparto.tex}
 \input{transcurso.tex}
 
