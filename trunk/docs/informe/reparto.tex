@@ -5,7 +5,7 @@ El siguiente es el protocolo que da como resultado tres cartas para cada jugador
 \imagen{img/ProtocoloReparto.png}{14}{Protocolo de reparto}
 
 Notar que cuando se hace referencia a RSA no es estrictamente al algoritmo RSA, sino a la variante que utiliza un m'odulo primo descripta en Mental Poker, y que en ning'un momento hay intercambio de claves de algoritmos asim'etricos. La 'unica clave transmitida es la utilizada por AES.
-En este caso "firmar" equivale a encriptar y enviar a la otra parte tanto el plaintext como el encriptado. En este esquema, el firmate es el 'unico que puede validar su firma, pero esto es suficiente si lo que se desea es validar que la carta jugada por el oponente sea una de las que uno mismo le reparti'o.
+En este caso ``firmar'' equivale a encriptar y enviar a la otra parte tanto el plaintext como el encriptado. En este esquema, el firmate es el 'unico que puede validar su firma, pero esto es suficiente si lo que se desea es validar que la carta jugada por el oponente sea una de las que uno mismo le reparti'o.
 
 \begin{enumerate}
 
@@ -14,7 +14,7 @@ En este caso "firmar" equivale a encriptar y enviar a la otra parte tanto el pla
 \begin{verbatim}
 
 ------------
-|  "INIT"  |
+|   INIT   |
 ------------
 4 bytes
 

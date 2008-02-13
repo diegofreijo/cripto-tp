@@ -20,7 +20,7 @@ Valores de las cartas:
 13  04O,04C,04B,04E
 \end{verbatim}
 
-Se define un orden parcial entre las cartas, que indica el valor relativo entre ellas. Esto nos va a servir para despu'es comparar, en base a las cartas en la mesa, qui'en ''mat'o'', y a qui'en le corresponde jugar.
+Se define un orden parcial entre las cartas, que indica el valor relativo entre ellas. Esto nos va a servir para despu'es comparar, en base a las cartas en la mesa, qui'en ``mat'o'', y a qui'en le corresponde jugar.
 
 Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y vemos cu'al tiene el nivel m'as alto, esa es la que gana la mano. En caso de estar en niveles iguales hay parda y le toca jugar al jugador que es mano.
 %carta (la mano).
@@ -31,9 +31,9 @@ Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y
 \negrita{Envido}
 \begin{itemize}
 \item Se puede cantar Envido hasta antes de jugar la primer mano.
-\item Se puede seguir contestando hasta que se diga ''Quiero''; ac'a se procede a ver qu'e cartas son del mismo palo y se suman los valores (en caso de tener flor se suman los dos m'as altos), o ''No Quiero''; no cuento nada y sigue el juego.
-\item Si se cant'o ''Truco'' no se puede cantar ''Envido''.
-\item Si ya se dijo ''Quiero'' o ''No Quiero'', no se puede seguir cantando.
+\item Se puede seguir contestando hasta que se diga ``Quiero''; ac'a se procede a ver qu'e cartas son del mismo palo y se suman los valores (en caso de tener flor se suman los dos m'as altos), o ``No Quiero''; no cuento nada y sigue el juego.
+\item Si se cant'o ``Truco'' no se puede cantar ``Envido''.
+\item Si ya se dijo ``Quiero'' o ``No Quiero'', no se puede seguir cantando.
 \end{itemize}
 
 
@@ -41,25 +41,25 @@ Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y
 \begin{itemize}
 \item Se puede cantar en cualquier mano e inclusive antes de jugar la primera carta.
 \item El ganador de 2 de 3 manos es el que gana la mano.
-\item Una vez que los 2 jugaron las 3 cartas no se puede cantar ''Truco''.
+\item Una vez que los 2 jugaron las 3 cartas no se puede cantar ``Truco''.
 \end{itemize}
 
 \imagen{img/EstadosTrucoYEnvido.png}{14}{Estados Truco y Envido}
 \imagen{img/QuienTieneElQuiero.png}{14}{Quien tiene el quiero}
 
 \begin{itemize}
-\item Los cantos deben manejarse como interrupciones. Un jugador puede cantar ''Truco'' habiendo jugado su carta o no. No es asi el caso del ''Envido''; aca hay que controlar que el jugador tenga el token (le toque jugar) y no haya tirado su carta.
+\item Los cantos deben manejarse como interrupciones. Un jugador puede cantar ``Truco'' habiendo jugado su carta o no. No es asi el caso del ``Envido''; aca hay que controlar que el jugador tenga el token (le toque jugar) y no haya tirado su carta.
 \end{itemize}
 
 \subsubsection{Registros a Tener en Cuenta}
 \begin{itemize}
 \item Cantidad de Manos Ganadas
-\item Si se cant'o ''Envido''
-\item Si se cant'o ''Truco''
+\item Si se cant'o ``Envido''
+\item Si se cant'o ``Truco''
 \item Al finalizar la mano:
 	\begin{itemize}
-    \item Si se cant'o ''Envido'' me fijo si en las cartas sobre la mesa est'an los puntos del ''Envido''. Si no, muestro las que faltan aunque se haya ido al mazo.
-    \item Si se fue al mazo (o se canta ''Truco'' y no se quiere), entonces no se deben mostrar las cartas que no se hayan jugado a menos que ocurra el caso anterior.
+    \item Si se cant'o ``Envido'' me fijo si en las cartas sobre la mesa est'an los puntos del ``Envido''. Si no, muestro las que faltan aunque se haya ido al mazo.
+    \item Si se fue al mazo (o se canta ``Truco'' y no se quiere), entonces no se deben mostrar las cartas que no se hayan jugado a menos que ocurra el caso anterior.
 	\end{itemize}
 \end{itemize}
 
@@ -87,9 +87,9 @@ Una variable que almacene la cantidad de puntos en juego si se dice No Quiero (P
 
 Una variable que me indique si puedo redoblar la apuesta del Envido (Es decir, si tengo el Quiero, PuedoCantarEnv)
 
-Nota: La cantidad de Puntos en juego si se dice ''No Quiero'' es la cantidad de cantos que se hayan efectuado y la cantidad de puntos en juego si se dice ''Quiero'' es sumar 2 si se canta Envido, 3 si se canta Real Envido. Se tomo esta decision ya quela cantidad de puntos en juego si se canta Envido, Envido, Real Envido no es la misma que si se canta Envido, Real Envido.
+Nota: La cantidad de Puntos en juego si se dice ``No Quiero'' es la cantidad de cantos que se hayan efectuado y la cantidad de puntos en juego si se dice ``Quiero'' es sumar 2 si se canta Envido, 3 si se canta Real Envido. Se tomo esta decision ya quela cantidad de puntos en juego si se canta Envido, Envido, Real Envido no es la misma que si se canta Envido, Real Envido.
 
-Supongamos que la variable PtosQuieroEnv no existe y que manejamos el Envido con las otras dos variables. En el primer caso, la variable PtosNQuieroEnv tendria un valor 3 y en el segundo caso 2. La variable EstadoEnvido en el primer caso, pasaria del estado 0 al 1, luego al 2 y finalmente el 3; y en el segundo, pasaria del estado 0 al 1 y finalmente al 3. Ahora, cuando computemos los puntos en juego, suponiendo que se dijo ''Quiero'' a partir de EstadoEnv, en los dos casos terminaria con el mismo valor!, lo cual es incorrecto. Es por esto que se opto por tener un registro de las estapas del Envido en la que se encuentra (EstadoEnv), la cantidad de puntos en juego si se sice ''Quiero'' (esto soluciona el problema antes mencionado), y la cantidad de puntos en juego si se dice ''No Quiero'' que sirve para contar la cantidad de cantos que se efectuaron.
+Supongamos que la variable PtosQuieroEnv no existe y que manejamos el Envido con las otras dos variables. En el primer caso, la variable PtosNQuieroEnv tendria un valor 3 y en el segundo caso 2. La variable EstadoEnvido en el primer caso, pasaria del estado 0 al 1, luego al 2 y finalmente el 3; y en el segundo, pasaria del estado 0 al 1 y finalmente al 3. Ahora, cuando computemos los puntos en juego, suponiendo que se dijo ``Quiero'' a partir de EstadoEnv, en los dos casos terminaria con el mismo valor!, lo cual es incorrecto. Es por esto que se opto por tener un registro de las estapas del Envido en la que se encuentra (EstadoEnv), la cantidad de puntos en juego si se sice ``Quiero'' (esto soluciona el problema antes mencionado), y la cantidad de puntos en juego si se dice ``No Quiero'' que sirve para contar la cantidad de cantos que se efectuaron.
 
 \negrita{Truco}
 
@@ -103,9 +103,9 @@ Una variable EstadoTruco que va a asumir los siguientes valores:
       ''Quiero'' o ''No Quiero'')
 \end{verbatim}
 
-Una variable que cuente los puntos del truco en caso que la respuesta sea ''Quiero'' (PtosQuieroTru)
+Una variable que cuente los puntos del truco en caso que la respuesta sea ``Quiero'' (PtosQuieroTru)
 
-Una variable que cuente los puntos del truco en caso que la respuesta sea ''No Quiero'' (PtosNQuieroTru)
+Una variable que cuente los puntos del truco en caso que la respuesta sea ``No Quiero'' (PtosNQuieroTru)
 
 Una variable que me indique si puedo redoblar la apuesta del Truco (Es decir, si tengo el Quiero, PuedoCantarTru)
 
