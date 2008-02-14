@@ -1,7 +1,7 @@
 import sys
-sys.path.append("red")
+#sys.path.append("red")
 # import LogicaRed
-sys.path.append("truco")
+#sys.path.append("truco")
 import Palo
 from Carta import *
 import ManoTruco
@@ -30,7 +30,6 @@ while Score.partidoGanado()==0:
   TrucoMano = ManoTruco.ManoTruco( cartasMano, True )
   TrucoPie = ManoTruco.ManoTruco( cartasPie, False )
 
- 
   while TrucoMano.terminado()!=None or TrucoPie.terminado()!=None:
     if TrucoMano.esMiTurno:
       jugadas = TrucoMano.jugadasPosibles()
@@ -53,7 +52,7 @@ while Score.partidoGanado()==0:
       print str( opcionJugada )
       TrucoPie.jugar( opcionJugada )
       TrucoMano.recibirJugada( opcionJugada )
-  
+
   if TrucoMano.terminado()==None:
     if TrucoMano.ganePartida==True:
       print "La Mano gano la Partida!"
@@ -64,25 +63,21 @@ while Score.partidoGanado()==0:
       print "La Mano gano la Partida!"
     else:
       print "El Pie gano la Partida!"
-
-  if TrucoMano.cartasEnvido[0]<TrucoMano.PtosEnvidoOtro and TrucoMano.estadoEnvido==QUIEROENVIDO:
-    verificar=(raw_intput("Desea pedirle a la otra parte que muestre sus cartas? (s/n)"))
-    verificar.lower()
-    if verificar=='s':
-      # mando el pedido de Mostrar las cartas y el otro le devuelve el mensaje con las cartas
-      jugada=["MOSTRAR TANTOS",[]]
-      TrucoMano.jugar(jugada)
-      jugada[1]=jugada[1]+TrucoMano.cartasEnvido[1]
-      TrucoPie.recibirJugada(jugada)
-  elif TrucoPie.cartasEnvido[0]<TrucoPie.PtosEnvidoOtro and TrucoPie.estadoEnvido==QUIEROENVIDO:
-    verificar=(raw_intput("Desea pedirle a la otra parte que muestre sus cartas? (s/n)"))
-    verificar.lower()
-    if verificar=='s':
-      # mando el pedido de Mostrar las cartas y el otro le devuelve el mensaje con las cartas
-      jugada=["MOSTRAR TANTOS",[]]
-      TrucoPie.jugar(jugada)
-      jugada[1]=jugada[1]+TrucoPie.cartasEnvido[1]
-      TrucoMano.recibirJugada(jugada)
+      
+  print "EMPIEZA LA VERIFICACION!!"
+  if TrucoMano.jugueTodaLaMano()!=True and TrucoMano.soyMano==True:
+    print "La mano no jugo todas las cartas"
+    jugada=TrucoMano.cartasEnvido
+    print "isninstance(jugada,tuple)-->" + str(isinstance(jugada,tuple))
+    print "La jugada es: " + str(jugada)
+    TrucoMano.jugar(jugada)
+    TrucoPie.recibirJugada(jugada)
+  if TrucoPie.jugueTodaLaMano()!=True:
+    print "El pie no jugo todas las cartas"
+    jugada=TrucoPie.cartasEnvido
+    TrucoPie.jugar(jugada)
+    TrucoMano.recibirJugada(jugada)
+     
   # Aca muetsro el Score y juego una nueva Mano
   print "El estado del Score es:\n"
   mano=TrucoMano.ptosGanados()
