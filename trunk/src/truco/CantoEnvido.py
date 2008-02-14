@@ -56,8 +56,8 @@ ENVIDO = _cantoEnvido('Envido')
 ENVIDOENVIDO = _cantoEnvido('Envido Envido')
 REALENVIDO = _cantoEnvido('Real Envido')
 FALTAENVIDO = _cantoEnvido('Falta Envido')
-QUIEROENVIDO = _cantoEnvido('Quiero')
-NOQUIEROENVIDO = _cantoEnvido('No quiero')
+QUIEROENVIDO = _cantoEnvido('Quiero Envido')
+NOQUIEROENVIDO = _cantoEnvido('No quiero Envido')
 NOTENGOTANTOS=_cantoEnvidoTantos('NO TENGO TANTOS')
 
 # pseudo constructor
@@ -83,3 +83,27 @@ def cantosMayores(canto):
   else:
     raise ValueError('No es un canto de envido: ' + repr(canto))
   return CANTOS_ENVIDO[i:]
+
+def DevolverObjetoEnvido(canto):
+  # esta funcion recibe un string que indica que comando se ejecuto y devuelve el objeto relacionado
+  if canto==ENVIDONOCANTADO.codigo:
+    return ENVIDONOCANTADO
+  elif canto==ENVIDO.codigo:
+    return ENVIDO
+  elif canto==ENVIDOENVIDO.codigo:
+    return ENVIDOENVIDO
+  elif canto==REALENVIDO.codigo:
+    return REALENVIDO
+  elif canto==FALTAENVIDO.codigo:
+    return FALTAENVIDO
+  elif canto==QUIEROENVIDO.codigo:
+    return QUIEROENVIDO
+  elif canto==NOQUIEROENVIDO.codigo:
+    return NOQUIEROENVIDO
+  else:
+    raise ValueError("No se reconoce el canto que llego! " + canto)
+  return
+
+def DevolverObjetoTantos(canto):
+  # recibo un string en donde los dos ultimos caracteres conforman los puntos que cantaron los otros
+  return
