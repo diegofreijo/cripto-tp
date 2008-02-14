@@ -118,10 +118,12 @@ def enviarJugada(jugada):
   Envia una jugada (lista de cartas o cantos) a la contraparte
   """
   pf = prefijo + '[enviarJugada()] '
-  logger.debug(pf + 'enviarJugada(' + str(jugada) + ')')
-  encrip = Rsa.EncriptarTexto(jugada, rsaPropio[2], rsaPropio[0])
-  pass
-  raise 'No implementado'
+  plain=infint_to_long(jugada) # convierto el texto que me pasaron en un long
+  plain=Rsa.EncriptarTexto(plain,rsaPropio[2],rsaPropio[0])
+  LogicaRed.enviar(plain)
+#  pass
+#  raise 'No implementado'
+  return True
 
 
 def recibirJugada():
@@ -130,8 +132,11 @@ def recibirJugada():
   """
   pf = prefijo + '[recibirJugada()] '
   logger.debug(pf + 'recibirJugada()')
-  pass
-  raise 'No implementado'
-	
+  msg=LogicaRed.Recibir(sizeof(long))
+  msg=Rsa.DesencriptarTexto(msg,rsaContrincate[1],rsaContrincante[0])
+  plain=long_to_infinit(msg) # convierto el long en el text
+#  pass
+#  raise 'No implementado'
+  return plain
 
 	

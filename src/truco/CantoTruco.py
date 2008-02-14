@@ -54,3 +54,18 @@ def cantoSiguiente(canto):
   else:
     raise ValueError('No es un canto de truco: ' + repr(canto))
   return CANTOS_TRUCO[i:i+1]
+
+def DevolverObjetoTruco(canto):
+  if canto==TRUCONOCANTADO.codigo:
+    return TRUCONOCANTADO
+  elif canto==TRUCO.codigo:
+    return TRUCO
+  elif canto==RETRUCO.codigo:
+    return RETRUCO
+  elif canto==VALE4.codigo:
+    return VALE4
+  elif canto==QUIEROTRUCO.codigo:
+    return QUIEROTRUCO
+  elif canto==NOQUIEROTRUCO.codigo:
+    return NOQUIEROTRUCO
+  return
