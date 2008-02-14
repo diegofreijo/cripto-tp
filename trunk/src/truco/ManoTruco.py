@@ -19,7 +19,7 @@ from CantoTruco import *
 
 class ManoTruco:
    # variables de instancia
-  soyMano = None # esta en True si es el servidor, si no, False
+  soyMano = False # esta en True si es el servidor, si no, False
   manoEnSubManoActual=None
   
   esMiTurno = None # vale True si soy mano en _manoEnSubManoActual o si me llega un canto del otro lado y tengo que responder
@@ -91,7 +91,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.ganePartida=None
     self.meFuiAlMazo=0 # 1 si yo me fui. -1 si se fue el otro
 
-  def soyMano(self):
+  def SoyMano(self):
     """True si soy mano (no soy pie, reparti yo, y fui mano en la primera submano), False si no."""
     return self.soyMano
 
