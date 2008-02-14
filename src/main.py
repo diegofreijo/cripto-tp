@@ -37,6 +37,8 @@ def obt_texto(mensaje, val = None):
 
 def comenzarJuego(modo, direcc, puerto):
   print 'Comienzo del juego'
+  
+  ## Seteo de logueos
   # Preparar el log según el modo
   if modo == 'S':
     logger.setArchivo("server.log")
@@ -53,12 +55,13 @@ def comenzarJuego(modo, direcc, puerto):
     LogicaRedHandshakeServer.activarRegistro(logger)
   else:
     LogicaRedHandshakeClient.activarRegistro(logger)
-  #
   logger.info('Iniciando comunicacion')
+  
+  ## Inicio del Handshake segun el modo
   if modo == 'S':
     logger.info('Modo server - esperando conexion')
     LogicaRed.servirJuego(direcc, puerto)
-    Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
+    Jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
     print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeServer.misCartas.keys())
   else:
     logger.info('Modo client - realizando conexion')
@@ -67,27 +70,33 @@ def comenzarJuego(modo, direcc, puerto):
     print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeClient.misCartas.keys())
   logger.info('Conectado')
 
-  print "Jugador.terminado() " + str(Jugador.terminado())
-  while Jugador.terminado()!=None:
-    print "Jugador.esMiTurno " + str(Jugador.esMiTurno)
-    if Jugador.esMiTurno==True:
-      jugadas = Jugador.jugadasPosibles()
-      mostrarLista(jugadas)
-      print "Elija el numero de la opcion a jugar: (empezando en 0)"
-      opcionInt = int(raw_input("> "))
-      opcionJugada = jugadas[opcionInt]
-      print "Usted eligio jugar  ",
-      print str( opcionJugada )
-    else:
-      print "Tengo que recibir la jugada del otro!"
   
+  ## Bucle principal. Juega o espera una jugada.
+	# Si no soy mano, espero a que el otro juege para comenzar el bucle
+  if not Jugador.SoyMano():
+		print "Esperando a que el otro juegue..."
+		jugadaContrincante = LogicaRed.recibirJugada()
+		ManoTruco.recibirJugada(jugadaContrincante)
+		print "El contrincante jugo: " + str(jugadaContrincante)
+		
+  while Jugador.terminado() != None:
+		jugadas = Jugador.jugadasPosibles()
+		mostrarLista(jugadas)
+		opcionInt = int(raw_input("Elija opcion a jugar: ")) - 1
+		print "Enviando jugada..."
+		LogicaRed.enviarJugada(jugadas[opcionInt])
+		print "Esperando a que el otro juegue..."
+		jugadaContrincante = LogicaRed.recibirJugada()
+		ManoTruco.recibirJugada(jugadaContrincante)
+		print "El contrincante jugo: " + str(jugadaContrincante)
+	
   return
 
 def mostrarLista(jugadas):
-  i=0
-  while i<len(jugadas):
-    print "\t" + str(i) + "- " + str(jugadas[i])
-    i=i+1
+  i = 0
+  while i < len(jugadas):
+    print "\t" + str(i+1) + " - " + str(jugadas[i])
+    i = i + 1
   return
 
 def _valElegirIp(texto):
@@ -122,16 +131,16 @@ def _valElegirIpPuerto(texto):
 def elegirIp(modo):
   if modo == 'S':
     msg = 'Modo Server. Elegir la dirección ip donde se escucharán conexiones (dejar en blanco para cualquier interfase): '
-    direcc = obt_texto(msg, _valElegirIpBlanco)
+    direcc = "127.0.0.1"#obt_texto(msg, _valElegirIpBlanco)
   else:
     msg = 'Modo Client. Elegir la dirección ip a donde hay que conectar (requerido): '
-    direcc = obt_texto(msg, _valElegirIp)
+    direcc = "127.0.0.1"#obt_texto(msg, _valElegirIp)
   #
   if modo == 'S':
     msg = 'Modo Server. Elegir el puerto donde se escucharán conexiones (requerido): '
   else:
     msg = 'Modo Client. Elegir el puerto a donde conectarse (requerido): '
-  puerto = obt_texto(msg, _valElegirIpPuerto)
+  puerto = 1111#obt_texto(msg, _valElegirIpPuerto)
   puerto = int(puerto)
   #
   comenzarJuego(modo, direcc, puerto)

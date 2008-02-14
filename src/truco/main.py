@@ -17,7 +17,6 @@ def mostrarLista(jugadas):
   return
 
 while Score.partidoGanado()==0:
-
   cartasMano = []
   cartasMano.append( Carta( 3,Palo.ESPADA ) )
   cartasMano.append( Carta( 2,Palo.ESPADA ) )

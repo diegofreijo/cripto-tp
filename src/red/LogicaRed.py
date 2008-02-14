@@ -113,14 +113,13 @@ def cerrarConexion():
   raise 'No implementado'
 
 
-def enviarJugada(jugadas):
+def enviarJugada(jugada):
   """
   Envia una jugada (lista de cartas o cantos) a la contraparte
   """
   pf = prefijo + '[enviarJugada()] '
-  logger.debug(pf + 'enviarJugada(' + str(jugadas) + ')')
-  encrip=Rsa.EncriptarTexto(jugadas,rsaPropio[2],rsaPropio[0])
-  
+  logger.debug(pf + 'enviarJugada(' + str(jugada) + ')')
+  encrip = Rsa.EncriptarTexto(jugada, rsaPropio[2], rsaPropio[0])
   pass
   raise 'No implementado'
 

@@ -1,4 +1,5 @@
 \subsection{Transcurso del juego}
+\subsubsection{Envio y recepci'on}
 Durante el transcurso del juego se deber'an cumplir las siguientes reglas:
 
 \begin{itemize}
@@ -21,3 +22,37 @@ Y con aplicar $k$, obtiene $B_2$.
 \item El que finalize el juego (el que se vaya al mazo, el que mate la 'ultima carta del contrincante, el que gane en el falta envido) debe adem'as enviar un timestamp firmado, marc'andolo como el final oficial del juego. El oponente, aunque est'e caliente, debe confirmarle si la hora es v'alida.
 
 \end{itemize}
+
+
+\subsubsection{Formato de las jugadas}
+Suponiendo que se env'ian los datos en limpio, el formato de paquete ser'ia
+
+\begin{verbatim}
+------------------------------------------------------------------
+|   ts   |   comando   |   carta(opcional)   |  tanto(opcional)  |
+------------------------------------------------------------------
+   32 b        4 b            1024 b                  6 b
+\end{verbatim}
+
+
+\negrita{Timestamp / Nro de secuencia}
+
+N'umero de secuenciamiento de paquetes. Quien comienza el juego setea el valor inicial. Se debe respetar la correlatividad, sino se aborta la conexi'on.
+
+
+\negrita{Comandos}
+\begin{verbatim}
+00: Quiero
+00: Quiero
+01: No quiero
+02: Envido
+03: Real envido
+04: Falta envido
+05: Truco
+06: Quiero retruco
+07: Quiero vale cuatro
+08: Juego carta
+09: Canto tanto
+10: Son buenas
+11: Me voy al mazo
+\end{verbatim}
