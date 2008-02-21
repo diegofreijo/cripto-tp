@@ -69,69 +69,32 @@ def comenzarJuego(modo, direcc, puerto):
     Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
     print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeClient.misCartas.keys())
   logger.info('Conectado')
-
+	
   
   ## Bucle principal. Juega o espera una jugada.
 	# Si no soy mano, espero a que el otro juege para comenzar el bucle
-##  if not Jugador.SoyMano():
-##		print "Esperando a que el otro juegue..."
-##		jugadaContrincante = LogicaRed.recibirJugada()
-##		ManoTruco.recibirJugada(jugadaContrincante)
-##		print "El contrincante jugo: " + str(jugadaContrincante)
-##		
-##  while Jugador.terminado() != None:
-##		jugadas = Jugador.jugadasPosibles()
-##		mostrarLista(jugadas)
-##		opcionInt = int(raw_input("Elija opcion a jugar: ")) - 1
-##		print "Enviando jugada..."
-##		LogicaRed.enviarJugada(jugadas[opcionInt])
-##		print "Esperando a que el otro juegue..."
-##		jugadaContrincante = LogicaRed.recibirJugada()
-##		ManoTruco.recibirJugada(jugadaContrincante)
-##		print "El contrincante jugo: " + str(jugadaContrincante)
-  while Jugador.terminado()!=None:
-    if TrucoMano.esMiTurno:
-      jugadas = Jugador.jugadasPosibles()
-      mostrarLista(jugadas)
-      print "Elija el numero de la opcion a jugar: (empezando en 0)"
-      opcionInt = int(raw_input("> "))
-      opcionJugada = jugadas[opcionInt]
-      print "Usted eligio jugar  ",
-      print str( opcionJugada )
-      Jugador.jugar( opcionJugada )
-      # LLamo a la funcion que me dice el string que tengo que mandar
-      jugada=ObtenerMensaje(opcionJugada)
-      LogicaRed.enviarJugada(jugada)
-      opcionInt = raw_input("Presione una tecla para continuar...")
-    elif not Jugador.esMiTurno:
-      Jugador.recibirJugada( opcionJugada )
-     
-##  print "EMPIEZA LA VERIFICACION!!"
-##  if Jugador.jugueTodaLaMano()!=True and Jugador.soyMano==True:
-##    print "La mano no jugo todas las cartas"
-##    jugada=Jugador.cartasEnvido
-##    print "isninstance(jugada,tuple)-->" + str(isinstance(jugada,tuple))
-##    print "La jugada es: " + str(jugada)
-##    Jugador.jugar(jugada)
-##  if TrucoPie.jugueTodaLaMano()!=True:
-##    print "El pie no jugo todas las cartas"
-##    jugada=TrucoPie.cartasEnvido
-##    TrucoPie.jugar(jugada)
-##    TrucoMano.recibirJugada(jugada)
-##     
-##  # Aca muetsro el Score y juego una nueva Mano
-##  print "El estado del Score es:\n"
-##  mano=TrucoMano.ptosGanados()
-##  pie=TrucoPie.ptosGanados()
-##  print "TrucoMano.ptosGanados() " + str(mano)
-##  print "TrucoPie.ptosGanados() " + str(pie)
-##  Score.incrementarSocreMio(mano)
-##  Score.incrementarScoreOtro(pie)
-##  print str(Score)
+  if not Jugador.SoyMano():
+		print "Esperando a que el otro juegue..."
+		jugadaContrincante = LogicaRed.recibirJugada()
+		ManoTruco.recibirJugada(jugadaContrincante)
+		print "El contrincante jugo: " + str(jugadaContrincante)
 	
-  return
+	# Bucle principal
+  while Jugador.terminado() != None:
+    jugadas = Jugador.jugadasPosibles()
+    mostrarLista(jugadas)
+    opcionJugada = int(raw_input("Elija opcion a jugar: ")) - 1
+		
+    print "Enviando jugada..."
+    LogicaRed.enviarJugada(jugadas[opcionJugada])
+		
+    print "Esperando a que el otro juegue..."
+    jugadaContrincante = LogicaRed.recibirJugada()
+    ManoTruco.recibirJugada(jugadaContrincante)
+    print "El contrincante jugo: " + str(jugadaContrincante)
 
-def ObtenerMensaje(opcionJugada):
+		
+def MostrarJugada(opcionJugada):
   if isinstance(jugada,str) and opcionJugada=="AL_MAZO":
     return opcionJugada
   elif isinstance(opcionJugada,_cantoEnvidoTantos):
@@ -144,10 +107,10 @@ def ObtenerMensaje(opcionJugada):
     return str(opcionJugada.numero) + str(upper(opcionJugada.palo[0]))
   return None
   
-def mostrarLista(jugadas):
+def MostrarJugadas(jugadas):
   i = 0
   while i < len(jugadas):
-    print "\t" + str(i+1) + " - " + str(jugadas[i])
+    print "\t" + str(i+1) + " - " + MostrarJugada(jugadas[i])
     i = i + 1
   return
 
