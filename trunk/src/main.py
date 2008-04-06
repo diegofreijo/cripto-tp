@@ -1,5 +1,5 @@
 # -*- coding: cp1252 -*-
-execfile("..\\setpath.py")
+execfile("../setpath.py")
 import Registro
 import Palo
 import Carta
@@ -18,7 +18,7 @@ logger.setConsola(True)
 logger.setNivelConsola(Registro.DEBUG)
 
 # Inicializar cartas
-CartasDesdeArchivo.inicializar("red\\hasheadas.txt")
+CartasDesdeArchivo.inicializar("red/hasheadas.txt")
 
 
 def obt_texto(mensaje, val = None):

@@ -1,5 +1,5 @@
 if __name__ == '__main__':
-  execfile('..\\..\\setpath.py')
+  execfile('../../setpath.py')
 import Rsa
 from math import log
 
