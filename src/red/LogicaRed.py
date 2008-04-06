@@ -132,7 +132,7 @@ def recibirJugada():
   """
   pf = prefijo + '[recibirJugada()] '
   logger.debug(pf + 'recibirJugada()')
-  msg=LogicaRed.Recibir(sizeof(long))
+  msg=Red.recibir(sizeof(long))
   msg=Rsa.DesencriptarTexto(msg,rsaContrincate[1],rsaContrincante[0])
   plain=long_to_infinit(msg) # convierto el long en el text
 #  pass
