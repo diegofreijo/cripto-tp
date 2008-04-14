@@ -106,9 +106,9 @@ def DevolverObjetoEnvido(canto):
 
 def DevolverObjetoTantos(canto):
   # recibo un string en donde los dos ultimos caracteres conforman los puntos que cantaron los otros
-  codigo=canto[0,4]
-  valor=canto[len(canto)-2,len(canto)]
-  tantos=_cantoEnvidoTantos('')
-  Tantos.codigo=codigo
-  Tantos.tantos=valor
+  codigo = canto[0,4]
+  valor = canto[len(canto)-2,len(canto)]
+  tantos = _cantoEnvidoTantos('')
+  Tantos.codigo = codigo
+  Tantos.tantos = valor
   return tantos

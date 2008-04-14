@@ -1,8 +1,0 @@
-Como se define el comando "ME VOY AL MASo??". Hay que ver si lo represento como un canto o una jugada
-
-Traceback (most recent call last):
-  File "C:\Documents and Settings\Juan A. Venturini\Mis documentos\Maura\Repositorio\src\truco\ManoTruco.py", line 15, in <module>
-    class ManoTruco:
-  File "C:\Documents and Settings\Juan A. Venturini\Mis documentos\Maura\Repositorio\src\truco\ManoTruco.py", line 27, in ManoTruco
-    _estadoEnvido=cantoenvido('',0)
-NameError: name 'cantoenvido' is not defined
