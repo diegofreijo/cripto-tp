@@ -51,7 +51,9 @@ rsaPropio = None # tupla (e, d, n)
 #
 # - Clave simétrica K: keyAes
 keyAes = None
-
+# - Clave para ver la carta jugada por el contrincante
+d2b = None
+primo = None
 
 def handshakeClient():
   """
@@ -59,7 +61,7 @@ def handshakeClient():
   del lado del cliente.
   """
   pf = prefijo + '[handshakeClient()] '
-  global misCartas, rsaContrincante, rsaPropio, keyAes
+  global misCartas, rsaContrincante, rsaPropio, keyAes, d2b, primo
 
   # 1) B le pide conexion a A
   # Ya realizado
@@ -85,7 +87,7 @@ def handshakeClient():
 
   # - generar el primo grande p
   while True:
-    primo = Azar.Primo(CANT_BITS_RSA)
+    primo = Azar.Primo(CANT_BITS_PRIMOS)
     if primo >= PRIMO_MINIMO: break
   logger.debug(pf + 'primo = ' + repr(primo))
   # - generar e1b, d1b
@@ -237,7 +239,7 @@ def handshakeClient():
       logger.info(pf + 'Me toco la carta ' + str(carta) + ' - ' + repr(carta))
 
   # generar una clave RSA (e3b, d3b, n)
-  n3b, e3b, d3b = Rsa.GenerarClaves(CANT_BITS_RSA)
+  n3b, e3b, d3b = Rsa.GenerarClaves(CANT_BITS_PRIMOS)
   logger.debug(pf + 'clave RSA generada: (e3b, d3b, n3b) = (' + str(e3b) + ', ' + str(d3b) + ', ' + str(n3b) + ')')
   # generar elementos del mensaje a enviar
   p7_listaParaEnviar = [long_to_infint(e3b), long_to_infint(n3b), Rsa.EncriptarTexto(MENSAJE_SOY_MANO, d3b, n3b)]
@@ -278,9 +280,10 @@ def handshakeClient():
   p9_mensaje = Rsa.DesencriptarTexto(p9_mensaje_encrip, p9_e3a, p9_n3a)
   logger.debug(pf + 'p9_mensaje = ' + repr(p9_mensaje))
   if p9_mensaje != MENSAJE_SOS_MANO:
-    logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOS_MANO + ')')
-    raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOS_MANO + ')'
-
+    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+    logger.error(mensaje_error)
+    raise mensaje_error
+    
   logger.info(pf + '--- HANDSHAKE EXITOSO. ES MI TURNO.')
 
   # Datos para jugar:

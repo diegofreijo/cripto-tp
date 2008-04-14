@@ -53,6 +53,9 @@ rsaPropio = None # tupla (e, d, n)
 #
 # - Clave simétrica K: keyAes
 keyAes = None
+# - Clave para ver la carta jugada por el contrincante
+d2a = None
+primo = None
 
 
 def handshakeServer():
@@ -61,7 +64,7 @@ def handshakeServer():
   del lado del servidor.
   """
   pf = prefijo + '[handshakeServer()] '
-  global misCartas, rsaContrincante, rsaPropio, keyAes
+  global misCartas, rsaContrincante, rsaPropio, keyAes, d2a, primo
 
   # 1) B le pide conexion a A
   # Ya realizado
@@ -251,14 +254,15 @@ def handshakeServer():
   p8_mensaje_encrip = t[2]
   logger.debug(pf + 'p8_mensaje_encrip == ' + repr(p8_mensaje_encrip))
   p8_mensaje = Rsa.DesencriptarTexto(p8_mensaje_encrip, p8_e3b, p8_n3b)
-  logger.debug(pf + 'p8_mensaje == ' + repr(p8_mensaje))
+  logger.debug(pf + 'p8_mensaje == ' + str(p8_mensaje))
   if p8_mensaje != MENSAJE_SOY_MANO:
-		logger.error(pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')')
-		raise 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+    logger.error(mensaje_error)
+    raise mensaje_error
 
   logger.info(pf + '--- PASO 8 (envio)')
   while True:
-		n3a, e3a, d3a = Rsa.GenerarClaves(CANT_BITS_RSA)
+		n3a, e3a, d3a = Rsa.GenerarClaves(CANT_BITS_PRIMOS)
 		# chequear que las claves no coincidan con las de B
 		if n3a != p8_n3b and e3a != p8_e3b and d3a != p8_e3b: break
   logger.debug(pf + 'clave RSA generada: (e3a, d3a, n3a) = (' + str(e3a) + ', ' + str(d3a) + ', ' + str(n3a) + ')')

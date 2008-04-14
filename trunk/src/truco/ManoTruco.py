@@ -519,7 +519,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
           print "El otro me gano en buena ley, no me mintio. Perdi el envido"
         else:
           print "Me mintieron!! Los puntos van para mi!!"
-          puntos=puntos+self.PtosEnvidoQuerido
+          puntos = puntos+self.PtosEnvidoQuerido
 #      puntos=puntos+self.PtosEnvidoQuerido
       print "Gane Envido"
     if self.estadoEnvido==NOQUIEROENVIDO and self.envidoNoQuerido==False:

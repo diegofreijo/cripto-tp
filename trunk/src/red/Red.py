@@ -60,7 +60,7 @@ def cerrarConexion():
 
 def enviar(datos):
     pf = prefijo + '[enviar()] '
-    DEBUGLOG(pf + "enviar(\"" + repr(datos)+"\")")
+    DEBUGLOG(pf + "enviar(\"" + repr(datos)+"\") (len = " + str(len(datos)) + ")")
     sock.send(datos)
     DEBUGLOG(pf + "datos enviados")
 
@@ -70,14 +70,14 @@ def recibir(longitud):
     DEBUGLOG(pf + "recibir(" + str(longitud)+")")
     recibido = ''
     while len(recibido) < longitud:
-        try:
-            rv = sock.recv(longitud - len(recibido))
-            DEBUGLOG(pf + "datos recibidos: \"" + repr(rv) + "\"");
-        except socket.error, e:
-            DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"");
-            rv = ''
-        recibido = recibido + rv
-        if rv == '': break
-    #
+      try:
+        rv = sock.recv(longitud - len(recibido))
+      except socket.error, e:
+        DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"");
+        rv = ''
+      recibido = recibido + rv
+      if rv == '': break
+    DEBUGLOG(pf + "datos recibidos: \"" + repr(rv) + "\"");
+    
     return recibido
 

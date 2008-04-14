@@ -1,9 +1,12 @@
 # -*- coding: cp1252 -*-
 execfile("../setpath.py")
+from string import *
 import Registro
 import Palo
-import Carta
-#import Canto
+from Carta import *
+from CantoEnvido import _cantoEnvidoTantos
+from CantoEnvido import _cantoEnvido
+from CantoTruco import _cantoTruco
 import ManoTruco
 import CartasDesdeArchivo
 import socket
@@ -61,51 +64,56 @@ def comenzarJuego(modo, direcc, puerto):
   if modo == 'S':
     logger.info('Modo server - esperando conexion')
     LogicaRed.servirJuego(direcc, puerto)
-    Jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
+    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
     print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeServer.misCartas.keys())
   else:
     logger.info('Modo client - realizando conexion')
     LogicaRed.conectarAJuego(direcc, puerto)
-    Jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
+    jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
     print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeClient.misCartas.keys())
   logger.info('Conectado')
 	
   
   ## Bucle principal. Juega o espera una jugada.
-	# Si no soy mano, espero a que el otro juege para comenzar el bucle
-  if not Jugador.SoyMano():
-		print "Esperando a que el otro juegue..."
-		jugadaContrincante = LogicaRed.recibirJugada()
-		ManoTruco.recibirJugada(jugadaContrincante)
-		print "El contrincante jugo: " + str(jugadaContrincante)
-	
-	# Bucle principal
-  while Jugador.terminado() != None:
-    jugadas = Jugador.jugadasPosibles()
-    mostrarLista(jugadas)
-    opcionJugada = int(raw_input("Elija opcion a jugar: ")) - 1
-		
-    print "Enviando jugada..."
-    LogicaRed.enviarJugada(jugadas[opcionJugada])
-		
+  # Si no soy mano, espero a que el otro juege para comenzar el bucle
+  if not jugador.SoyMano():
     print "Esperando a que el otro juegue..."
     jugadaContrincante = LogicaRed.recibirJugada()
-    ManoTruco.recibirJugada(jugadaContrincante)
+    jugador.recibirJugada(jugadaContrincante)
+    print "El contrincante jugo: " + str(jugadaContrincante)
+    
+  ## Bucle principal
+  while jugador.terminado() != None:
+    jugadas = jugador.jugadasPosibles()
+    MostrarJugadas(jugadas)
+    opcionJugada = int(raw_input("Elija opcion a jugar: ")) - 1
+
+    print "Enviando jugada..."
+    jugador.jugar(jugadas[opcionJugada])
+    LogicaRed.enviarJugada(jugadas[opcionJugada])
+
+    print "Esperando a que el otro juegue..."
+    jugadaContrincante = LogicaRed.recibirJugada()
+    jugador.recibirJugada(jugadaContrincante)
     print "El contrincante jugo: " + str(jugadaContrincante)
 
-		
+  # Muestro puntos ganados
+  jugador.ptosGanados()
+
+
 def MostrarJugada(opcionJugada):
-  if isinstance(jugada,str) and opcionJugada=="AL_MAZO":
+  if isinstance(opcionJugada, str) and opcionJugada == "AL_MAZO":
     return opcionJugada
-  elif isinstance(opcionJugada,_cantoEnvidoTantos):
+  elif isinstance(opcionJugada, _cantoEnvidoTantos):
     return opcionJugada.codigo + str(opcionJugada.valor)
-  elif isinstance(opcionJugada,_cantoEnvido):
+  elif isinstance(opcionJugada, _cantoEnvido):
     return opcionJugada.codigo
-  elif isinstance(opcionJugada,_cantoTruco):
+  elif isinstance(opcionJugada, _cantoTruco):
     return opcionJugada.codigo
-  elif isinstance(opcionJugada,Carta):
-    return str(opcionJugada.numero) + str(upper(opcionJugada.palo[0]))
+  elif isinstance(opcionJugada, Carta):
+    return str(opcionJugada.numero) + ' ' + upper(str(opcionJugada.palo))
   return None
+  
   
 def MostrarJugadas(jugadas):
   i = 0
@@ -113,6 +121,7 @@ def MostrarJugadas(jugadas):
     print "\t" + str(i+1) + " - " + MostrarJugada(jugadas[i])
     i = i + 1
   return
+
 
 def _valElegirIp(texto):
   """
@@ -124,13 +133,15 @@ def _valElegirIp(texto):
   except:
     print 'Debe ingresar una direccion IP valida'
     return (None, False)
-  #
+
+
 
 def _valElegirIpBlanco(texto):
   if texto.strip() == '':
     return ('', True)
   else:
     return _valElegirIp(texto)
+
 
 def _valElegirIpPuerto(texto):
   try:
@@ -142,6 +153,7 @@ def _valElegirIpPuerto(texto):
   # error
   print 'Debe ingresar un numero entero en el rango 1025-65535'
   return (None, False)
+
 
 def elegirIp(modo):
   if modo == 'S':
@@ -155,10 +167,11 @@ def elegirIp(modo):
     msg = 'Modo Server. Elegir el puerto donde se escucharán conexiones (requerido): '
   else:
     msg = 'Modo Client. Elegir el puerto a donde conectarse (requerido): '
-  puerto = 1111#obt_texto(msg, _valElegirIpPuerto)
+  puerto = 11111#obt_texto(msg, _valElegirIpPuerto)
   puerto = int(puerto)
   #
   comenzarJuego(modo, direcc, puerto)
+
   
 def _valElegirModo(texto):
   texto = texto.strip().upper()
