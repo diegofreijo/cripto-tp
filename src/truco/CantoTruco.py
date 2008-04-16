@@ -32,12 +32,12 @@ class _cantoTruco:
     return 'CantoTruco('+repr(self.codigo)+')'
 
 # pseudo constantes
-TRUCONOCANTADO=_cantoTruco('NADA')
-TRUCO = _cantoTruco('TRUCO')
-RETRUCO = _cantoTruco('RETRUCO')
-VALE4 = _cantoTruco('VALE4')
-QUIEROTRUCO = _cantoTruco('QUIERO')
-NOQUIEROTRUCO = _cantoTruco('NO QUIERO')
+TRUCONOCANTADO=_cantoTruco('Nada')
+TRUCO = _cantoTruco('Truco')
+RETRUCO = _cantoTruco('Retruco')
+VALE4 = _cantoTruco('Vale cuatro')
+QUIEROTRUCO = _cantoTruco('Quiero')
+NOQUIEROTRUCO = _cantoTruco('No quiero')
 
 CANTOS_TRUCO=[TRUCONOCANTADO,TRUCO,RETRUCO,VALE4]
 

@@ -51,7 +51,7 @@ class _cantoEnvidoTantos(_cantoEnvido):
 
 
 # pseudo constantes
-ENVIDONOCANTADO=_cantoEnvido('NADA')
+ENVIDONOCANTADO = _cantoEnvido('NADA')
 ENVIDO = _cantoEnvido('Envido')
 ENVIDOENVIDO = _cantoEnvido('Envido Envido')
 REALENVIDO = _cantoEnvido('Real Envido')
@@ -59,6 +59,7 @@ FALTAENVIDO = _cantoEnvido('Falta Envido')
 QUIEROENVIDO = _cantoEnvido('Quiero Envido')
 NOQUIEROENVIDO = _cantoEnvido('No quiero Envido')
 NOTENGOTANTOS=_cantoEnvidoTantos('No Tengo Tantos')
+
 
 # pseudo constructor
 def Tantos(puntos):
@@ -104,11 +105,11 @@ def DevolverObjetoEnvido(canto):
   #  raise ValueError("No se reconoce el canto que llego! " + canto)
   return
 
-def DevolverObjetoTantos(canto):
-  # recibo un string en donde los dos ultimos caracteres conforman los puntos que cantaron los otros
-  codigo = canto[0,4]
-  valor = canto[len(canto)-2,len(canto)]
-  tantos = _cantoEnvidoTantos('')
-  Tantos.codigo = codigo
-  Tantos.tantos = valor
-  return tantos
+def DevolverObjetoTantos(tantos):
+  ##### recibo un string en donde los dos ultimos caracteres conforman los puntos que cantaron los otros
+  #codigo = canto[0,4]
+  # Recibo un string
+  ret = _cantoEnvidoTantos('')
+  ret.codigo = 'Tantos'#codigo
+  ret.tantos = tantos
+  return ret

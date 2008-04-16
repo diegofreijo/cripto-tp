@@ -59,9 +59,11 @@ class Carta:
     return self.palo.__hash__() ^ self.numero.__hash__()
 
   def __str__(self):
-    sn = str(self.numero)
     if (self.numero == 1): sn = 'Ancho'
-    if (self.numero == 12): sn = 'Rey'
+    elif (self.numero == 12): sn = 'Rey'
+    elif (self.numero == 11): sn = 'Caballo'
+    elif (self.numero == 11): sn = 'Sota'
+    else: sn = str(self.numero)
     return sn + ' de ' + str(self.palo)
 
   def __repr__(self):

@@ -61,13 +61,16 @@ class Registro:
     if nivel >= DEBUG and nivel <= NONE:
       self.nivelArchivo = nivel
 
-  def _loguear(self, nivel, mensaje):
+  def _loguear(self, nivel, mensaje, nueva_linea = True):
     if self.of != None:
       if self.nivelArchivo <= nivel:
         self.of.write(mensaje + '\n')
     if self.consola:
       if self.nivelConsola <= nivel:
-        print mensaje
+        if nueva_linea:
+          print mensaje
+        else:
+          print mensaje,
     if self.of != None:
       if self.nivelArchivo <= nivel:
         self.of.flush()
@@ -75,8 +78,8 @@ class Registro:
   def debug(self, mensaje):
     self._loguear(DEBUG, mensaje)
 
-  def info(self, mensaje):
-    self._loguear(INFO, mensaje)
+  def info(self, mensaje, nueva_linea = True):
+    self._loguear(INFO, mensaje, nueva_linea)
 
   def warn(self, mensaje):
     self._loguear(WARN, mensaje)
