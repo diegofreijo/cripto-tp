@@ -22,7 +22,7 @@ CANT_BITS_CARTAS = 160 # Tamaño de las codificacione de las cartas
 #CANT_BITS_CARTAS_FIRMADAS           = CANT_BITS_PRIMOS    # Tamaño de las firmas de las cartas
 #CANT_CHARS_CARTAS_FIRMADAS          = CANT_BITS_CARTAS_FIRMADAS / 8 # Tamaño en caracteresde las firmas de las cartas (supongo que eñ tamaño en bits es potencia de 2)
 CANT_CHARS_LONGITUDES = 4 # Longitud en caracteres de los campos que dan la longitud del campo siguiente en un paquete
-CANT_CHARS_TANTO = 1 # Tamaño en caracteres de los tantos cantados
+CANT_CHARS_TANTO = 2 # Tamaño en caracteres de los tantos cantados
 
 
 # Comandos

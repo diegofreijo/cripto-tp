@@ -61,30 +61,35 @@ def handshakeClient():
   del lado del cliente.
   """
   pf = prefijo + '[handshakeClient()] '
+  logger.info(prefijo + 'Soy cliente, soy B.')
   global misCartas, rsaContrincante, rsaPropio, keyAes, d2b, primo
 
   # 1) B le pide conexion a A
   # Ya realizado
   pass
   nroPaso = 1
-  logger.info(pf + '--- PASO 1 (omitido)')
+  logger.info(prefijo + '--- PASO 1: Pido conexion... Hecho!')
 
 
   # 2) A genera k para AES y encripta las 40 cartas con k, envía esto a B
   pass
   nroPaso = 2
-  logger.info(pf + '--- PASO 2')
+  logger.info(prefijo + '--- PASO 2: A encripta el mazo con clave simetrica... ', False)
   #
   # recibir
   # formato: lista de valores long ocupando 128 bits cada uno
   # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
   p2_k_cartas = recibirListaGenerica(Red, logger, pf, 'paso 2, ', 'recibido p2_k_cartas == ', u128_to_long)
+  logger.info('Hecho!')
 
+  
+  
+  
   # 3) B genera un p primo grande y genera e1b, d1b, e2b, d2b.
   # Envia a A el p y las cartas (ya encriptadas con k) ahora encriptando
   # con e1b usando RSA
   # formato: tamaño en bytes + lista(p, cartas encrip)
-
+  logger.info(prefijo + '--- PASO 3: Encripto el mazo con clave asimetrica...', False)
   # - generar el primo grande p
   while True:
     primo = Azar.Primo(CANT_BITS_PRIMOS)
@@ -113,6 +118,7 @@ def handshakeClient():
   msg = empaquetar_Lista_Generica(t, long_to_infint) # enviar convirtiendo los longs a cadenas de bytes
   logger.debug(pf + 'Red.Enviar(primo, p3_e1b_k_cartas)')
   Red.enviar(msg)
+  logger.info('Hecho!')
 
 
   # 4) A usa P para generarse sus propias claves e1a, d1a tq e1a*d1a = 1 (mod p-1)
@@ -121,9 +127,7 @@ def handshakeClient():
   #    enviar cada carta como una tupla (e1b(k(CARTAi)), e2a(e1b(k(CARTAi))))
   #    Enviar el resto de las cartas encriptadas con e1a
   # formato: tamaño en bytes + lista de códigos de cartas (convertidos de long a tiras de bytes)
-  pass
-  nroPaso = 4
-  logger.info(pf + '--- PASO 4')
+  logger.info(prefijo + '--- PASO 4: A selecciona mis cartas y encripta el resto con clave asimetrica...', False)
   # se recibieron las cartas como tiras de bytes, convertirlas a long
   p4_listaDe43 = recibirListaGenerica(Red, logger, pf, 'paso 4, ', 'recibido p4_listaDe43 == ', infint_to_long)
   # La lista debe tener 43 elementos
@@ -140,7 +144,9 @@ def handshakeClient():
   logger.debug(pf + 'p4_e1b_k_cartasParaMi == ' + repr(p4_e1b_k_cartasParaMi))
   p4_e1a_e1b_k_restoMazo = t[6:]
   logger.debug(pf + 'p4_e1a_e1b_k_restoMazo == ' + repr(p4_e1a_e1b_k_restoMazo))
-
+  logger.info('Hecho!')
+  
+  
 
   # 5) B desencripta las cartas que le envió A, obteniendo k(Bi) para su mano y
   #    e1a(k(Ri)) para el resto
@@ -148,8 +154,7 @@ def handshakeClient():
   #    que obtiene e1a(k(Ai)). Envía estas cartas así y también encriptadas con
   #    e2b
   # formato: lista(e1a(k(Ai)), e2b(e1a(k(Ai)), ...)
-  nroPaso = 5
-  logger.info(pf + '--- PASO 5')
+  logger.info(prefijo + '--- PASO 5: Miro mis cartas y selecciono las de A...', False)
   p5_k_cartasParaMi = map( lambda t: (Rsa.Desencriptar(t[0], d1b, primo), Rsa.Desencriptar(t[1], d1b, primo)), p4_e1b_k_cartasParaMi ) # desencripto
   logger.debug(pf + 'p5_k_cartasParaMi = ' + repr(p5_k_cartasParaMi))
   # elegir cartas para A
@@ -180,23 +185,25 @@ def handshakeClient():
   msg = empaquetar_Lista_Generica(p5_listaAEnviar, long_to_infint)
   logger.debug(pf + 'Red.Enviar(cartas de A encriptadas con e1a_k y con e2b_e1a_k)')
   Red.enviar(msg)
-
+  logger.info('Hecho!')
+  
+  
 
   # 6) A recibe las cartas y aplica la desencripcion de e1a con d1a.
   #    Luego utiliza K y desencripta las cartas que le tocaron, de manera que se
   #    tienen las cartas Ai elegidas por B
   #    Por último, A envía k a B
-  pass
-  nroPaso = 6
-  logger.info(pf + '--- PASO 6 (turno de A)')
+  logger.info(prefijo + '--- PASO 6: A mira sus cartas y me muestra que el mazo era valido... Hecho!')
 
+  
+  
+  
   # 7) B recibe k, la utiliza para ver que el mazo es válido y para ver las cartas
   # que le tocaron.
   #  Luego genera una clave RSA clásica (e3b, d3b, n3b) y envia la parte publica (e3b, n3b)
   # a A. Tambien envia el mensaje "SOY MANO" encriptado con d3b
   #  Formato: lista(infint(e3b), infint(n), str(d3b("SOY MANO")))
-  nroPaso = 7
-  logger.info(pf + '--- PASO 7 (recepcion)')
+  logger.info(prefijo + '--- PASO 7: Verifico que el mazo era valido y genero mi firma...', False)
   # (los primeros 4 bytes indican el tamanio en bytes del resto del contenido)
   logger.debug(pf + 'Red.recibir(4)')
   tamStr = Red.recibir(4) # tamanio en bytes del resto del mensaje
@@ -236,7 +243,7 @@ def handshakeClient():
     else:
       carta = CartasDesdeArchivo.carta(bi)
       misCartas[carta] = e2akBi
-      logger.info(pf + 'Me toco la carta ' + str(carta) + ' - ' + repr(carta))
+      logger.debug(pf + 'Me toco la carta ' + str(carta) + ' - ' + repr(carta))
 
   # generar una clave RSA (e3b, d3b, n)
   n3b, e3b, d3b = Rsa.GenerarClaves(CANT_BITS_PRIMOS)
@@ -248,20 +255,21 @@ def handshakeClient():
   msg = empaquetar_Lista_Generica(p7_listaParaEnviar) # no convertir los elementos, ya son string
   logger.debug(pf + 'Red.Enviar([e3b, n3b, d3b(SOY_MANO)])')
   Red.enviar(msg)
+  logger.info('Hecho!')
 
+  
+  
 
   # 8) A desencripta con (e3b, n3b) el mensaje encriptado, chequeandolo.
   #    Luego A genera una clave RSA clásica (e3a, d3a, n3a) y envia la parte publica
   #    (e3a, n3a), más el mensaje "SOS MANO" encriptado con d3a
-  pass
-  nroPaso = 8
-  logger.info(pf + '--- PASO 8 (turno de A)')
+  logger.info(prefijo + '--- PASO 8: A genera su firma y avisa que es mano... Hecho!')
 
+  
 
   # 9) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
   # la confirmacion de que es mano, el protocolo de handshake esta terminado.
-  nroPaso = 9
-  logger.info(pf + '--- PASO 9 (recepcion)')
+  logger.info(prefijo + '--- PASO 9: Verifico que A es mano...', False)
   # recibir los elementos como una lista de strings
   t = recibirListaGenerica(Red, logger, pf, 'paso 9, ', 'recibido t == ')
   # La lista debe tener 3 elementos
@@ -279,12 +287,14 @@ def handshakeClient():
   logger.debug(pf + 'p9_mensaje_encrip = ' + repr(p9_mensaje_encrip))
   p9_mensaje = Rsa.DesencriptarTexto(p9_mensaje_encrip, p9_e3a, p9_n3a)
   logger.debug(pf + 'p9_mensaje = ' + repr(p9_mensaje))
-  if p9_mensaje != MENSAJE_SOS_MANO:
+  if p9_mensaje != MENSAJE_SOY_MANO:
     mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
     logger.error(mensaje_error)
     raise mensaje_error
+  logger.info('Hecho!')
+
     
-  logger.info(pf + '--- HANDSHAKE EXITOSO. ES MI TURNO.')
+  logger.info(prefijo + '--- HANDSHAKE EXITOSO.')
 
   # Datos para jugar:
   # - Mis cartas: diccionario con las 3 cartas que nos tocaron. Las claves son las cartas y los valores

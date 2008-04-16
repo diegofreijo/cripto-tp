@@ -62,63 +62,58 @@ def comenzarJuego(modo, direcc, puerto):
   
   ## Inicio del Handshake segun el modo
   if modo == 'S':
-    logger.info('Modo server - esperando conexion')
     LogicaRed.servirJuego(direcc, puerto)
-    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(),True)
-    print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeServer.misCartas.keys())
+    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(), True)
+    print "Mi mano: "
+    for carta in LogicaRedHandshakeServer.misCartas.keys(): print '  ' + str(carta)
+    logger.info('Conectado, soy mano')
   else:
-    logger.info('Modo client - realizando conexion')
     LogicaRed.conectarAJuego(direcc, puerto)
-    jugador=ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(),False)
-    print "Modo: " + str(modo) + "  cartas: " + str(LogicaRedHandshakeClient.misCartas.keys())
-  logger.info('Conectado')
-	
-  
-  ## Bucle principal. Juega o espera una jugada.
-  # Si no soy mano, espero a que el otro juege para comenzar el bucle
-  if not jugador.SoyMano():
-    print "Esperando a que el otro juegue..."
-    jugadaContrincante = LogicaRed.recibirJugada()
-    jugador.recibirJugada(jugadaContrincante)
-    print "El contrincante jugo: " + str(jugadaContrincante)
-    
+    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(), False)
+    print "Mi mano: "
+    for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
+    logger.info('Conectado, soy pie')
+	  
   ## Bucle principal
   while jugador.terminado() != None:
-    jugadas = jugador.jugadasPosibles()
-    MostrarJugadas(jugadas)
-    opcionJugada = int(raw_input("Elija opcion a jugar: ")) - 1
+    # Armo las validaciones para ver a quien le toca
+    me_toca_envido = not jugador.envidoCerrado() and jugador.turnoDeJuegoEnvido()
+    me_toca_truco = not jugador.trucoCerrado() and jugador.turnoDeJuegoTruco()
+    # Veo si tengo que jugar yo o mi contrincante
+    if jugador.turnoDeJuego() or me_toca_envido or me_toca_truco:
+      # Me toca
+      jugadas = jugador.jugadasPosibles()
+      MostrarJugadas(jugadas)
+      opcionJugada = -1
+      while opcionJugada not in range(0, len(jugadas)):
+        opcionJugada = raw_input("Elija opcion a jugar: ")
+        if opcionJugada == '':
+          opcionJugada = -1
+        else:
+          opcionJugada = int(opcionJugada) - 1
+      print "     Jugaste " + str(jugadas[opcionJugada])
+      jugador.jugar(jugadas[opcionJugada])
+      LogicaRed.enviarJugada(jugadas[opcionJugada])
+    else:
+      # Le toca
+      print "Esperando a que el otro juegue..."
+      jugadaContrincante = LogicaRed.recibirJugada()
+      jugador.recibirJugada(jugadaContrincante)
+      print "     El otro jugo " + str(jugadaContrincante)
 
-    print "Enviando jugada..."
-    jugador.jugar(jugadas[opcionJugada])
-    LogicaRed.enviarJugada(jugadas[opcionJugada])
-
-    print "Esperando a que el otro juegue..."
-    jugadaContrincante = LogicaRed.recibirJugada()
-    jugador.recibirJugada(jugadaContrincante)
-    print "El contrincante jugo: " + str(jugadaContrincante)
-
-  # Muestro puntos ganados
-  jugador.ptosGanados()
-
-
-def MostrarJugada(opcionJugada):
-  if isinstance(opcionJugada, str) and opcionJugada == "AL_MAZO":
-    return opcionJugada
-  elif isinstance(opcionJugada, _cantoEnvidoTantos):
-    return opcionJugada.codigo + str(opcionJugada.valor)
-  elif isinstance(opcionJugada, _cantoEnvido):
-    return opcionJugada.codigo
-  elif isinstance(opcionJugada, _cantoTruco):
-    return opcionJugada.codigo
-  elif isinstance(opcionJugada, Carta):
-    return str(opcionJugada.numero) + ' ' + upper(str(opcionJugada.palo))
-  return None
+  # Fin de la partida
+  print '\n- Fin de la partida -\n'
   
+  # Muestro puntos ganados
+  mensajes, puntos = jugador.ptosGanados()
+  print mensajes
+  print 'Puntos ganados: ' + str(puntos)
+
   
 def MostrarJugadas(jugadas):
   i = 0
   while i < len(jugadas):
-    print "\t" + str(i+1) + " - " + MostrarJugada(jugadas[i])
+    print "\t" + str(i+1) + " - " + str(jugadas[i])
     i = i + 1
   return
 
