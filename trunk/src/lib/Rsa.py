@@ -134,8 +134,9 @@ def EncriptarTexto(plain, e, n):
   for i in xrange(len(bloques_plain)):
   	bloque_cypher = Encriptar(bloques_plain[i], e, n)
   	cypher |= bloque_cypher << (i * tam_n)
+    
   # Convierto a bytes
-  scypher = Matematica.long2bytes(cypher, (len(bloques_plain)*tam_n + 7)//8) # '//' es division entera, no un comentario
+  scypher = Matematica.long2bytes(cypher, (len(bloques_plain) * tam_n + 7) // 8) # '//' es division entera, no un comentario
   
   return scypher
 
@@ -143,6 +144,7 @@ def EncriptarTexto(plain, e, n):
 def DesencriptarTexto(scypher, d, n):
   # Convierto scypher a un valor long
   cypher = Matematica.bytes2long(scypher)
+
   ## Separo de a bloques
   tam_n = int(log(n, 2)) + 1
   tam_cypher = int(log(cypher, 2)) + 1

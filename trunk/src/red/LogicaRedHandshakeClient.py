@@ -54,6 +54,9 @@ keyAes = None
 # - Clave para ver la carta jugada por el contrincante
 d2b = None
 primo = None
+# Primer numero de secuencia para las jugadas
+secuencia = None
+
 
 def handshakeClient():
   """
@@ -62,7 +65,7 @@ def handshakeClient():
   """
   pf = prefijo + '[handshakeClient()] '
   logger.info(prefijo + 'Soy cliente, soy B.')
-  global misCartas, rsaContrincante, rsaPropio, keyAes, d2b, primo
+  global misCartas, rsaContrincante, rsaPropio, keyAes, d2b, primo, secuencia
 
   # 1) B le pide conexion a A
   # Ya realizado
@@ -268,7 +271,7 @@ def handshakeClient():
   
 
   # 9) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
-  # la confirmacion de que es mano, el protocolo de handshake esta terminado.
+  # la confirmacion de que es mano. Ademas B le envia a A el primer numero de secuencia a utilizar en el juego. Luego, el protocolo de handshake esta terminado.
   logger.info(prefijo + '--- PASO 9: Verifico que A es mano...', False)
   # recibir los elementos como una lista de strings
   t = recibirListaGenerica(Red, logger, pf, 'paso 9, ', 'recibido t == ')
@@ -292,10 +295,17 @@ def handshakeClient():
     logger.error(mensaje_error)
     raise mensaje_error
   logger.info('Hecho!')
+  
+  # Envio el numero de secuencia inicial
+  secuencia = Azar.Bits(CANT_BITS_SECUENCIA)
+  logger.debug(pf + 'Primer numero de secuencia: ' + str(secuencia))
+  Red.enviar(long_to_infint(secuencia).zfill(CANT_CHARS_SECUENCIA))
 
-    
+  
+  # Termine!
   logger.info(prefijo + '--- HANDSHAKE EXITOSO.')
 
+  
   # Datos para jugar:
   # - Mis cartas: diccionario con las 3 cartas que nos tocaron. Las claves son las cartas y los valores
   # asociados son los valores encriptados e2a(k(Bi)) que interpretará la contraparte.

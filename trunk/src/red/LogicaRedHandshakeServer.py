@@ -56,6 +56,8 @@ keyAes = None
 # - Clave para ver la carta jugada por el contrincante
 d2a = None
 primo = None
+# Primer numero de secuencia para las jugadas
+secuencia = None
 
 
 def handshakeServer():
@@ -65,7 +67,7 @@ def handshakeServer():
   """
   pf = prefijo + '[handshakeServer()] '
   logger.info(prefijo + 'Soy servidor, soy A.')
-  global misCartas, rsaContrincante, rsaPropio, keyAes, d2a, primo
+  global misCartas, rsaContrincante, rsaPropio, keyAes, d2a, primo, secuencia
   
 
   # 1) B le pide conexion a A
@@ -285,12 +287,18 @@ def handshakeServer():
 
 
   # 9) Al recibir B el mensaje de A, chequea que el mensaje encriptado sea
-  # la confirmacion de que es mano, el protocolo de handshake esta terminado.
-  logger.info(prefijo + '--- PASO 9: B verifica que soy mano... Hecho!')
-
+  # la confirmacion de que es mano. Ademas B le envia a A el primer numero de secuencia a utilizar en el juego. Luego, el protocolo de handshake esta terminado.
+  logger.info(prefijo + '--- PASO 9: B verifica que soy mano...', False)
+  # Recibo el primer numero de secuencia
+  secuencia = infint_to_long(Red.recibir(CANT_CHARS_SECUENCIA))
+  logger.debug(pf + 'Primer numero de secuencia: ' + str(secuencia))
+  logger.info(prefijo + 'Hecho!')
   
+  
+  # Termine!
   logger.info(prefijo + '--- HANDSHAKE EXITOSO.')
 
+  
   # Datos para jugar:
   #
   # - Mis cartas: diccionario con las 3 cartas que nos tocaron. Las claves son las cartas y los valores

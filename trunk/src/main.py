@@ -49,7 +49,7 @@ def comenzarJuego(modo, direcc, puerto):
     logger.setArchivo("client.log")
   logger.setNivelArchivo(Registro.DEBUG)
   logger.setNivelConsola(Registro.INFO)
-  logger.info('Inicio del registro de comenzarJuego()')
+  logger.debug('Inicio del registro de comenzarJuego()')
   # Preparar el log en los módulos Red y LogicaRed
   Red.activarRegistro(logger)
   LogicaRed.activarRegistro(logger)
@@ -109,12 +109,17 @@ def comenzarJuego(modo, direcc, puerto):
   print mensajes
   print 'Puntos ganados: ' + str(puntos)
 
+  # Finalizo la conexion
+  LogicaRed.cerrarConexion()
+  
   
 def MostrarJugadas(jugadas):
   i = 0
+  print
   while i < len(jugadas):
     print "\t" + str(i+1) + " - " + str(jugadas[i])
     i = i + 1
+  print
   return
 
 

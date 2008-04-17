@@ -16,7 +16,7 @@ from CantoEnvido import _cantoEnvidoTantos
 from CantoEnvido import _cantoEnvido
 from CantoTruco import *
 from CantoTruco import _cantoTruco
-#from CantoTruco import *
+
 
 ## PARA EL LOG DEL MODULO
 prefijo = '[' + __name__ + '] ' # nombre del modulo
@@ -52,6 +52,9 @@ rsaPropio = None # tupla (e, d, n)
 d2 = None
 primo = None
 keyAes = None
+# Proximo numero de secuencia  para las jugadas
+secuencia = None
+
 
 def servirJuego(direccion, puerto):
   """
@@ -59,11 +62,10 @@ def servirJuego(direccion, puerto):
   Una vez iniciada la conexion, se encarga de realizar el handshake necesario
   para jugar al Truco de manera segura
   """
-  global misCartas, rsaContrincante, rsaPropio
-  pf = prefijo + '[servirJuego()] '
+  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes, secuencia
 
+  pf = prefijo + '[servirJuego()] '
   logger.debug(pf + 'servirJuego(' + str(direccion) + ', ' + str(puerto) + ')')
-  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes
   modo = 'server'
 
   # Espero conexion
@@ -84,7 +86,8 @@ def servirJuego(direccion, puerto):
   d2 =                LogicaRedHandshakeServer.d2a
   primo =             LogicaRedHandshakeServer.primo
   keyAes =            LogicaRedHandshakeServer.keyAes
-    
+  secuencia =         LogicaRedHandshakeServer.secuencia + 1
+  
   return True
 
 
@@ -94,9 +97,10 @@ def conectarAJuego(direccion, puerto):
   Una vez iniciada la conexion, se encarga de realizar el handshake necesario
   para jugar al Truco de manera segura
   """
+  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes, secuencia
+
   pf = prefijo + '[conectarAJuego()] '
   logger.debug(pf + 'conectarAJuego(' + str(direccion) + ', ' + str(puerto) + ')')
-  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes
   modo = 'client'
 
   # 1) B le pide conexion a A
@@ -117,6 +121,7 @@ def conectarAJuego(direccion, puerto):
   d2 =                LogicaRedHandshakeClient.d2b
   primo =             LogicaRedHandshakeClient.primo
   keyAes =            LogicaRedHandshakeClient.keyAes
+  secuencia =         LogicaRedHandshakeClient.secuencia + 1
   
   return True
 
@@ -125,33 +130,28 @@ def cerrarConexion():
   # Cierra la conexion con la contraparte y cancela el juego si no habia terminado
   pf = prefijo + '[cerrarConexion()] '
   logger.debug(pf + 'cerrarConexion()')
-  pass
   Red.cerrarConexion()
-  raise 'No implementado'
 
 
 def enviarJugada(jugada): 
-  global misCartas, QUIEROENVIDO
-  
+  global misCartas, secuencia, rsaPropio
+
   ##  Envia una jugada (lista de cartas o cantos) a la contraparte
   pf = prefijo + '[enviarJugada()] '
   logger.debug(pf + 'enviarJugada()')  
-  
-  #plain = infint_to_long(jugada) # convierto el texto que me pasaron en un long
-  #plain = Rsa.EncriptarTexto(plain, rsaPropio[2], rsaPropio[0])
   
   # Veo que tipo de jugada es y genero el paquete correspondiente
   paquete = None
   if isinstance(jugada, Carta):
     logger.debug(pf + 'estoy enviando una carta')
     carta_firmada = misCartas[jugada]
-    paquete = JugadaPaquete(COMANDO_JUEGO_CARTA, carta_firmada, None)
+    paquete = JugadaPaquete(secuencia, COMANDO_JUEGO_CARTA, carta_firmada, None)
   elif isinstance(jugada, str) and jugada == "AL_MAZO":
     logger.debug(pf + 'estoy enviando que me voy al mazo')
-    paquete = JugadaPaquete(COMANDO_ME_VOY_AL_MAZO, None, None)
+    paquete = JugadaPaquete(secuencia, COMANDO_ME_VOY_AL_MAZO, None, None)
   elif isinstance(jugada, _cantoEnvidoTantos):
     logger.debug(pf + 'estoy enviando un canto de tantos de envido')
-    paquete = JugadaPaquete(COMANDO_CANTO_TANTO, None, jugada.tantos)
+    paquete = JugadaPaquete(secuencia, COMANDO_CANTO_TANTO, None, jugada.tantos)
   elif isinstance(jugada, _cantoEnvido):
     logger.debug(pf + 'estoy enviando un canto de envido')
     # Veo que tipo de canto de envido es
@@ -169,7 +169,7 @@ def enviarJugada(jugada):
     elif jugada == FALTAENVIDO:
       comando = COMANDO_FALTA_ENVIDO
     # Ahora que lo tengo, genero el paquete
-    paquete = JugadaPaquete(comando, None, None)
+    paquete = JugadaPaquete(secuencia, comando, None, None)
   elif isinstance(jugada, _cantoTruco):
     logger.debug(pf + 'estoy enviando un canto de truco')
     # Veo que tipo de canto de truco es
@@ -183,28 +183,56 @@ def enviarJugada(jugada):
     elif jugada == VALE4:
       comando = COMANDO_VALE_CUATRO
     # Ahora que lo tengo, genero el paquete
-    paquete = JugadaPaquete(comando, None, None)
+    paquete = JugadaPaquete(secuencia, comando, None, None)
   else:
     msg = 'ERROR: Me llego para enviar una jugada que no entiendo: ' + str(jugada)
     logger.debug(pf + msg)
     raise(msg)
    
-   
-  # Envio el paquete generado  
-  Red.enviar(paquete.empaquetar())
+  # Firmo y envio el paquete generado 
+  Red.enviar(paquete.empaquetar(rsaPropio[1], rsaPropio[2]))
+  logger.debug(pf + 'Envie el paquete numero ' + str(secuencia))
+  
+  # Incremento el numero de secuencia
+  secuencia = secuencia + 1
 
   return True
 
 
 def recibirJugada():
-  global d2, primo, keyAes
+  global d2, primo, keyAes, secuencia, rsaContrincante
 
   ## Espera que la contraparte envie una jugada (lista de cartas o cantos)
   pf = prefijo + '[recibirJugada()] '
   logger.debug(pf + 'recibirJugada()')
+  
+  # Recibo la longitud del paquete firmado, y el paquete firmado
+  longitud = Red.recibir(CANT_CHARS_LONGITUDES)
+  longitud = struct.unpack('L', longitud)[0]
+  paquete = Red.recibir(longitud)
+  
+  # Desencripto el paquete
+  paquete = Rsa.DesencriptarTexto(paquete, rsaContrincante[0], rsaContrincante[1])
+  
+  # Inicializo el puntero de lectura en el comienzo
+  p = 0
+  
+  # Verifico el numero de seccuencia del paquete
+  secuencia_paquete = infint_to_long(paquete[p : p + CANT_CHARS_SECUENCIA].zfill(CANT_CHARS_SECUENCIA))
+  p = p + CANT_CHARS_SECUENCIA
+  if secuencia_paquete != secuencia:
+    msg = 'ERROR: Me llego el numero de secuencia ' + str(secuencia_paquete) + ' cuando me debio haber llegado ' + str(secuencia)
+    logger.debug(msg)
+    cerrarConexion()
+    raise(msg)
+  else:
+    logger.debug(pf + 'Recibiendo paquete numero ' + str(secuencia) + '...')
+    # Incremento el numero de secuenciamiento
+    secuencia = secuencia + 1
 
   # Recibo el comando de la jugada
-  comando = Red.recibir(CANT_CHARS_COMANDO)
+  comando = paquete[p : p + CANT_CHARS_COMANDO]
+  p = p + CANT_CHARS_COMANDO
   
   # Veo como sigo recibiendo en funcion del comando de la jugada
   jugada = None
@@ -232,15 +260,18 @@ def recibirJugada():
     jugada = VALE4
   elif comando == COMANDO_JUEGO_CARTA:
     # Recibo la longitud de la carta
-    longitud = struct.unpack('L', Red.recibir(CANT_CHARS_LONGITUDES).zfill(CANT_CHARS_LONGITUDES))[0]
+    longitud = struct.unpack('L', paquete[p : p + CANT_CHARS_LONGITUDES])[0]
+    p = p + CANT_CHARS_LONGITUDES
     # Levanto la firma de la carta y la desencripto con d2
-    carta = infint_to_long(Red.recibir(longitud))
+    carta = infint_to_long(paquete[p : p + longitud])
+    p = p + longitud
     carta = u128_to_long(Aes.AesDesencriptar(long_to_u128(Rsa.Desencriptar(carta, d2, primo)), keyAes))
     carta = CartasDesdeArchivo.carta(carta)
     jugada = carta
   elif comando == COMANDO_CANTO_TANTO:
     # Levanto los tantos cantados
-    jugada = DevolverObjetoTantos(int(Red.recibir(CANT_CHARS_TANTO)))
+    jugada = DevolverObjetoTantos(int(paquete[p : p + CANT_CHARS_TANTO]))
+    p = p + CANT_CHARS_TANTO
   elif comando == COMANDO_SON_BUENAS:
     jugada = NOTENGOTANTOS
   elif comando == COMANDO_ME_VOY_AL_MAZO:
@@ -254,7 +285,11 @@ def recibirJugada():
   #plain = long_to_infinit(msg) # convierto el long en el text
   #plain = carta
   
-  logger.debug(pf + 'jugada recibida: ' + str(jugada))
+  
+  logger.debug(pf + 'Secuencia recibida: ' + str(secuencia-1))
+  #logger.debug(pf + 'Comando recibido: ' + str(jugada))
+  logger.debug(pf + 'Jugada recibida: ' + str(jugada))
+  #logger.debug(pf + 'Tantos recibidos: ' + str(jugada))
   
   return jugada
 
