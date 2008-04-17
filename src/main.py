@@ -157,19 +157,18 @@ def _valElegirIpPuerto(texto):
 
 def elegirIp(modo):
   if modo == 'S':
-    msg = 'Modo Server. Elegir la dirección ip donde se escucharán conexiones (dejar en blanco para cualquier interfase): '
-    direcc = "127.0.0.1"#obt_texto(msg, _valElegirIpBlanco)
+    msg = 'Modo Server. Elegir la direccion ip donde se escucharan conexiones (dejar en blanco para cualquier interfaz): '
+    direcc = obt_texto(msg, _valElegirIpBlanco)
   else:
-    msg = 'Modo Client. Elegir la dirección ip a donde hay que conectar (requerido): '
-    direcc = "127.0.0.1"#obt_texto(msg, _valElegirIp)
-  #
+    msg = 'Modo Client. Elegir la direccion ip a donde hay que conectar (requerido): '
+    direcc = obt_texto(msg, _valElegirIp)
+  
   if modo == 'S':
-    msg = 'Modo Server. Elegir el puerto donde se escucharán conexiones (requerido): '
+    msg = 'Modo Server. Elegir el puerto donde se escucharan conexiones (requerido): '
   else:
     msg = 'Modo Client. Elegir el puerto a donde conectarse (requerido): '
-  puerto = 11111#obt_texto(msg, _valElegirIpPuerto)
-  puerto = int(puerto)
-  #
+  puerto = int(obt_texto(msg, _valElegirIpPuerto))
+  
   comenzarJuego(modo, direcc, puerto)
 
   
