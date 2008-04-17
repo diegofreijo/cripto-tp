@@ -77,10 +77,10 @@ def comenzarJuego(modo, direcc, puerto):
   ## Bucle principal
   while jugador.terminado() != None:
     # Armo las validaciones para ver a quien le toca
-    me_toca_envido = not jugador.envidoCerrado() and jugador.turnoDeJuegoEnvido()
-    me_toca_truco = not jugador.trucoCerrado() and jugador.turnoDeJuegoTruco()
+##    me_toca_envido = not jugador.envidoCerrado() and jugador.turnoDeJuegoEnvido()
+##    me_toca_truco = not jugador.trucoCerrado() and jugador.turnoDeJuegoTruco()
     # Veo si tengo que jugar yo o mi contrincante
-    if jugador.turnoDeJuego() or me_toca_envido or me_toca_truco:
+    if jugador.esMiTurno: #jugador.turnoDeJuego() or me_toca_envido or me_toca_truco:
       # Me toca
       jugadas = jugador.jugadasPosibles()
       MostrarJugadas(jugadas)
