@@ -28,30 +28,35 @@ Y con aplicar $k$, obtiene $B_2$.
 Suponiendo que se env'ian los datos en limpio, el formato de paquete ser'ia
 
 \begin{verbatim}
-------------------------------------------------------------------
-|   ts   |   comando   |   carta(opcional)   |  tanto(opcional)  |
-------------------------------------------------------------------
-   32 b        4 b            1024 b                  6 b
+------------------------------------------------------------------------
+|  sec   |   comando   | [long]  carta(opcional)   |  tanto(opcional)  |
+------------------------------------------------------------------------
+   32 b        8 b            (variable)                    8 b
 \end{verbatim}
 
 
-\negrita{Timestamp / Nro de secuencia}
+\negrita{N'umero de secuencia}
 
 N'umero de secuenciamiento de paquetes. Quien comienza el juego setea el valor inicial. Se debe respetar la correlatividad, sino se aborta la conexi'on.
 
 
 \negrita{Comandos}
-\begin{verbatim}
-00: Quiero
-01: No quiero
-02: Envido
-03: Real envido
-04: Falta envido
-05: Truco
-06: Quiero retruco
-07: Quiero vale cuatro
-08: Juego carta
-09: Canto tanto
-10: Son buenas
-11: Me voy al mazo
-\end{verbatim}
+\begin{itemize}
+\item QUIERO ENVIDO       
+\item NO QUIERO ENVIDO    
+\item ENVIDO              
+\item ENVIDO ENVIDO       
+\item REAL ENVIDO         
+\item FALTA ENVIDO        
+\item QUIERO TRUCO        
+\item NO QUIERO TRUCO     
+\item TRUCO               
+\item RETRUCO             
+\item VALE CUATRO         
+\item JUEGO CARTA         
+\item CANTO TANTO         
+\item SON BUENAS          
+\item ME VOY AL MAZO      
+\item GANE                
+\item PERDI               
+\end{itemize}
