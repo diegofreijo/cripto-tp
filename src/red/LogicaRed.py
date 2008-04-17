@@ -168,13 +168,19 @@ def enviarJugada(jugada):
       comando = COMANDO_REAL_ENVIDO
     elif jugada == FALTAENVIDO:
       comando = COMANDO_FALTA_ENVIDO
+    else:
+      msg = 'ERROR: Me llego un canto envido que no entiendo: ' + str(jugada)
+      logger.debug(pf + msg)
+      raise(msg)
     # Ahora que lo tengo, genero el paquete
     paquete = JugadaPaquete(secuencia, comando, None, None)
   elif isinstance(jugada, _cantoTruco):
     logger.debug(pf + 'estoy enviando un canto de truco')
     # Veo que tipo de canto de truco es
     comando = None
-    if jugada == NOQUIEROTRUCO:
+    if jugada == QUIEROTRUCO:
+      comando = COMANDO_QUIERO_TRUCO
+    elif jugada == NOQUIEROTRUCO:
       comando = COMANDO_NO_QUIERO_TRUCO
     elif jugada == TRUCO:
       comando = COMANDO_TRUCO
@@ -182,6 +188,10 @@ def enviarJugada(jugada):
       comando = COMANDO_RETRUCO
     elif jugada == VALE4:
       comando = COMANDO_VALE_CUATRO
+    else:
+      msg = 'ERROR: Me llego un canto truco que no entiendo: ' + str(jugada)
+      logger.debug(pf + msg)
+      raise(msg)
     # Ahora que lo tengo, genero el paquete
     paquete = JugadaPaquete(secuencia, comando, None, None)
   else:
