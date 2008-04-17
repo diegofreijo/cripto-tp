@@ -73,11 +73,11 @@ def recibir(longitud):
       try:
         rv = sock.recv(longitud - len(recibido))
       except socket.error, e:
-        DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"");
+        DEBUGLOG(pf + "excepcion: \"" + repr(e) + "\"")
         rv = ''
       recibido = recibido + rv
       if rv == '': break
-    DEBUGLOG(pf + "datos recibidos: \"" + repr(rv) + "\"");
+    DEBUGLOG(pf + "datos recibidos: \"" + repr(rv) + "\"")
     
     return recibido
 
