@@ -174,36 +174,24 @@ $$	(e^3_b, n_b), (d^3_b, n_b)  $$
 	
 y env'ia la p'ublica $(e^3_b, n_b)$ a A. Usar'a $d^3_b$ s'olo para firmar sus acciones.
 
-A su vez, genera un paquete con el timestamp inicial decretando esta como la hora de inicio de juego. Lo env'ia firmado con $d^3_b$.
+A su vez, genera un paquete con el n'umero de secuencia inicial.
 
 \begin{verbatim}
-------------------------------------
-|   e3b   |   nb   |   d3b(ts_i)   |
-------------------------------------
-  2048 b    2048 b      2048 b
+-------------
+|   sec_i   |
+-------------
+   32 b   
 \end{verbatim}
   
-  
-  
 
 
-\item A lee con la clave p'ublica de B lo firmado por 'el y verifica que el timestamp es v'alido. Se genera tambi'en sus pares de claves RSA
+\item A lee con la clave p'ublica de B lo firmado por 'el y guarda el n'umero de secuencia. Se genera tambi'en sus pares de claves RSA, y envia la clave publica a B
 
 $$	(e^3_a, n_a), (d^3_a, n_a) $$
 	
-y env'ia su aceptaci'on (firmada con $d^3_a$) de la hora de inicio.
+A partir de este momento se considera finalizado todo el protocolo de inicio, por lo que B se queda a la espera de la primer jugada de A (siempre el servidor es mano).
 
-
-\begin{verbatim}
---------------------
-|   e3a   |   na   |
---------------------
-  2048 b    2048 b  
-\end{verbatim}
-  
   
 
-
-\item Al recibir B la verificaci'on, puede empezar a jugar (notar que es mano).
 
 \end{enumerate}
