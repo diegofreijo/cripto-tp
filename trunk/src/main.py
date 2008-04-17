@@ -86,7 +86,7 @@ def comenzarJuego(modo, direcc, puerto):
       MostrarJugadas(jugadas)
       opcionJugada = -1
       while opcionJugada not in range(0, len(jugadas)):
-        opcionJugada = raw_input("Elija opcion a jugar: ")
+        opcionJugada = raw_input("Elegi opcion a jugar: ")
         if opcionJugada == '':
           opcionJugada = -1
         else:

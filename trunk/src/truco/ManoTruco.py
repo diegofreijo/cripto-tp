@@ -293,8 +293,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         #pido los puntos que voy a cantar y lo almaceno en la variable que contiene los puntos que cante
         if jugada!=NOTENGOTANTOS:
           jugada.tantos=int(raw_input("Ingrese la cantidad de Puntos a cantar: "))
-        self.tengoTantas.tantos=jugada.tantos
-        print "Tengo " + str(self.tengoTantas)
+        self.tengoTantas.tantos = jugada.tantos
+        print "     Tengo " + str(self.tengoTantas.tantos)
         self.canteMisTantos=True
       if jugar==True and self.PtosEnvidoOtro>=0:
         self.intercambiandoTantos=False
