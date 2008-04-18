@@ -73,14 +73,12 @@ def comenzarJuego(modo, direcc, puerto):
     print "Mi mano: "
     for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
     logger.info('Conectado, soy pie')
-	  
+
+
   ## Bucle principal
   while jugador.terminado() != None:
-    # Armo las validaciones para ver a quien le toca
-##    me_toca_envido = not jugador.envidoCerrado() and jugador.turnoDeJuegoEnvido()
-##    me_toca_truco = not jugador.trucoCerrado() and jugador.turnoDeJuegoTruco()
     # Veo si tengo que jugar yo o mi contrincante
-    if jugador.esMiTurno: #jugador.turnoDeJuego() or me_toca_envido or me_toca_truco:
+    if jugador.esMiTurno:
       # Me toca
       jugadas = jugador.jugadasPosibles()
       MostrarJugadas(jugadas)
@@ -100,9 +98,18 @@ def comenzarJuego(modo, direcc, puerto):
       jugadaContrincante = LogicaRed.recibirJugada()
       jugador.recibirJugada(jugadaContrincante)
       print "     El otro jugo " + str(jugadaContrincante)
-
+      
+    
   # Fin de la partida
   print '\n- Fin de la partida -\n'
+  
+  # Si soy el servidor, muestro mi mano y espero la del otro; sino, al revez
+  if modo == 'S':
+    LogicaRed.mostrarMano(LogicaRedHandshakeServer.misCartas.values())
+    jugador.manoDelOponente(LogicaRed.verMano())
+  else:
+    jugador.manoDelOponente(LogicaRed.verMano())
+    LogicaRed.mostrarMano(LogicaRedHandshakeClient.misCartas.values())
   
   # Muestro puntos ganados
   mensajes, puntos = jugador.ptosGanados()
@@ -115,7 +122,7 @@ def comenzarJuego(modo, direcc, puerto):
   
 def MostrarJugadas(jugadas):
   i = 0
-  print
+  print '\n'
   while i < len(jugadas):
     print "\t" + str(i+1) + " - " + str(jugadas[i])
     i = i + 1
@@ -124,9 +131,7 @@ def MostrarJugadas(jugadas):
 
 
 def _valElegirIp(texto):
-  """
-  Chequear si el texto es una dirección IP válida
-  """
+  # Chequear si el texto es una dirección IP válida
   try:
     t = socket.inet_aton(texto)
     return (texto, True)

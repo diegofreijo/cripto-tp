@@ -303,4 +303,65 @@ def recibirJugada():
   
   return jugada
 
-	
+
+def mostrarMano(cartas):
+    # Le envio al contrincante mi mano para que pueda verificar mi envido
+    
+    # Meto el comando
+    paquete = COMANDO_TE_MUESTRO_MI_MANO
+    
+    # Agrego las 3 cartas con sus longitudes
+    carta_str = long_to_infint(cartas[0])
+    paquete = paquete + struct.pack('L', len(carta_str)) + carta_str
+    
+    carta_str = long_to_infint(cartas[1])
+    paquete = paquete + struct.pack('L', len(carta_str)) + carta_str
+    
+    carta_str = long_to_infint(cartas[2])
+    paquete = paquete + struct.pack('L', len(carta_str)) + carta_str
+    
+    # Firmo el paquete y le agrego la longitud total
+    paquete = Rsa.EncriptarTexto(paquete, rsaPropio[1], rsaPropio[2])
+    longitud = struct.pack('L', len(paquete)).zfill(CANT_CHARS_LONGITUDES)
+    paquete = longitud + paquete
+    
+    # Y lo envio
+    Red.enviar(paquete)
+    
+    
+def verMano():
+  # Recibo la mano del otro para poder verificar su envido
+  
+  # Recibo la longitud del paquete firmado, y el paquete firmado
+  longitud = Red.recibir(CANT_CHARS_LONGITUDES)
+  longitud = struct.unpack('L', longitud)[0]
+  paquete = Red.recibir(longitud)
+  
+  # Desencripto el paquete
+  paquete = Rsa.DesencriptarTexto(paquete, rsaContrincante[0], rsaContrincante[1])
+  
+  # Inicializo el puntero de lectura en el comienzo
+  p = 0
+  
+  # Verifico el comando, no sea cosa que me quiso mandar otra cosa
+  comando = paquete[p : p + CANT_CHARS_COMANDO]
+  p = p + CANT_CHARS_COMANDO
+  if comando != COMANDO_TE_MUESTRO_MI_MANO:
+    raise('ERROR: esperaba la mano del contrincante pero me mando este comando: ' + str(comando))
+  
+  # Recibo las cartas
+  cartas = []
+  for i in range(3):
+    # Recibo la longitud de la carta
+    longitud = struct.unpack('L', paquete[p : p + CANT_CHARS_LONGITUDES])[0]
+    p = p + CANT_CHARS_LONGITUDES
+    # Levanto la firma de la carta y la desencripto con d2
+    carta = infint_to_long(paquete[p : p + longitud])
+    p = p + longitud
+    carta = u128_to_long(Aes.AesDesencriptar(long_to_u128(Rsa.Desencriptar(carta, d2, primo)), keyAes))
+    carta = CartasDesdeArchivo.carta(carta)
+    cartas.append(carta)
+    
+  return cartas
+
+ 
