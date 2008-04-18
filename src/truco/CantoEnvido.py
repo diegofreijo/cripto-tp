@@ -44,7 +44,7 @@ class _cantoEnvidoTantos(_cantoEnvido):
     if self.tantos <= 0:
       return self.codigo
     else:
-      return self.codigo + ':' + repr(self.tantos)
+      return self.codigo + ' ' + repr(self.tantos)
 
   def __repr__(self):
     return 'CantoEnvido.Tantos('+repr(self.tantos)+')'
