@@ -14,6 +14,10 @@ import Red
 import LogicaRed
 import LogicaRedHandshakeServer
 import LogicaRedHandshakeClient
+from Score import _Score # agregue esta linea porque me parece que en este main
+                    # tenemos que tener uns instancia de Score para ir viendo
+                    # como se incrementan los puntos de la partida. Maura
+Score=_Score()
 
 # Inicializar log
 logger = Registro.newRegistro()
@@ -98,11 +102,11 @@ def comenzarJuego(modo, direcc, puerto):
       jugadaContrincante = LogicaRed.recibirJugada()
       jugador.recibirJugada(jugadaContrincante)
       print "     El otro jugo " + str(jugadaContrincante)
-      
+    # cada vez que se haga o recibe una jugada hay que chequear el Score para ver si se llegaron a los 30 o no...
     
   # Fin de la partida
   print '\n- Fin de la partida -\n'
-  
+  #ESTO HABRIA QUE HACERLO SI SE DIJO QUIERO AL ENVIDO NADA MAS (PARA EVITAR INTERCAMBIOS INNECESARIOS).MAURA
   # Si soy el servidor, muestro mi mano y espero la del otro; sino, al revez
   if modo == 'S':
     LogicaRed.mostrarMano(LogicaRedHandshakeServer.misCartas.values())
@@ -110,11 +114,27 @@ def comenzarJuego(modo, direcc, puerto):
   else:
     jugador.manoDelOponente(LogicaRed.verMano())
     LogicaRed.mostrarMano(LogicaRedHandshakeClient.misCartas.values())
+
+  # Aca muestro el Score y juego una nueva Mano
+  print "El estado del Score es:\n"
+  mensajes, puntosMios, puntosOtro=jugador.ptosGanados()
+  Score.incrementarSocreMio(puntosMios)
+  Score.incrementarScoreOtro(puntosOtro)
+  print str(Score)
+
+  if Score.partidoGanado()==1 and modo=='S':
+    print "Gane el partido!!"
+  elif Score.partidoGanado()==1 and modo=='C':
+    print "Perdi el partido!!"
+  elif Score.partidoGanado()==-1:
+    print "Perdi el partido!"
+      
+    
   
-  # Muestro puntos ganados
-  mensajes, puntos = jugador.ptosGanados()
-  print mensajes
-  print 'Puntos ganados: ' + str(puntos)
+##  # Muestro puntos ganados
+##  mensajes, puntosMios, puntosContra = jugador.ptosGanados()
+##  print mensajes
+##  print 'Puntos ganados: ' + str(puntos)
 
   # Finalizo la conexion
   LogicaRed.cerrarConexion()
