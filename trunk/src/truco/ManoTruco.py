@@ -606,3 +606,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
   def manoDelOponente(self, cartas):
     self.manoDelOtro = cartas
     
+  def envidoCantado(self):
+    if self.estadoEnvido==QUIEROENVIDO:
+      return True
+    else:
+      return False
