@@ -18,9 +18,9 @@ def mostrarLista(jugadas):
 
 while Score.partidoGanado()==0:
   cartasMano = []
-  cartasMano.append( Carta( 3,Palo.ESPADA ) )
-  cartasMano.append( Carta( 2,Palo.ESPADA ) )
   cartasMano.append( Carta( 1,Palo.ESPADA ) )
+  cartasMano.append( Carta( 2,Palo.ESPADA ) )
+  cartasMano.append( Carta( 3,Palo.BASTO ) )
   cartasPie = []
   cartasPie.append( Carta( 1,Palo.BASTO ) )
   cartasPie.append( Carta( 2,Palo.ORO ) )
@@ -31,6 +31,7 @@ while Score.partidoGanado()==0:
 
   while TrucoMano.terminado()!=None or TrucoPie.terminado()!=None:
     if TrucoMano.esMiTurno:
+      jugadas=[]
       jugadas = TrucoMano.jugadasPosibles()
       mostrarLista(jugadas)
       print "Elija el numero de la opcion a jugar: (empezando en 0)"
@@ -42,6 +43,7 @@ while Score.partidoGanado()==0:
       TrucoPie.recibirJugada( opcionJugada );
       opcionInt = raw_input("Presione una tecla para continuar...")
     elif TrucoPie.esMiTurno:
+      jugadas=[]
       jugadas = TrucoPie.jugadasPosibles()
       mostrarLista(jugadas)
       print "\nELIJA LA OPCION QUE JUEGA LA COMPU: (empezando en 0)"
@@ -52,39 +54,14 @@ while Score.partidoGanado()==0:
       TrucoPie.jugar( opcionJugada )
       TrucoMano.recibirJugada( opcionJugada )
 
-  if TrucoMano.terminado()==None:
-    if TrucoMano.ganePartida==True:
-      print "La Mano gano la Partida!"
-    else:
-      print "El Pie gano la Partida!"
-  elif TrucoPie.terminado()==None:
-    if TrucoPie.ganePartida==False:
-      print "La Mano gano la Partida!"
-    else:
-      print "El Pie gano la Partida!"
-      
-  print "EMPIEZA LA VERIFICACION!!"
-  if TrucoMano.jugueTodaLaMano()!=True and TrucoMano.soyMano==True:
-    print "La mano no jugo todas las cartas"
-    jugada=TrucoMano.cartasEnvido
-    print "isninstance(jugada,tuple)-->" + str(isinstance(jugada,tuple))
-    print "La jugada es: " + str(jugada)
-    TrucoMano.jugar(jugada)
-    TrucoPie.recibirJugada(jugada)
-  if TrucoPie.jugueTodaLaMano()!=True:
-    print "El pie no jugo todas las cartas"
-    jugada=TrucoPie.cartasEnvido
-    TrucoPie.jugar(jugada)
-    TrucoMano.recibirJugada(jugada)
+
      
-  # Aca muetsro el Score y juego una nueva Mano
+  # Aca muestro el Score y juego una nueva Mano
   print "El estado del Score es:\n"
-  mano=TrucoMano.ptosGanados()
-  pie=TrucoPie.ptosGanados()
-  print "TrucoMano.ptosGanados() " + str(mano)
-  print "TrucoPie.ptosGanados() " + str(pie)
-  Score.incrementarSocreMio(mano)
-  Score.incrementarScoreOtro(pie)
+  mano=TrucoMano.ptosGanados(TrucoPie.juegoMio+ TrucoPie.cartasQueTengo)
+#  pie=TrucoPie.ptosGanados(TrucoMano.juegoMio+ TrucoMano.cartasQueTengo)
+  Score.incrementarSocreMio(mano[1])
+#  Score.incrementarScoreOtro(mano[2])
   print str(Score)
   
 print "\tRESULTADO FINAL DEL SCORE:"

@@ -16,6 +16,7 @@ from CantoEnvido import _cantoEnvido
 from CantoEnvido import _cantoEnvidoTantos
 from CantoTruco import _cantoTruco
 from CantoTruco import *
+from Score import _Score
 
 class ManoTruco:
    # variables de instancia
@@ -35,6 +36,7 @@ class ManoTruco:
   intercambiandoTantos=None
   canteMisTantos=None
   cartasEnvido=None
+  canteFaltaEnvido=None
   manoDelOtro=None # cuando se termina la partida y se quizo el envido y no se jugaron todas las cartas, mando a pedir el juego del otro para
                       # ver cuantos puntos tiene y si mintio o no. Es la lista de las cartas del otro.
   envidoNoQuerido=None # vale true si yo dije no quiero. De lo Contrario, False. Esto se usa para cuando termina la mano se contabilizan los puntos
@@ -78,9 +80,12 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.canteMisTantos=False
     self.cartasEnvido=self.calcularEnvido(self.cartasQueTengo) # esto es un par que contiene los puntos y las cartas que forman el envido. Se usa para la verificacion
     self.tengoTantas=_cantoEnvidoTantos('Cantar tantos',-1) #,self.cartasEnvido[0]) # tengoTantas le pide al usuario que diga los puntos que tiene (en este caso le permitiria mentir)
+    self.controlPtosOtro=()
     self.envidoNoQuerido=False
     self.tantosMios=0
     self.manoDelOtro=None
+    self.canteFaltaEnvido=False
+
     
     self.estadoTruco=TRUCONOCANTADO
     self.PtosTrucoQuiero=-1
@@ -157,9 +162,6 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       elif self.ganeMano(0)==self.ganeMano(1)==1:
         self.ganePartida=True
         return None
-    elif self.estadoEnvido==FALTAENVIDO:
-      print "Cantaron Falta Envido"
-      return None
     elif self.estadoTruco==NOQUIEROTRUCO:
       if self.canteTruco==True:
         print "Gane el truco porque el otro no quizo"
@@ -189,7 +191,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
       elif self.ganeMano(largo-1)==0:
         self.esMiTurno=self.soyMano
       else:
-        print "es un caso que no tengo contemplado self.ganeMano(largo-1) " + self.ganeMano(largo-1)
+#        print "es un caso que no tengo contemplado self.ganeMano(largo-1) " + self.ganeMano(largo-1)
         self.esMiTurno=False
         print "es un caso que no tengo contemplado"
     self.manoEnSubManoActual = self.esMiTurno
@@ -305,6 +307,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
           print "Gane el Envido"
         elif self.PtosEnvidoOtro == self.tengoTantas.tantos:
           print "Gano la mano porque pardaron en los puntos."
+
       self.turnoDeJuegoEnvido()
       return True
     if isinstance(jugada,_cantoEnvido):
@@ -321,9 +324,9 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         self.PtosEnvidoNQuerido=self.PtosEnvidoNQuerido+1
         self.estadoEnvido=REALENVIDO
       elif jugada==FALTAENVIDO:
-        self.PtosEnvidoQuerido=self.PtosEnvidoQuerido+4
         self.PtosEnvidoNQuerido=self.PtosEnvidoNQuerido+1
         self.estadoEnvido=FALTAENVIDO
+        self.canteFaltaEnvido=True
       elif jugada==QUIEROENVIDO:
         self.estadoEnvido=QUIEROENVIDO
         self.intercambiandoTantos=True
@@ -452,6 +455,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     if isinstance(jugada, Carta):
       self.juegoOtro.append(jugada)
       self.turnoDeJuego()
+    elif isinstance(jugada,tuple):
+      self.controlPtosOtro=jugada
     else:
       self.actualizarCanto(jugada, False)
     return True
@@ -461,6 +466,8 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     # calculamos cual es el palo que tiene mas cantidad de cartas
     # si no hay ninguno entonces me fijo en la carta con mas valor
     # basto,copa,oro,espada  cantidad de puntos y cartas que lo forman
+    if juego==[]:
+      return (0,[])
     palos={BASTO:[],COPA:[],ORO:[],ESPADA:[]}
     i=0
     maximacarta=juego[0] #self.cartasQueTengo[0]
@@ -496,52 +503,101 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
 
 
   def ptosGanados(self):
-    puntos = 0
+    puntosMios = 0
+    puntosOtro = 0
     mensajes = ''
 
     # calculo los puntos del envido en caso que se haya cantado y lo haya ganado
     # y verifico que no me hayan mentido!!
-    if self.estadoEnvido == QUIEROENVIDO:
-      if self.tengoTantas.tantos > self.PtosEnvidoOtro or \
-      (self.tengoTantas.tantos == self.PtosEnvidoOtro and self.soyMano == True):
-        if self.cartasEnvido[0] == self.tengoTantas.tantos:
-          mensajes = mensajes + "No menti con los puntos. Gane en buena ley\n"
-          puntos = puntos + self.PtosEnvidoQuerido
-        else:
-          mensajes = mensajes + "Mentiste! los puntos se los lleva el otro"
-      else:
-        if self.calcularEnvido(self.manoDelOtro)[0] == self.PtosEnvidoOtro:
-          mensajes = mensajes + "El otro me gano en buena ley, no me mintio. Perdi el envido\n"
-        else:
-          mensajes = mensajes + "Me mintieron!! Los puntos van para mi!!\n"
-          puntos = puntos+self.PtosEnvidoQuerido
-    if self.estadoEnvido==NOQUIEROENVIDO and self.envidoNoQuerido == False:
-      puntos=puntos+self.PtosEnvidoNQuerido # gane yo porque el otro dijo NO QUIERO
-      mensajes = mensajes + "Gane Envido por no querido\n"
 
-    # calculo los puntos en caso que se haya cantando truco y los haya ganado
+    if self.estadoEnvido==QUIEROENVIDO and self.canteFaltaEnvido==False:
+      self.controlPtosOtro=self.calcularEnvido(self.manoDelOtro)
+      print "entre -->" + str(self.cartasEnvido[0])
+      if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
+      (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):
+          mensajes = mensajes + "Gane el Envido\n"
+          puntosMios = puntosMios + self.PtosEnvidoQuerido
+      else:
+          puntosOtro=puntosOtro+ self.PtosEnvidoQuerido
+          mensajes = mensajes + "Perdi en envido"
+    if self.estadoEnvido==NOQUIEROENVIDO:
+      if self.envidoNoQuerido == False:
+        puntosMios=puntosMios+self.PtosEnvidoNQuerido # gane yo porque el otro dijo NO QUIERO
+        mensajes = mensajes + "Gane Envido por no querido\n"
+      else:
+        puntosOtro=puntosOtro+self.PtosEnvidoNQuerido # gano el otro porque dije NO QUIERO
+        mensajes = mensajes + "El otro Gano Envido por no querido\n"
+##    # calculo los puntos en caso que se haya cantando truco y los haya ganado
     if self.estadoTruco==QUIEROTRUCO and self.ganePartida==True:
-      puntos=puntos+self.PtosTrucoQuerido
+      puntosMios=puntosMios + self.PtosTrucoQuiero
       mensajes = mensajes + "Gane truco querido\n"
-    if self.estadoTruco==NOQUIEROTRUCO and self.canteTruco==True:
-      puntos=puntos+self.PtosTrucoNQuerido # me sumo los puntos porque cante y el otro dijo que no queria
-      mensajes = mensajes + "Gane truco por no querido\n"
-    if self.estadoTruco==TRUCONOCANTADO and self.ganePartida==True:
-      puntos=puntos+1
-      mensajes = mensajes + "Gane partida y no se canto truco y se jugo mas de una mano\n"
-
-    # calculo los puntos en caso que el otro se haya ido al mazo. Los puntos del otro son para mi
-    if self.estadoTruco==TRUCONOCANTADO and self.estadoEnvido==ENVIDONOCANTADO and self.meFuiAlMazo==-1:
-      # el otro se fue. los puntos los gano yo
-      if  len(self.juegoMio)==0 or len(self.juegoOtro)==0: 
-        puntos=puntos+2 # como si se hubiera cantado envido y truco y no se quisieron los dos
-        mensajes = mensajes + "Se fue al mazo si cantar envido y truco\n"
+    else:
+      puntosOtro=puntosOtro + self.PtosTrucoQuiero
+      mensajes = mensajes + "El otro Gano truco querido\n"
+    if self.estadoTruco==NOQUIEROTRUCO:
+      if self.canteTruco==True:
+        puntosMios=puntosMios+self.PtosTrucoNQuiero # me sumo los puntos porque cante y el otro dijo que no queria
+        mensajes = mensajes + "Gane truco por no querido\n"
       else:
-        puntos = puntos+1 # como si no se quizo el truco
-        mensajes = mensajes + "Se fue al mazo si cantar truco\n"
-    elif self.estadoEnvido!=ENVIDONOCANTADO and self.estadoTruco==TRUCONOCANTADO and self.meFuiAlMazo==-1:
-        puntos = puntos+1
-    return mensajes, puntos
+        puntosOtro=puntosOtro+self.PtosTrucoNQuiero # me sumo los puntos porque cante y el otro dijo que no queria
+        mensajes = mensajes + "El otro Gano truco por no querido\n"
+    if self.estadoTruco==TRUCONOCANTADO:
+      if self.ganePartida==True:
+        puntosMios=puntosMios+1
+        mensajes = mensajes + "Gane partida y no se canto truco y se jugo mas de una mano\n"
+      else:
+        puntosOtro=puntosOtro+1
+        mensajes = mensajes + "El otro Gano partida y no se canto truco y se jugo mas de una mano\n"
+    # calculo los puntos en caso que el otro se haya ido al mazo. Los puntos del otro son para mi
+    if self.estadoTruco==TRUCONOCANTADO and self.estadoEnvido==ENVIDONOCANTADO:
+      if  len(self.juegoMio)==0 or len(self.juegoOtro)==0:
+        if self.meFuiAlMazo==-1:
+          puntosMios=puntosMios+2 # como si se hubiera cantado envido y truco y no se quisieron los dos
+          mensajes = mensajes + "Se fue al mazo si cantar envido y truco\n"
+        elif self.meFuiAlMazo==1:
+          puntosOtro=puntosOtro+2 # como si se hubiera cantado envido y truco y no se quisieron los dos
+          mensajes = mensajes + "Yo me fui al mazo si cantar envido y truco\n"
+      else:
+        if self.meFuiAlMazo==-1:
+          puntosMios = puntosMios+1 # como si no se quizo el truco
+          mensajes = mensajes + "Se fue al mazo si cantar truco\n"
+        elif self.meFuiAlMazo==1:
+          puntosOtro = puntosOtro+1 # como si no se quizo el truco
+          mensajes = mensajes + "Yo me fui al mazo si cantar truco\n"
+    elif self.estadoEnvido!=ENVIDONOCANTADO and self.estadoTruco==TRUCONOCANTADO:
+      if self.meFuiAlMazo==-1:
+        puntosMios = puntosMios+1
+      elif self.meFuiAlMazo==1:
+        puntosOtro = puntosOtro+1
+    elif self.estadoEnvido==QUIEROENVIDO and self.canteFaltaEnvido==True:
+      print "Puntos en juego " + str(self.PtosEnvidoQuerido)
+      self.controlPtosOtro=self.calcularEnvido(self.manoDelOtro)
+      if _Score.ptosMios<15 and _Score.ptosOtro<15:
+        # gana la partida el que haya ganado esta falta envido
+        if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
+        (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):
+            mensajes = mensajes + "Gane el Envido\n"
+            puntosMios = 30 # lo pongo asi para que cuando se verifique si se termino la partida salga directamente
+            # puntosMios + self.PtosEnvidoQuerido
+        else:
+            puntosOtro=30 # mismo que antes
+            # puntosOtro+ self.PtosEnvidoQuerido
+            mensajes = mensajes + "Perdi en envido"
+      else:
+        # alguno de los dos ya esta en las buenas
+        if _Score.ptosMios>_Score.ptosOtro:
+          self.PtosEnvidoQuerido=_Score.FINAL-_Score.ptosMios
+        else:
+          self.PtosEnvidoQuerido=_Score.FINAL-_Score.ptosOtro
+        # ahora cargo los puntos en donde van
+        if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
+        (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):
+            mensajes = mensajes + "Gane el Envido\n"
+            puntosMios = puntosMios + self.PtosEnvidoQuerido
+        else:
+            puntosOtro=puntosOtro+ self.PtosEnvidoQuerido
+            mensajes = mensajes + "Perdi en envido"
+    return mensajes, puntosMios, puntosOtro
 
 
   def jugueTodaLaMano(self):
@@ -549,5 +605,4 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
 
   def manoDelOponente(self, cartas):
     self.manoDelOtro = cartas
-    
     
