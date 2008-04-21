@@ -494,9 +494,11 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         indice=indice+1
       return (tantos,palos[maximopalo])
 
+
   def ptosGanados(self):
     puntos = 0
     mensajes = ''
+
     # calculo los puntos del envido en caso que se haya cantado y lo haya ganado
     # y verifico que no me hayan mentido!!
     if self.estadoEnvido == QUIEROENVIDO:
@@ -508,10 +510,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         else:
           mensajes = mensajes + "Mentiste! los puntos se los lleva el otro"
       else:
-        #############
-        ## TODO: hay que calcular cuanto envido tenia el otro a partir de la lista de cartas del otro (su mano) en self.manoDelOtro
-        #############
-        if self.manoDelOtro == self.PtosEnvidoOtro: ### ACA TENGO QUE CALCULAR LOS PUNTOS DEL OTRO
+        if self.calcularEnvido(self.manoDelOtro)[0] == self.PtosEnvidoOtro:
           mensajes = mensajes + "El otro me gano en buena ley, no me mintio. Perdi el envido\n"
         else:
           mensajes = mensajes + "Me mintieron!! Los puntos van para mi!!\n"
@@ -519,6 +518,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     if self.estadoEnvido==NOQUIEROENVIDO and self.envidoNoQuerido == False:
       puntos=puntos+self.PtosEnvidoNQuerido # gane yo porque el otro dijo NO QUIERO
       mensajes = mensajes + "Gane Envido por no querido\n"
+
     # calculo los puntos en caso que se haya cantando truco y los haya ganado
     if self.estadoTruco==QUIEROTRUCO and self.ganePartida==True:
       puntos=puntos+self.PtosTrucoQuerido
@@ -529,6 +529,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     if self.estadoTruco==TRUCONOCANTADO and self.ganePartida==True:
       puntos=puntos+1
       mensajes = mensajes + "Gane partida y no se canto truco y se jugo mas de una mano\n"
+
     # calculo los puntos en caso que el otro se haya ido al mazo. Los puntos del otro son para mi
     if self.estadoTruco==TRUCONOCANTADO and self.estadoEnvido==ENVIDONOCANTADO and self.meFuiAlMazo==-1:
       # el otro se fue. los puntos los gano yo
@@ -541,6 +542,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     elif self.estadoEnvido!=ENVIDONOCANTADO and self.estadoTruco==TRUCONOCANTADO and self.meFuiAlMazo==-1:
         puntos = puntos+1
     return mensajes, puntos
+
 
   def jugueTodaLaMano(self):
     return len(self.juegoMio)==3
