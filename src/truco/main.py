@@ -58,10 +58,12 @@ while Score.partidoGanado()==0:
      
   # Aca muestro el Score y juego una nueva Mano
   print "El estado del Score es:\n"
-  mano=TrucoMano.ptosGanados(TrucoPie.juegoMio+ TrucoPie.cartasQueTengo)
+  mensaje, punto1, punto2=TrucoMano.ptosGanados()
 #  pie=TrucoPie.ptosGanados(TrucoMano.juegoMio+ TrucoMano.cartasQueTengo)
-  Score.incrementarSocreMio(mano[1])
-#  Score.incrementarScoreOtro(mano[2])
+  print mensaje
+  print "punto 1  " + str(punto1) + "  Punto 2 " + str(punto2)
+  Score.incrementarSocreMio(punto1)
+  Score.incrementarScoreOtro(punto2)
   print str(Score)
   
 print "\tRESULTADO FINAL DEL SCORE:"

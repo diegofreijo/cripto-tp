@@ -130,6 +130,8 @@ def comenzarJuego(modo, direcc, puerto):
     # Aca muestro el Score
     print "El estado del Score es:\n"
     mensajes, puntosMios, puntosOtro=jugador.ptosGanados()
+    print "Puntos para mi--> " + str(puntosMios)
+    print "Puntos para el otro--> " + str(puntosOtro)
     Score.incrementarSocreMio(puntosMios)
     Score.incrementarScoreOtro(puntosOtro)
     print str(Score)
