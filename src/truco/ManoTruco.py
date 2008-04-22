@@ -7,7 +7,7 @@
 # En ambos casos, si se da alguna de las condiciones de la finalizacion de la partida, muestro un cartel y el score final.
 # La actualizacion de las variables consiste en corroborar el estado de las cartas, los cantos y a quien le toca el turno.
 # Me falta ver como funciona el cambio de los turnos.
-
+FINAL =30
 
 from Carta import *
 from Palo import *
@@ -51,7 +51,8 @@ class ManoTruco:
   ganePartida=None
   meFuiAlMazo=None
 
-  
+  scoreMio=None
+  scoreOtro=None
   # Ahora definimos el diccionario que contiene las cartas con los niveles
   mazo={Carta(1,Palo.ESPADA):0,Carta(2,Palo.ESPADA):5,Carta(3,Palo.ESPADA):4,Carta(4,Palo.ESPADA):13,Carta(5,Palo.ESPADA):12,Carta(6,Palo.ESPADA):11,
 Carta(7,Palo.ESPADA):2,Carta(10,Palo.ESPADA):9,Carta(11,Palo.ESPADA):8,Carta(12,Palo.ESPADA):7,Carta(1,Palo.ORO):6,Carta(2,Palo.ORO):5,Carta(3,Palo.ORO):4,
@@ -96,6 +97,9 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.ganePartida=None
     self.meFuiAlMazo=0 # 1 si yo me fui. -1 si se fue el otro
 
+    self.scoreMio=0
+    self.scoreOtro=0
+    
   def SoyMano(self):
     """True si soy mano (no soy pie, reparti yo, y fui mano en la primera submano), False si no."""
     return self.soyMano
@@ -508,7 +512,6 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     # y verifico que no me hayan mentido!!
     if self.estadoEnvido==QUIEROENVIDO and self.canteFaltaEnvido==False:
       self.controlPtosOtro=self.calcularEnvido(self.manoDelOtro)
-      print "no en falta envido self.controlPtosOtro--> " + str(self.controlPtosOtro)
       if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
       (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):
           mensajes = mensajes + "Gane el Envido\n"
@@ -542,7 +545,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         puntosOtro=puntosOtro+self.PtosTrucoNQuerido # me sumo los puntos porque cante y el otro dijo que no queria
         mensajes = mensajes + "El otro Gano truco por no querido\n"
         
-    if self.estadoTruco==TRUCONOCANTADO:
+    if self.estadoTruco==TRUCONOCANTADO and self.meFuiAlMazo==0:
       if self.ganePartida==True:
         puntosMios=puntosMios+1
         mensajes = mensajes + "Gane partida y no se canto truco y se jugo mas de una mano\n"
@@ -576,26 +579,22 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
                      
     if self.estadoEnvido==QUIEROENVIDO and self.canteFaltaEnvido==True:
       self.controlPtosOtro=self.calcularEnvido(self.manoDelOtro)
-      print "en falta envido self.controlPtosOtro--> " + str(self.controlPtosOtro)
       if _Score.ptosMios<15 and _Score.ptosOtro<15:
         # gana la partida el que haya ganado esta falta envido
         if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
         (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):
             mensajes = mensajes + "Gane el Envido\n"
-            puntosMios = 30 # lo pongo asi para que cuando se verifique si se termino la partida salga directamente
-            # puntosMios + self.PtosEnvidoQuerido
+            puntosMios = puntosMios + FINAL - self.scoreMio
         else:
-            puntosOtro=30 # mismo que antes
-            # puntosOtro+ self.PtosEnvidoQuerido
+            puntosOtro=puntosOtro + FINAL - self.scoreOtro
             mensajes = mensajes + "Perdi en envido"
       else:
         # alguno de los dos ya esta en las buenas
 
-        if _Score.ptosMios>_Score.ptosOtro:
-          self.PtosEnvidoQuerido=_Score.FINAL-_Score.ptosMios
+        if self.scoreMio > self.scoreOtro:
+          self.PtosEnvidoQuerido=FINAL-self.scoreMio
         else:
-          self.PtosEnvidoQuerido=_Score.FINAL-_Score.ptosOtro
-        print "Puntos en juego " + str(self.PtosEnvidoQuerido)
+          self.PtosEnvidoQuerido=FINAL-self.scoreOtro
         # ahora cargo los puntos en donde van
         if self.cartasEnvido[0]>self.controlPtosOtro[0] or \
         (self.cartasEnvido[0]==self.controlPtosOtro[0] and self.soyMano==True):

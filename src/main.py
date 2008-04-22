@@ -19,6 +19,7 @@ from Score import _Score # agregue esta linea porque me parece que en este main
                     # como se incrementan los puntos de la partida. Maura
 Score=_Score()
 
+
 # Inicializar log
 logger = Registro.newRegistro()
 logger.setConsola(True)
@@ -88,6 +89,10 @@ def comenzarJuego(modo, direcc, puerto):
       jugador = ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(), False)
       print "Mi mano: "
       for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
+
+    #seteo el Score en la mano que se va a jugar para contabilizar los puntos en caso de Falte Envido
+    jugador.scoreMio=Score.ptosMios
+    jugador.scoreOtro=Score.ptosOtro
     
     ## Bucle principal de mano
     while jugador.terminado() != None:
@@ -130,8 +135,6 @@ def comenzarJuego(modo, direcc, puerto):
     # Aca muestro el Score
     print "El estado del Score es:\n"
     mensajes, puntosMios, puntosOtro=jugador.ptosGanados()
-    print "Puntos para mi--> " + str(puntosMios)
-    print "Puntos para el otro--> " + str(puntosOtro)
     Score.incrementarSocreMio(puntosMios)
     Score.incrementarScoreOtro(puntosOtro)
     print str(Score)
@@ -225,3 +228,9 @@ def elegirModo():
 # ip/puerto, y jugar
 if __name__ == '__main__':
   elegirModo()
+
+def SetearScoreALaMano():
+  jugador.scoreMio=Score.ptosMios
+  jugador.scoreOtro=Score.ptosOtro
+  return
+    
