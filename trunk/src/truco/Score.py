@@ -1,5 +1,4 @@
-FINAL=30
-
+FINAL =30 
 class _Score:
     ptosMios=None
     ptosOtro=None
@@ -23,7 +22,6 @@ class _Score:
             return -1
         else:
             return 0
-
     def __str__(self):
         return "\t    SCORE\n" + "\tYO    |   OTRO\n" + "\t---------------\n" \
                "\t  " + str(self.ptosMios) +  "\t   " + str(self.ptosOtro) + "\n"
