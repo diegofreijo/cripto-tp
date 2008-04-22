@@ -56,14 +56,48 @@ keyAes = None
 secuencia = None
 
 
+def repartir(modo):
+  ## Ejecuta el handshake segun el modo ('S' o 'C')
+  
+  global misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes, secuencia
+
+  if modo == 'S':
+  
+    # Inicio el handshake
+    LogicaRedHandshakeServer.handshakeServer()
+
+    # Handshake completado - preparar para el intermcambio de jugadas
+    misCartas =         LogicaRedHandshakeServer.misCartas
+    rsaContrincante =   LogicaRedHandshakeServer.rsaContrincante
+    rsaPropio =         LogicaRedHandshakeServer.rsaPropio
+    d2 =                LogicaRedHandshakeServer.d2a
+    primo =             LogicaRedHandshakeServer.primo
+    keyAes =            LogicaRedHandshakeServer.keyAes
+    secuencia =         LogicaRedHandshakeServer.secuencia + 1
+  
+  else:
+  
+    # Inicio el handshake
+    LogicaRedHandshakeClient.handshakeClient()
+
+    # Handshake completado - preparar para el intermcambio de jugadas
+    misCartas =         LogicaRedHandshakeClient.misCartas
+    rsaContrincante =   LogicaRedHandshakeClient.rsaContrincante
+    rsaPropio =         LogicaRedHandshakeClient.rsaPropio
+    d2 =                LogicaRedHandshakeClient.d2b
+    primo =             LogicaRedHandshakeClient.primo
+    keyAes =            LogicaRedHandshakeClient.keyAes
+    secuencia =         LogicaRedHandshakeClient.secuencia + 1
+    
+  return True
+
+
 def servirJuego(direccion, puerto):
   """
   Espera una conexion de un cliente en la direccion y puerto especificados.
   Una vez iniciada la conexion, se encarga de realizar el handshake necesario
   para jugar al Truco de manera segura
   """
-  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes, secuencia
-
   pf = prefijo + '[servirJuego()] '
   logger.debug(pf + 'servirJuego(' + str(direccion) + ', ' + str(puerto) + ')')
   modo = 'server'
@@ -75,18 +109,6 @@ def servirJuego(direccion, puerto):
   # Conexion iniciada
   logger.info('conexion entrante!')
   logger.debug(pf + 'conexion con el cliente iniciada. Iniciando handshake')
-
-  # Inicio el handshake
-  LogicaRedHandshakeServer.handshakeServer()
-
-  # Handshake completado - preparar para el intermcambio de jugadas
-  misCartas =         LogicaRedHandshakeServer.misCartas
-  rsaContrincante =   LogicaRedHandshakeServer.rsaContrincante
-  rsaPropio =         LogicaRedHandshakeServer.rsaPropio
-  d2 =                LogicaRedHandshakeServer.d2a
-  primo =             LogicaRedHandshakeServer.primo
-  keyAes =            LogicaRedHandshakeServer.keyAes
-  secuencia =         LogicaRedHandshakeServer.secuencia + 1
   
   return True
 
@@ -97,8 +119,6 @@ def conectarAJuego(direccion, puerto):
   Una vez iniciada la conexion, se encarga de realizar el handshake necesario
   para jugar al Truco de manera segura
   """
-  global modo, misCartas, rsaContrincante, rsaPropio, d2, primo, keyAes, secuencia
-
   pf = prefijo + '[conectarAJuego()] '
   logger.debug(pf + 'conectarAJuego(' + str(direccion) + ', ' + str(puerto) + ')')
   modo = 'client'
@@ -111,18 +131,6 @@ def conectarAJuego(direccion, puerto):
   logger.info('peticion aceptada!')
   logger.debug(pf + 'conexion con el servidor iniciada. Iniciando handshake')
 
-  # pasos 2) al 9)
-  LogicaRedHandshakeClient.handshakeClient()
-
-  # Handshake completado - preparar para el intermcambio de jugadas
-  misCartas =         LogicaRedHandshakeClient.misCartas
-  rsaContrincante =   LogicaRedHandshakeClient.rsaContrincante
-  rsaPropio =         LogicaRedHandshakeClient.rsaPropio # n,e,d
-  d2 =                LogicaRedHandshakeClient.d2b
-  primo =             LogicaRedHandshakeClient.primo
-  keyAes =            LogicaRedHandshakeClient.keyAes
-  secuencia =         LogicaRedHandshakeClient.secuencia + 1
-  
   return True
 
 
@@ -339,6 +347,8 @@ def verMano():
   
   # Desencripto el paquete
   paquete = Rsa.DesencriptarTexto(paquete, rsaContrincante[0], rsaContrincante[1])
+  
+  print 'PAQUETE: ' + paquete
   
   # Inicializo el puntero de lectura en el comienzo
   p = 0

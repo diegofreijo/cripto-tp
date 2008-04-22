@@ -7,7 +7,7 @@ def long_to_u32(nro):
   """
   Empaqueta el nro como un entero largo unsigned de 32 bits
   """
-  return struct.pack('I', nro)
+  return struct.pack('I', nro).zfill(4)
 
 def u32_to_long(txt32bits):
   """

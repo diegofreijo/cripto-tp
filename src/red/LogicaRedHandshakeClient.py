@@ -252,11 +252,11 @@ def handshakeClient():
   n3b, e3b, d3b = Rsa.GenerarClaves(CANT_BITS_PRIMOS)
   logger.debug(pf + 'clave RSA generada: (e3b, d3b, n3b) = (' + str(e3b) + ', ' + str(d3b) + ', ' + str(n3b) + ')')
   # generar elementos del mensaje a enviar
-  p7_listaParaEnviar = [long_to_infint(e3b), long_to_infint(n3b), Rsa.EncriptarTexto(MENSAJE_SOY_MANO, d3b, n3b)]
+  p7_listaParaEnviar = [long_to_infint(e3b), long_to_infint(n3b), Rsa.EncriptarTexto(MENSAJE_SOS_MANO, d3b, n3b)]
   logger.debug(pf + 'p7_listaParaEnviar = ' + repr(p7_listaParaEnviar))
   # empaquetar en una lista
   msg = empaquetar_Lista_Generica(p7_listaParaEnviar) # no convertir los elementos, ya son string
-  logger.debug(pf + 'Red.Enviar([e3b, n3b, d3b(SOY_MANO)])')
+  logger.debug(pf + 'Red.Enviar([e3b, n3b, d3b(SOS_MANO)])')
   Red.enviar(msg)
   logger.info('Hecho!')
 
@@ -291,9 +291,8 @@ def handshakeClient():
   p9_mensaje = Rsa.DesencriptarTexto(p9_mensaje_encrip, p9_e3a, p9_n3a)
   logger.debug(pf + 'p9_mensaje = ' + repr(p9_mensaje))
   if p9_mensaje != MENSAJE_SOY_MANO:
-    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ') y recibi ' + p9_mensaje
     logger.error(mensaje_error)
-    raise mensaje_error
   logger.info('Hecho!')
   
   # Envio el numero de secuencia inicial
