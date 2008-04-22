@@ -9,27 +9,16 @@ def GenerarClaves(bits_primos):
   p = Azar.Primo(bits_primos)
   while True:
     q = Azar.Primo(bits_primos)
-    # Acá habría que agregar algún criterio
-    # para que q no sea muy parecido a p
+    # Acá habría que agregar algún criterio para que q no sea muy parecido a p
     if q != p: break
-  #
+  
   n = p*q
-
-  ## Calculo e
-  #e = Azar.EnteroEntre(2, fi-1)
-  #while Matematica.Mcd(e, fi) != 1:
-  #	e = Azar.EnteroEntre(2, fi-1)
-
-  ## Calculo d
-  #d = Matematica.Inverso(e, fi)
-  #while d < 0:
-  #	d = d + fi
 
   # Obtengo e y d
   e, d = generarEyD(p, q)
-
+  
   # Devuelvo todo lo generado
-  return [n, e, d]
+  return n, e, d
 
 
 ## Genera e y d tales que e * d = 1 mod (fi(n = p*q)) para RSA
@@ -74,7 +63,7 @@ def EncriptarTexto(plain, e, n):
   tam_n = int(log(n, 2)) + 1
   tam_bloque = tam_n - 1 - 1
   
-  ## Segmenta @texto en bloques de @tam_bloque bits:
+  ## Segmenta @plain en bloques de @tam_bloque bits:
   ##		el ultimo bloque es padeado con 00...01 tal que todo el ultimo bloque ocupa tam_bloque.
   ##		Si no hace falta padeo, el ultimo bloque es solo de padeo y al ante ultimo le agrega un 1 adelante
   # Lista de bloques
@@ -122,7 +111,6 @@ def EncriptarTexto(plain, e, n):
   		bloques_plain.append(bloque)
   
   
-  
   ## Agrego al comienzo de cada bloque un bit en 1 para asegurarme que tengo un numero grande
   mascara = (1 << tam_bloque)
   for i in xrange(len(bloques_plain)):
@@ -134,17 +122,17 @@ def EncriptarTexto(plain, e, n):
   for i in xrange(len(bloques_plain)):
   	bloque_cypher = Encriptar(bloques_plain[i], e, n)
   	cypher |= bloque_cypher << (i * tam_n)
-    
-  # Convierto a bytes
-  scypher = Matematica.long2bytes(cypher, (len(bloques_plain) * tam_n + 7) // 8) # '//' es division entera, no un comentario
   
+  # Convierto a bytes
+  scypher = Matematica.long2bytesIlim(cypher)
+    
   return scypher
 
 
 def DesencriptarTexto(scypher, d, n):
   # Convierto scypher a un valor long
   cypher = Matematica.bytes2long(scypher)
-
+  
   ## Separo de a bloques
   tam_n = int(log(n, 2)) + 1
   tam_cypher = int(log(cypher, 2)) + 1

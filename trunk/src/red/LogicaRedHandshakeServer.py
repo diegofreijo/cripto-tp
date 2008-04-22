@@ -264,10 +264,9 @@ def handshakeServer():
   logger.debug(pf + 'p8_mensaje_encrip == ' + repr(p8_mensaje_encrip))
   p8_mensaje = Rsa.DesencriptarTexto(p8_mensaje_encrip, p8_e3b, p8_n3b)
   logger.debug(pf + 'p8_mensaje == ' + str(p8_mensaje))
-  if p8_mensaje != MENSAJE_SOY_MANO:
-    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOY_MANO + ')'
+  if p8_mensaje != MENSAJE_SOS_MANO:
+    mensaje_error = pf + 'ERROR FATAL: mensaje de preinicio de juego incorrecto (se esperaba ' + MENSAJE_SOS_MANO + ')'
     logger.error(mensaje_error)
-    raise mensaje_error
 
   while True:
 		n3a, e3a, d3a = Rsa.GenerarClaves(CANT_BITS_PRIMOS)
@@ -292,7 +291,7 @@ def handshakeServer():
   # Recibo el primer numero de secuencia
   secuencia = infint_to_long(Red.recibir(CANT_CHARS_SECUENCIA))
   logger.debug(pf + 'Primer numero de secuencia: ' + str(secuencia))
-  logger.info(prefijo + 'Hecho!')
+  logger.info('Hecho!')
   
   
   # Termine!

@@ -67,74 +67,80 @@ def comenzarJuego(modo, direcc, puerto):
   ## Inicio del Handshake segun el modo
   if modo == 'S':
     LogicaRed.servirJuego(direcc, puerto)
-    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(), True)
-    print "Mi mano: "
-    for carta in LogicaRedHandshakeServer.misCartas.keys(): print '  ' + str(carta)
     logger.info('Conectado, soy mano')
   else:
     LogicaRed.conectarAJuego(direcc, puerto)
-    jugador = ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(), False)
-    print "Mi mano: "
-    for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
     logger.info('Conectado, soy pie')
 
-
-  ## Bucle principal
-  while jugador.terminado() != None:
-    # Veo si tengo que jugar yo o mi contrincante
-    if jugador.esMiTurno:
-      # Me toca
-      jugadas = jugador.jugadasPosibles()
-      MostrarJugadas(jugadas)
-      opcionJugada = -1
-      while opcionJugada not in range(0, len(jugadas)):
-        opcionJugada = raw_input("Elegi opcion a jugar: ")
-        if opcionJugada == '':
-          opcionJugada = -1
-        else:
-          opcionJugada = int(opcionJugada) - 1
-      print "     Jugaste " + str(jugadas[opcionJugada])
-      jugador.jugar(jugadas[opcionJugada])
-      LogicaRed.enviarJugada(jugadas[opcionJugada])
+  ## Bucle principal de partida
+  partida_terminada = False
+  while not partida_terminada:
+    
+    ## Reparto de nuevo
+    logger.debug(' ==== Nueva mano ==== ')
+    if modo == 'S':
+      LogicaRed.repartir(modo)
+      jugador = ManoTruco.ManoTruco(LogicaRedHandshakeServer.misCartas.keys(), True)
+      print "Mi mano: "
+      for carta in LogicaRedHandshakeServer.misCartas.keys(): print '  ' + str(carta)
     else:
-      # Le toca
-      print "Esperando a que el otro juegue..."
-      jugadaContrincante = LogicaRed.recibirJugada()
-      jugador.recibirJugada(jugadaContrincante)
-      print "     El otro jugo " + str(jugadaContrincante)
-    # cada vez que se haga o recibe una jugada hay que chequear el Score para ver si se llegaron a los 30 o no...
+      LogicaRed.repartir(modo)
+      jugador = ManoTruco.ManoTruco(LogicaRedHandshakeClient.misCartas.keys(), False)
+      print "Mi mano: "
+      for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
     
-  # Fin de la partida
-  print '\n- Fin de la partida -\n'
-  #ESTO HABRIA QUE HACERLO SI SE DIJO QUIERO AL ENVIDO NADA MAS (PARA EVITAR INTERCAMBIOS INNECESARIOS).MAURA
-  # Si soy el servidor, muestro mi mano y espero la del otro; sino, al revez
-  if modo == 'S':
-    LogicaRed.mostrarMano(LogicaRedHandshakeServer.misCartas.values())
-    jugador.manoDelOponente(LogicaRed.verMano())
-  else:
-    jugador.manoDelOponente(LogicaRed.verMano())
-    LogicaRed.mostrarMano(LogicaRedHandshakeClient.misCartas.values())
-
-  # Aca muestro el Score y juego una nueva Mano
-  print "El estado del Score es:\n"
-  mensajes, puntosMios, puntosOtro=jugador.ptosGanados()
-  Score.incrementarSocreMio(puntosMios)
-  Score.incrementarScoreOtro(puntosOtro)
-  print str(Score)
-
-  if Score.partidoGanado()==1 and modo=='S':
-    print "Gane el partido!!"
-  elif Score.partidoGanado()==1 and modo=='C':
-    print "Perdi el partido!!"
-  elif Score.partidoGanado()==-1:
-    print "Perdi el partido!"
+    ## Bucle principal de mano
+    while jugador.terminado() != None:
+      # Veo si tengo que jugar yo o mi contrincante
+      if jugador.esMiTurno:
+        # Me toca
+        jugadas = jugador.jugadasPosibles()
+        MostrarJugadas(jugadas)
+        opcionJugada = -1
+        while opcionJugada not in range(0, len(jugadas)):
+          opcionJugada = raw_input("Elegi opcion a jugar: ")
+          if opcionJugada == '':
+            opcionJugada = -1
+          else:
+            opcionJugada = int(opcionJugada) - 1
+        print "     Jugaste " + str(jugadas[opcionJugada])
+        jugador.jugar(jugadas[opcionJugada])
+        LogicaRed.enviarJugada(jugadas[opcionJugada])
+      else:
+        # Le toca
+        print "Esperando a que el otro juegue..."
+        jugadaContrincante = LogicaRed.recibirJugada()
+        jugador.recibirJugada(jugadaContrincante)
+        print "     El otro jugo " + str(jugadaContrincante)
+      # cada vez que se haga o recibe una jugada hay que chequear el Score para ver si se llegaron a los 30 o no...
       
+    # Fin de la partida
+    print '\n- Fin de la mano -\n'
     
-  
-##  # Muestro puntos ganados
-##  mensajes, puntosMios, puntosContra = jugador.ptosGanados()
-##  print mensajes
-##  print 'Puntos ganados: ' + str(puntos)
+    # Si se canto envido, muestro y veo las manos
+    if jugador.envidoCantado():
+      # Si soy el servidor, muestro mi mano y espero la del otro; sino, al revez
+      if modo == 'S':
+        LogicaRed.mostrarMano(LogicaRedHandshakeServer.misCartas.values())
+        jugador.manoDelOponente(LogicaRed.verMano())
+      else:
+        jugador.manoDelOponente(LogicaRed.verMano())
+        LogicaRed.mostrarMano(LogicaRedHandshakeClient.misCartas.values())
+
+    # Aca muestro el Score
+    print "El estado del Score es:\n"
+    mensajes, puntosMios, puntosOtro=jugador.ptosGanados()
+    Score.incrementarSocreMio(puntosMios)
+    Score.incrementarScoreOtro(puntosOtro)
+    print str(Score)
+
+    # Verifico si alguien gano el partido
+    if Score.partidoGanado() == -1 or (Score.partidoGanado() == 2 and modo=='C'):
+      print " ++ ¡¡Perdi el partido!! ++"
+      partida_terminada = True
+    elif Score.partidoGanado() == 1 or (Score.partidoGanado() == 2 and modo=='S'):
+      print " ++ ¡¡Gane el partido!! ++"
+      partida_terminada = True
 
   # Finalizo la conexion
   LogicaRed.cerrarConexion()

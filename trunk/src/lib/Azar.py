@@ -48,7 +48,7 @@ def Bits(cantidad):
 # Fuente 2: http://mathworld.wolfram.com/Rabin-MillerStrongPseudoprimeTest.html
 # Comprobado con: http://www.alpertron.com.ar/ECM.HTM
 _primeros_primos = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61]
-def MillerRabin(n, k=10): # e < 4**(-10) ~~~ e < 10**(-6)
+def MillerRabin( n, k = 10 ): # e < 4**(-10) ~~~ e < 10**(-6)
   """
   Test de primalidad Miller-Rabin sobre n, para una probabilidad de declarar primo a un n compuesto de 4**{-k}
   """
@@ -91,7 +91,7 @@ def MillerRabin(n, k=10): # e < 4**(-10) ~~~ e < 10**(-6)
 
 
 
-def Primo( bits, p=10 ):
+def Primo( bits, p = 10 ):
   """
   Devolver un numero primo aleatorio con la cantidad de bits pedida.
   Existe la posibilidad (muy baja) que el numero devuelto sea compuesto, ya que se utiliza
