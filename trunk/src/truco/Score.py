@@ -1,7 +1,8 @@
-FINAL =30 
+FINAL = 30
+
 class _Score:
-    ptosMios=None
-    ptosOtro=None
+    ptosMios = None
+    ptosOtro = None
 
     def __init__(self):
         self.ptosMios=0
