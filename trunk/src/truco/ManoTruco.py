@@ -43,12 +43,12 @@ class ManoTruco:
                       # tengo que saber quien no queria el envido asi como tambien quien canto el truco
   
   estadoTruco=TRUCONOCANTADO
-  PtosTrucoQuiero=None
+  PtosTrucoQuerido=None
   PtosTrucoNQuerido=None
   ultimoEstadoTruco=None
   canteTruco=None
 
-  ganePartida=None
+  ganeElTruco=None
   meFuiAlMazo=None
 
   scoreMio=None
@@ -89,12 +89,12 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
 
     
     self.estadoTruco=TRUCONOCANTADO
-    self.PtosTrucoQuiero=-1
+    self.PtosTrucoQuerido=-1
     self.PtosTrucoNQuerido=-1
     self.ultimoEstadoTruco=TRUCONOCANTADO
     self.canteTruco=False
 
-    self.ganePartida=None
+    self.ganeElTruco=None
     self.meFuiAlMazo=0 # 1 si yo me fui. -1 si se fue el otro
 
     self.scoreMio=0
@@ -140,31 +140,31 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         if tres==1:cont=cont+1
         #print "uno: " + str(uno) + "   dos:   " + str(dos) + "   tres:  " + str(tres) + " Cantidad de Manos Ganadas " + str(cont)
         if cont>1:
-          self.ganePartida=True
+          self.ganeElTruco = True
         else:
-          self.ganePartida=False
+          self.ganeElTruco = False
       else:
         if self.ganeMano(1)==0 and self.ganeMano(2)==1:
-          self.ganePartida=True
+          self.ganeElTruco=True
         elif self.ganeMano(1)==0 and self.ganeMano(2)==-1:
-          self.ganePartida=False
+          self.ganeElTruco=False
         elif self.ganeMano(2)==0 and self.ganeMano(0)==1:
-          self.ganePartida=True
+          self.ganeElTruco=True
         elif self.ganeMano(2)==0 and self.ganeMano(0)==-1:
-          self.ganePartida=False
+          self.ganeElTruco=False
       return None
     elif len(self.juegoMio)==len(self.juegoOtro)==2:
       if self.ganeMano(0)==0 and self.ganeMano(1)==1: # la primera fue parda y gano alguno de los dos
-        self.ganePartida=True
+        self.ganeElTruco=True
         return None
       elif self.ganeMano(0)==0 and self.ganeMano(1)==-1: # la primera fue parda y gano alguno de los dos
-        self.ganePartida=False
+        self.ganeElTruco=False
         return None
       elif self.ganeMano(0)==self.ganeMano(1)==-1:
-        self.ganePartida=False
+        self.ganeElTruco=False
         return None
       elif self.ganeMano(0)==self.ganeMano(1)==1:
-        self.ganePartida=True
+        self.ganeElTruco=True
         return None
     elif self.estadoTruco==NOQUIEROTRUCO:
 #      if self.canteTruco==True:
@@ -492,16 +492,15 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     # si tengo un 10,11,12 vale 20.
     if len(palos[maximopalo])==1:
       return (maximacarta.numero,maximacarta.palo)
-    else:
-      tantos=20
-      indice=0
-      palos[maximopalo].sort(cmp= lambda x,y: cmp(x.numero,y.numero) )
-      while indice <2:
-        carta=palos[maximopalo][len(palos[maximopalo])-indice-1]
-        if carta.numero<10:
-          tantos=tantos+carta.numero
-        indice=indice+1
-      return (tantos,palos[maximopalo])
+    tantos=20
+    indice=0
+    palos[maximopalo].sort(cmp= lambda x,y: cmp(x.numero,y.numero) )
+    while indice <2:
+      carta=palos[maximopalo][len(palos[maximopalo])-indice-1]
+      if carta.numero<10:
+        tantos=tantos+carta.numero
+      indice=indice+1
+    return (tantos,palos[maximopalo])
 
 
   def ptosGanados(self):
@@ -530,11 +529,11 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         
 ##    # calculo los puntos en caso que se haya cantando truco y los haya ganado
     if self.estadoTruco==QUIEROTRUCO:
-      if self.ganePartida==True:
-        puntosMios=puntosMios + self.PtosTrucoNQuerido
+      if self.ganeElTruco==True:
+        puntosMios = puntosMios + self.PtosTrucoQuerido
         mensajes = mensajes + "Gane truco querido\n"
       else:
-        puntosOtro=puntosOtro + self.PtosTrucoNQuerido
+        puntosOtro = puntosOtro + self.PtosTrucoQuerido
         mensajes = mensajes + "El otro Gano truco querido\n"
       
     if self.estadoTruco==NOQUIEROTRUCO:
@@ -546,7 +545,7 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
         mensajes = mensajes + "El otro Gano truco por no querido\n"
         
     if self.estadoTruco==TRUCONOCANTADO and self.meFuiAlMazo==0:
-      if self.ganePartida==True:
+      if self.ganeElTruco==True:
         puntosMios=puntosMios+1
         mensajes = mensajes + "Gane partida y no se canto truco y se jugo mas de una mano\n"
       else:
