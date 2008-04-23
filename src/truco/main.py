@@ -1,3 +1,7 @@
+# ATENCION: este modulo es para probar el ManoTruco y la implementacion de las
+# reglas del juego, y no es parte de la version final TP.
+#
+
 import sys
 #sys.path.append("red")
 # import LogicaRed
