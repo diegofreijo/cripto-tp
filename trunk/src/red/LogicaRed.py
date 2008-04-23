@@ -347,9 +347,7 @@ def verMano():
   
   # Desencripto el paquete
   paquete = Rsa.DesencriptarTexto(paquete, rsaContrincante[0], rsaContrincante[1])
-  
-  print 'PAQUETE: ' + paquete
-  
+    
   # Inicializo el puntero de lectura en el comienzo
   p = 0
   
