@@ -91,8 +91,8 @@ def comenzarJuego(modo, direcc, puerto):
       for carta in LogicaRedHandshakeClient.misCartas.keys(): print '  ' + str(carta)
 
     #seteo el Score en la mano que se va a jugar para contabilizar los puntos en caso de Falta Envido
-    jugador.scoreMio = Score.ptosMios
-    jugador.scoreOtro = Score.ptosOtro
+    jugador.scoreAcumuladoMio = Score.ptosMios
+    jugador.scoreAcumuladoOtro = Score.ptosOtro
     
     ## Bucle principal de mano
     while jugador.terminado() != True:
@@ -228,9 +228,3 @@ def elegirModo():
 # ip/puerto, y jugar
 if __name__ == '__main__':
   elegirModo()
-
-def SetearScoreALaMano():
-  jugador.scoreMio=Score.ptosMios
-  jugador.scoreOtro=Score.ptosOtro
-  return
-    
