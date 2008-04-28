@@ -86,7 +86,6 @@ Carta(5,Palo.COPA):12,Carta(6,Palo.COPA):11,Carta(7,Palo.COPA):10,Carta(10,Palo.
     self.tengoTantas = _cantoEnvidoTantos('Cantar tantos',-1) # tengoTantas le pide al usuario que diga los puntos que tiene (en este caso le permitiria mentir)
     self.controlPtosOtro = ()
     self.envidoNoQuerido = False
-    self.tantosMios = 0
     self.manoDelOtro = None
     self.canteFaltaEnvido = False
 

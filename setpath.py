@@ -2,7 +2,7 @@
 # Si es distinto de None, se fuerza una ubicación del proyecto
 base = None
 # Rutas de fuentes Python que deben agregarse a sys.path
-srcList = [r'src/lib', r'src/red', r'src/truco', r'src/truco/Maura']
+srcList = [r'src/lib', r'src/red', r'src/truco'] #, r'src/truco/Maura']
 # Rutas de librerias binarias que deben agregarse a sys.path
 # Se les agregará automáticamente ".win32" o ".linux-x86_64" según el equipo donde se ejecute
 libList = [r'lib']

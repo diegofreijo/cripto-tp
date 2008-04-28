@@ -32,7 +32,7 @@ Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y
 \begin{itemize}
 \item Se puede cantar Envido hasta antes de jugar la primer mano.
 \item Se puede seguir contestando hasta que se diga ``Quiero''; ac'a se procede a ver qu'e cartas son del mismo palo y se suman los valores (en caso de tener flor se suman los dos m'as altos), o ``No Quiero''; no cuento nada y sigue el juego.
-\item Si se cant'o ``Truco'' no se puede cantar ``Envido''.
+\item Si se cant'o ``Truco'' no se puede cantar ``Envido'', salvo que un jugador cante Truco y no se haya cerrado la primera mano. En este caso se le puede responder ``Primero est'a el Envido'' y se contesta primero el canto del Envido y posteriormente, el Truco.
 \item Si ya se dijo ``Quiero'' o ``No Quiero'', no se puede seguir cantando.
 \end{itemize}
 
@@ -48,7 +48,7 @@ Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y
 \imagen{img/QuienTieneElQuiero.png}{14}{Quien tiene el quiero}
 
 \begin{itemize}
-\item Los cantos deben manejarse como interrupciones. Un jugador puede cantar ``Truco'' habiendo jugado su carta o no. No es asi el caso del ``Envido''; aca hay que controlar que el jugador tenga el token (le toque jugar) y no haya tirado su carta.
+\item Los cantos deben manejarse como interrupciones. Un jugador puede cantar ``Truco'' antes de jugar su carta. No es asi el caso del ``Envido''; aca hay que controlar que el jugador tenga el token (le toque jugar) y no haya tirado su carta.
 \end{itemize}
 
 \subsubsection{Registros a Tener en Cuenta}
@@ -58,8 +58,10 @@ Para ver qui'en gana la mano, buscamos las dos cartas que est'an sobre la mesa y
 \item Si se cant'o ``Truco''
 \item Al finalizar la mano:
 	\begin{itemize}
-    \item Si se cant'o ``Envido'' me fijo si en las cartas sobre la mesa est'an los puntos del ``Envido''. Si no, muestro las que faltan aunque se haya ido al mazo.
-    \item Si se fue al mazo (o se canta ``Truco'' y no se quiere), entonces no se deben mostrar las cartas que no se hayan jugado a menos que ocurra el caso anterior.
+    \item Si se cant'o ``Envido'' y se dijo ``Quiero'' se debe hacer un intercambio de las cartas que forman los puntos para que se calculen del otro lado y chequear de esta manera qui'en gan'o el Envido. Esto se hace para comprobar que el otro no minti'o al cantar sus puntos.
+    \item Si se cant'o ``Truco'' y se dijo ``Quiero'' se calcula qui'en gan'o la mano. Aqu'i es donde se tiene en cuenta la cantidad de manos ganadas y los acasos particulares de las pardas.
+    \item Si se fue al mazo hay que ver la cantidad de puntos que corresponden a cada uno seg'un se haya cantado o no el ``Envido'' y el ``Truco''.
+    \item Si se cant'o ``Falta Envido'' y se dijo ``Quiero'' se debe chequear el estado del Score para calcular la cantidad de puntos a asignarle al que haya ganado. En caso que los dos jugadores tengan menos de 15 puntos, el que gane este canto, ganar'a el Partido.
 	\end{itemize}
 \end{itemize}
 
@@ -72,41 +74,62 @@ partida:
 Una variable EstadoEnvido que va a asumir los valores:
 
 \begin{verbatim}
-    0, si no se canto nada
-    1, si se canto Envido
-    2, si se canto Envido Envido
-    3, si se canto Real Envido
-    4, si se canto Falta Envido
-    5, si ya no se puede seguir cantando (si el jugador respondio
-      ''Quiero'' o '' No Quiero'')
+    0. ENVIDONOCANTADO
+    1. ENVIDO
+    2. ENVIDOENVIDO
+    3. REALENVIDO
+    4. FALTAENVIDO
+    5. QUIEROENVIDO
+    6. NOQUIEROENVIDO
 \end{verbatim}
 
-Una variable que almacene la cantidad de puntos en juego si se dice Quiero (PtosQuieroEnv)
+Una variable que cuenta la cantidad de puntos a asignar si se responde ``Quiero'' a alg'un estado del Envido (PtosEnvidoQuerido).
 
-Una variable que almacene la cantidad de puntos en juego si se dice No Quiero (PtosNQuieroEnv)
+Una variable que cuenta la cantidad de puntos a asignar si se responde ``No Quiero'' a alg'un estado del Envido (PtosEnvidoNQuerido).
 
-Una variable que me indique si puedo redoblar la apuesta del Envido (Es decir, si tengo el Quiero, PuedoCantarEnv)
+Una variable que cambia de estado durante el intercambio de puntos (intercambiandoTantos).
 
-Nota: La cantidad de Puntos en juego si se dice ``No Quiero'' es la cantidad de cantos que se hayan efectuado y la cantidad de puntos en juego si se dice ``Quiero'' es sumar 2 si se canta Envido, 3 si se canta Real Envido. Se tomo esta decision ya quela cantidad de puntos en juego si se canta Envido, Envido, Real Envido no es la misma que si se canta Envido, Real Envido.
+Una variable que indice si ya cante los mis puntos (canteMisTantos).
 
-Supongamos que la variable PtosQuieroEnv no existe y que manejamos el Envido con las otras dos variables. En el primer caso, la variable PtosNQuieroEnv tendria un valor 3 y en el segundo caso 2. La variable EstadoEnvido en el primer caso, pasaria del estado 0 al 1, luego al 2 y finalmente el 3; y en el segundo, pasaria del estado 0 al 1 y finalmente al 3. Ahora, cuando computemos los puntos en juego, suponiendo que se dijo ``Quiero'' a partir de EstadoEnv, en los dos casos terminaria con el mismo valor!, lo cual es incorrecto. Es por esto que se opto por tener un registro de las estapas del Envido en la que se encuentra (EstadoEnv), la cantidad de puntos en juego si se sice ``Quiero'' (esto soluciona el problema antes mencionado), y la cantidad de puntos en juego si se dice ``No Quiero'' que sirve para contar la cantidad de cantos que se efectuaron.
+Una variable que almacena las cartas que forman el Envido junto con los puntos que suman (cartasEnvido). Esta variable es la que se usa luego en la verificaci'on al final de la mano.
+
+Una variable que almacena los puntos del Envido que canta el contrincante (PtosEnvidoOtro).
+
+Una variable que almacena los puntos del Envido que se le cantan al contrincante (tengoTantas). Aqu'i es donde el jugador podr'ia mentir con el canto de los puntos, o bien equivocarse cuando los canta. Esto luego ser'a chequeado en la verificaci'on.
+
+Una variable que almacena las cartas que forman el Envido junto con los puntos que suman del contrincante (controlPtosOtro). S'olo se la utiliza en la verificaci'on al final de la mano.
+
+Una variable que indica qui'en respondi'on ``No Quiero'' al Envido (envidoNoQuerido).
+
+Una variable que contiene el juego del contrincante (manoDelOtro). Esto se usa solamente en la verificaci'on.
+
+Una variable que informa si est'a cantada la ``Falta Envido'' y se dijo ``Quiero'' (canteFaltaEnvido).
+
+
+Nota: La cantidad de Puntos en juego si se dice ``No Quiero'' es la cantidad de cantos que se hayan efectuado. La cantidad de puntos en juego si se dice ``Quiero'' es sumar 2 si se canta Envido, 3 si se canta Real Envido. Se tom'o esta decisi'on ya que la cantidad de puntos en juego si se canta Envido, Envido, Real Envido no es la misma que si se canta Envido, Real Envido.
+
+Supongamos que la variable PtosEnvidoQuerido no existe y que manejamos el Envido con las otras dos variables. En el primer caso, la variable PtosEnvidoNQuerido tendria un valor 3 y en el segundo caso 2. La variable estadoEnvido en el primer caso, pasar'ia del estado 0 al 1, luego al 2 y finalmente el 3; y en el segundo, pasar'ia del estado 0 al 1 y finalmente al 3. Ahora, cuando computemos los puntos en juego, suponiendo que se dijo ``Quiero'' a partir de estadoEnvido, en los dos casos terminar'ia con el mismo valor!, lo cual es incorrecto. Es por esto que se opt'o por tener un registro de las estapas del Envido en la que se encuentra (estadoEnvido), la cantidad de puntos en juego si se sice ``Quiero'' (esto soluciona el problema antes mencionado), y la cantidad de puntos en juego si se dice ``No Quiero'' que sirve para contar la cantidad de cantos que se efectuaron.
 
 \negrita{Truco}
 
-Una variable EstadoTruco que va a asumir los siguientes valores:
+Una variable estadoTruco que va a asumir los siguientes valores:
 \begin{verbatim}
-    0, si no se canto nada
-    1, si se canto Truco
-    2, si se canto Re Truco
-    3, si se canto Vale Cuatro
-    4, si ya no se puede seguir cantando (si el jugador respondio
-      ''Quiero'' o ''No Quiero'')
+    0. TRUCONOCANTADO
+    1. TRUCO
+    2. RETRUCO
+    3. VALE4
+    4. QUIEROTRUCO
+    5. NOQUIEROTRUCO
 \end{verbatim}
 
-Una variable que cuente los puntos del truco en caso que la respuesta sea ``Quiero'' (PtosQuieroTru)
+Una variable que cuenta la cantidad de puntos a asignar en caso que se quiera el ``Truco'' (PtosTrucoQuerido).
 
-Una variable que cuente los puntos del truco en caso que la respuesta sea ``No Quiero'' (PtosNQuieroTru)
+Una variable que cuenta la cantidad de puntos a asignar en caso que no se quiera el ``Truco'' (PtosTrucoNQuerido).
 
-Una variable que me indique si puedo redoblar la apuesta del Truco (Es decir, si tengo el Quiero, PuedoCantarTru)
+Una variable que me informa el 'ultimo estado en que se encuentra el estadoTruco (ultimoEstadoTruco).
 
-Nota: Tanto los puntos del truco querido como los del no querido se van incrementando de a uno. La diferencia esta en que PtosQuieroTru de 0 pasa al valor 2; en cambio, PtosNQuieroTru pasa de 0 a 1.
+Una variable que me indica qui'en cant'o el truco (canteTruco). Se usa para ver qui'en tiene el ``Quiero'' y as'i poder seguir cantando.
+
+Una variable que me dice qui'en gan'o la mano teniendo en cuenta el desarrollo de las manos y los cantos de Truco que se hayan hecho (ganeElTruco).
+
+Nota: Tanto los puntos del truco querido como los del no querido se van incrementando de a uno. La diferencia esta en que PtosTrucoQuerido de 0 pasa al valor 2; en cambio, PtosTrucoNQuerido pasa de 0 a 1.
